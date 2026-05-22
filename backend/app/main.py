@@ -49,7 +49,39 @@ GAMES = {
         "minPlayers": 6,
         "maxPlayers": 12,
         "defaultTarget": 12,
+        "defaultBoard": "werewolf_12_seer_witch_hunter_guard",
         "phases": ["开局确认", "夜晚行动", "白天发言", "投票放逐", "复盘"],
+        "rules": [
+            "狼人阵营夜晚统一选择击杀目标，好人阵营通过发言、技能和投票找出狼人。",
+            "白天按顺序发言，发言后投票放逐一名玩家。",
+            "好人胜利条件是放逐所有狼人；狼人胜利条件通常是屠边或达成板子约定胜利条件。"
+        ],
+        "boards": [
+            {
+                "id": "werewolf_9_seer_witch_hunter",
+                "name": "9 人预女猎",
+                "playerCount": 9,
+                "roles": ["狼人", "狼人", "狼人", "预言家", "女巫", "猎人", "村民", "村民", "村民"],
+                "summary": "经典小局，信息量适中，适合快速演示 AI 站边、冲锋、倒钩和发言压力。",
+                "tips": ["预言家重点给警徽流和验人逻辑。", "女巫首夜是否用药会显著影响讨论节奏。", "猎人发言要避免被狼人精准规避。"]
+            },
+            {
+                "id": "werewolf_10_seer_witch_hunter_idiot",
+                "name": "10 人预女猎白",
+                "playerCount": 10,
+                "roles": ["狼人", "狼人", "狼人", "预言家", "女巫", "猎人", "白痴", "村民", "村民", "村民"],
+                "summary": "加入白痴后容错更高，适合观察 AI 如何处理身份弹性和放逐收益。",
+                "tips": ["白痴被放逐后通常翻牌免死，但失去投票能力。", "狼人可以利用白痴身份制造抗推。", "好人要区分强神发言和挡刀发言。"]
+            },
+            {
+                "id": "werewolf_12_seer_witch_hunter_guard",
+                "name": "12 人预女猎守",
+                "playerCount": 12,
+                "roles": ["狼人", "狼人", "狼人", "狼人", "预言家", "女巫", "猎人", "守卫", "村民", "村民", "村民", "村民"],
+                "summary": "标准 12 人神民局，适合测试完整发言轮次、守卫逻辑和狼队打法分工。",
+                "tips": ["守卫通常不能连续守同一人。", "女巫解药和守卫守护可能存在同守同救限制，按房规执行。", "狼队需要平衡悍跳、倒钩和冲锋位。"]
+            }
+        ],
     },
     "avalon": {
         "id": "avalon",
@@ -57,7 +89,39 @@ GAMES = {
         "minPlayers": 5,
         "maxPlayers": 10,
         "defaultTarget": 8,
+        "defaultBoard": "avalon_8_merlin_percival_morgana_assassin",
         "phases": ["开局确认", "组队提名", "圆桌讨论", "队伍投票", "任务结果", "刺杀梅林"],
+        "rules": [
+            "好人阵营通过多轮组队任务累计成功，坏人阵营通过破坏任务或最后刺杀梅林取胜。",
+            "队长提名任务队伍，全员投票决定队伍是否出发。",
+            "梅林知道多数坏人但不能暴露自己，刺客在好人任务胜利后可尝试刺杀梅林翻盘。"
+        ],
+        "boards": [
+            {
+                "id": "avalon_5_basic",
+                "name": "5 人基础局",
+                "playerCount": 5,
+                "roles": ["梅林", "派西维尔", "刺客", "莫甘娜", "忠臣"],
+                "summary": "节奏短、信息密度高，适合快速检查 AI 是否会泄露隐藏身份。",
+                "tips": ["坏人只有两名，发言容错低。", "派西维尔需要在真假梅林之间判断。", "梅林要避免给出过强视角。"]
+            },
+            {
+                "id": "avalon_8_merlin_percival_morgana_assassin",
+                "name": "8 人梅派莫刺",
+                "playerCount": 8,
+                "roles": ["梅林", "派西维尔", "刺客", "莫甘娜", "爪牙", "忠臣", "忠臣", "忠臣"],
+                "summary": "最适合当前 demo 的标准观察局，能覆盖真假信息位、组队、投票和刺杀压力。",
+                "tips": ["莫甘娜要模仿梅林给派西维尔制造误读。", "刺客要通过发言寻找知道太多的人。", "忠臣应推动组队标准而不是盲目互保。"]
+            },
+            {
+                "id": "avalon_10_mordred",
+                "name": "10 人含莫德雷德",
+                "playerCount": 10,
+                "roles": ["梅林", "派西维尔", "刺客", "莫甘娜", "莫德雷德", "爪牙", "忠臣", "忠臣", "忠臣", "忠臣"],
+                "summary": "高复杂度大局，梅林看不到莫德雷德，适合测试 AI 是否能处理不完整信息。",
+                "tips": ["莫德雷德不会被梅林看到。", "坏人可以围绕梅林视野盲区做伪装。", "好人更需要审计票型和任务结果。"]
+            }
+        ],
     },
 }
 
@@ -76,7 +140,29 @@ def clamp(value: int | None, minimum: int, maximum: int) -> int:
     return min(maximum, max(minimum, int(value)))
 
 
-def role_plan(game_id: str, players: int) -> list[str]:
+def boards_for_game(game_id: str) -> list[dict]:
+    return GAMES.get(game_id, {}).get("boards", [])
+
+
+def find_board(game_id: str, board_id: str | None, players: int | None = None) -> dict | None:
+    boards = boards_for_game(game_id)
+    if board_id:
+        for board in boards:
+            if board["id"] == board_id:
+                return board
+    if players:
+        for board in boards:
+            if board.get("playerCount") == players:
+                return board
+    default_board = GAMES.get(game_id, {}).get("defaultBoard")
+    return next((board for board in boards if board["id"] == default_board), boards[0] if boards else None)
+
+
+def role_plan(game_id: str, players: int, board_id: str | None = None) -> list[str]:
+    board = find_board(game_id, board_id, players)
+    if board and len(board.get("roles", [])) == players:
+        return board["roles"][:]
+
     if game_id == "werewolf":
         if players <= 6:
             return ["狼人", "狼人", "预言家", "女巫", "村民", "村民"][:players]
@@ -141,6 +227,7 @@ def public_room(room: dict) -> dict:
     return {
         **room,
         "game": GAMES[room["gameId"]],
+        "board": find_board(room["gameId"], room.get("boardId"), len(room["seats"])),
         "aiSeats": len([seat for seat in room["seats"] if seat["type"] == "ai"]),
         "aiRuntime": ai_runtime_status(),
     }
@@ -200,12 +287,16 @@ def append_message(room: dict, speaker: str, text: str, message_type: str = "cha
 
 def create_room(payload: dict) -> dict:
     game = GAMES.get(payload.get("gameId"), GAMES["werewolf"])
-    total = clamp(payload.get("targetPlayers", game["defaultTarget"]), game["minPlayers"], game["maxPlayers"])
+    board = find_board(game["id"], payload.get("boardId"), payload.get("targetPlayers"))
+    total_default = board["playerCount"] if board else game["defaultTarget"]
+    total = clamp(payload.get("targetPlayers", total_default), game["minPlayers"], game["maxPlayers"])
+    if board:
+        total = board["playerCount"]
     humans = clamp(payload.get("humanPlayers", total - 1), 0, total)
     persona_mode = payload.get("personaMode", "balanced")
     if persona_mode not in {mode["id"] for mode in persona_modes()}:
         persona_mode = "balanced"
-    roles = role_plan(game["id"], total)
+    roles = role_plan(game["id"], total, board["id"] if board else None)
     names = SEAT_NAMES[:]
     random.shuffle(roles)
     random.shuffle(names)
@@ -228,13 +319,15 @@ def create_room(payload: dict) -> dict:
     room = {
         "id": random_id("room"),
         "gameId": game["id"],
+        "boardId": board["id"] if board else "",
         "phase": game["phases"][0],
         "personaMode": persona_mode,
         "createdAt": now_iso(),
         "seats": seats,
         "messages": [],
     }
-    append_message(room, "系统", f"已创建 {game['name']} {total} 人局，其中 {humans} 位真人，{total - humans} 位 AI 补位。", "system")
+    board_name = f"（{board['name']}）" if board else ""
+    append_message(room, "系统", f"已创建 {game['name']}{board_name} {total} 人局，其中 {humans} 位真人，{total - humans} 位 AI 补位。", "system")
     ROOMS[room["id"]] = room
     return room
 

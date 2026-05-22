@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Bot,
+  BookOpen,
   BrainCircuit,
   CirclePlay,
   Clock3,
@@ -52,7 +53,7 @@ function routeFromHash() {
   const value = window.location.hash.replace(/^#\/?/, "");
   const [page, roomId] = value.split("/");
   if (page === "rooms" && roomId) return { page: "room", roomId };
-  if (["setup", "personas", "reports"].includes(page)) return { page, roomId: "" };
+  if (["setup", "rules", "personas", "reports"].includes(page)) return { page, roomId: "" };
   return { page: "setup", roomId: "" };
 }
 
@@ -78,10 +79,82 @@ const reportCards = [
   }
 ];
 
+function defaultBoardId(game) {
+  return game?.defaultBoard || game?.boards?.[0]?.id || "";
+}
+
+function activeBoard(game, boardId, targetPlayers) {
+  if (!game) return null;
+  return (
+    game.boards?.find((board) => board.id === boardId) ||
+    game.boards?.find((board) => board.playerCount === Number(targetPlayers)) ||
+    game.boards?.find((board) => board.id === game.defaultBoard) ||
+    game.boards?.[0] ||
+    null
+  );
+}
+
+function roleCounts(roles = []) {
+  return roles.reduce((counts, role) => ({ ...counts, [role]: (counts[role] || 0) + 1 }), {});
+}
+
+function BoardRulesPanel({ game, board, compact = false }) {
+  if (!game) return null;
+  const counts = roleCounts(board?.roles || []);
+
+  return (
+    <section className={`board-rules-card ${compact ? "compact" : ""}`}>
+      <div className="panel-title">
+        <div>
+          <p className="eyebrow">BOARD RULES</p>
+          <h2>{board?.name || `${game.name} 默认板子`}</h2>
+        </div>
+        {board && <span className="pill">{board.playerCount} 人</span>}
+      </div>
+
+      {board?.summary && <p className="board-summary">{board.summary}</p>}
+
+      <div className="rules-block">
+        <strong>基础规则</strong>
+        <ul>
+          {(game.rules || []).map((rule) => (
+            <li key={rule}>{rule}</li>
+          ))}
+        </ul>
+      </div>
+
+      {board && (
+        <>
+          <div className="rules-block">
+            <strong>身份配置</strong>
+            <div className="role-chip-grid">
+              {Object.entries(counts).map(([role, count]) => (
+                <span className={`role-chip ${roleCamp(game.id, role)}`} key={role}>
+                  {role} × {count}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="rules-block">
+            <strong>本板提示</strong>
+            <ul>
+              {(board.tips || []).map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
 function AppNav({ page, room, onNavigate }) {
   const items = [
     { id: "setup", label: "开局", icon: <Home size={17} />, path: "setup" },
     { id: "room", label: "圆桌", icon: <Table2 size={17} />, disabled: !room, path: room ? `rooms/${room.id}` : "setup" },
+    { id: "rules", label: "规则", icon: <BookOpen size={17} />, path: "rules" },
     { id: "personas", label: "人设库", icon: <Library size={17} />, path: "personas" },
     { id: "reports", label: "报告", icon: <FileText size={17} />, path: "reports" }
   ];
@@ -116,16 +189,26 @@ function AppNav({ page, room, onNavigate }) {
 function Setup({ games, personaModes, onCreate }) {
   const [gameId, setGameId] = useState(games[0]?.id || "werewolf");
   const game = games.find((item) => item.id === gameId) || games[0];
+  const [boardId, setBoardId] = useState(defaultBoardId(game));
   const [targetPlayers, setTargetPlayers] = useState(game?.defaultTarget || 12);
   const [humanPlayers, setHumanPlayers] = useState(Math.max(1, (game?.defaultTarget || 12) - 1));
   const [personaMode, setPersonaMode] = useState("balanced");
   const [personas, setPersonas] = useState([]);
+  const selectedBoard = activeBoard(game, boardId, targetPlayers);
 
   useEffect(() => {
     if (!game) return;
-    setTargetPlayers(game.defaultTarget);
-    setHumanPlayers(Math.max(1, game.defaultTarget - 1));
+    const nextBoard = activeBoard(game, defaultBoardId(game), game.defaultTarget);
+    setBoardId(nextBoard?.id || "");
+    setTargetPlayers(nextBoard?.playerCount || game.defaultTarget);
+    setHumanPlayers(Math.max(1, (nextBoard?.playerCount || game.defaultTarget) - 1));
   }, [game?.id]);
+
+  useEffect(() => {
+    if (!selectedBoard) return;
+    setTargetPlayers(selectedBoard.playerCount);
+    setHumanPlayers((value) => Math.min(Math.max(0, value), selectedBoard.playerCount));
+  }, [selectedBoard?.id]);
 
   useEffect(() => {
     if (!gameId) return;
@@ -133,7 +216,7 @@ function Setup({ games, personaModes, onCreate }) {
   }, [gameId]);
 
   const selectedMode = personaModes.find((mode) => mode.id === personaMode);
-  const aiSeats = Math.max(0, targetPlayers - humanPlayers);
+  const aiSeats = Math.max(0, (selectedBoard?.playerCount || targetPlayers) - humanPlayers);
   const avalon = games.find((item) => item.id === "avalon");
 
   return (
@@ -170,7 +253,13 @@ function Setup({ games, personaModes, onCreate }) {
           className="setup-form"
           onSubmit={(event) => {
             event.preventDefault();
-            onCreate({ gameId, targetPlayers, humanPlayers, personaMode });
+            onCreate({
+              gameId,
+              boardId: selectedBoard?.id || boardId,
+              targetPlayers: selectedBoard?.playerCount || targetPlayers,
+              humanPlayers,
+              personaMode
+            });
           }}
         >
           <label>
@@ -184,6 +273,17 @@ function Setup({ games, personaModes, onCreate }) {
             </select>
           </label>
 
+          <label>
+            <span>板子</span>
+            <select value={selectedBoard?.id || boardId} onChange={(event) => setBoardId(event.target.value)}>
+              {(game?.boards || []).map((board) => (
+                <option key={board.id} value={board.id}>
+                  {board.name} · {board.playerCount} 人
+                </option>
+              ))}
+            </select>
+          </label>
+
           <div className="number-row">
             <label>
               <span>目标人数</span>
@@ -192,6 +292,7 @@ function Setup({ games, personaModes, onCreate }) {
                 min={game?.minPlayers}
                 max={game?.maxPlayers}
                 value={targetPlayers}
+                disabled={Boolean(selectedBoard)}
                 onChange={(event) => setTargetPlayers(Number(event.target.value))}
               />
             </label>
@@ -228,7 +329,15 @@ function Setup({ games, personaModes, onCreate }) {
               <button
                 className="secondary-button"
                 type="button"
-                onClick={() => onCreate({ gameId: "avalon", targetPlayers: 8, humanPlayers: 0, personaMode })}
+                onClick={() =>
+                  onCreate({
+                    gameId: "avalon",
+                    boardId: avalon?.defaultBoard || "avalon_8_merlin_percival_morgana_assassin",
+                    targetPlayers: 8,
+                    humanPlayers: 0,
+                    personaMode
+                  })
+                }
               >
                 <Sparkles size={18} />
                 8 人全 AI
@@ -236,9 +345,82 @@ function Setup({ games, personaModes, onCreate }) {
             )}
           </div>
         </form>
+
+        <BoardRulesPanel game={game} board={selectedBoard} compact />
       </div>
 
       <KnowledgePanel personas={personas} title={`${game?.name || "游戏"}打法库`} compact />
+    </section>
+  );
+}
+
+function RulesPage({ games }) {
+  const [gameId, setGameId] = useState(games[0]?.id || "werewolf");
+  const game = games.find((item) => item.id === gameId) || games[0];
+  const [boardId, setBoardId] = useState(defaultBoardId(game));
+  const selectedBoard = activeBoard(game, boardId, game?.defaultTarget);
+
+  useEffect(() => {
+    if (!game) return;
+    setBoardId(defaultBoardId(game));
+  }, [game?.id]);
+
+  return (
+    <section className="content-page">
+      <header className="page-hero rules-hero">
+        <div>
+          <p className="eyebrow">RULEBOOK</p>
+          <h1>游戏规则与常用板子</h1>
+          <p>先把线下开局最常见的配置沉淀成可查看、可选择的板子，后续可以继续扩展房规、禁忌话术和主持人流程。</p>
+        </div>
+        <div className="rules-selects">
+          <label className="page-select">
+            <span>游戏</span>
+            <select value={gameId} onChange={(event) => setGameId(event.target.value)}>
+              {games.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="page-select">
+            <span>板子</span>
+            <select value={selectedBoard?.id || boardId} onChange={(event) => setBoardId(event.target.value)}>
+              {(game?.boards || []).map((board) => (
+                <option key={board.id} value={board.id}>
+                  {board.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <div className="rules-page-grid">
+        <BoardRulesPanel game={game} board={selectedBoard} />
+        <section className="tool-panel board-list-panel">
+          <div className="panel-title">
+            <div>
+              <p className="eyebrow">PRESETS</p>
+              <h2>{game?.name || "游戏"}板子库</h2>
+            </div>
+          </div>
+          <div className="board-list">
+            {(game?.boards || []).map((board) => (
+              <button
+                className={board.id === selectedBoard?.id ? "board-option active" : "board-option"}
+                key={board.id}
+                type="button"
+                onClick={() => setBoardId(board.id)}
+              >
+                <span>{board.name}</span>
+                <small>{board.playerCount} 人 · {board.roles.join(" / ")}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
     </section>
   );
 }
@@ -366,12 +548,18 @@ function KnowledgePanel({ personas, title = "人设知识库", compact = false }
           <article className="persona-card" key={persona.id}>
             <div className="persona-head">
               <strong>{persona.name}</strong>
-              <span className={`tag ${persona.camp}`}>{persona.camp === "evil" ? "坏人" : "好人"}</span>
+              {persona.camp && <span className={`tag ${persona.camp}`}>{persona.camp === "evil" ? "坏人" : "好人"}</span>}
             </div>
             <p>{persona.summary}</p>
             <div className="mini-tags">
               {persona.roles?.slice(0, 4).map((role) => (
                 <span key={role}>{role}</span>
+              ))}
+              {persona.tags?.slice(0, compact ? 2 : 4).map((tag) => (
+                <span key={tag}>#{tag}</span>
+              ))}
+              {persona.voice?.slice(0, compact ? 1 : 3).map((voice) => (
+                <span key={voice}>{voice}</span>
               ))}
             </div>
           </article>
@@ -484,6 +672,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
   const [speakerId, setSpeakerId] = useState(room.seats.find((seat) => seat.type === "human")?.id || "");
   const [thinking, setThinking] = useState(false);
   const game = useMemo(() => games.find((item) => item.id === room.gameId), [games, room.gameId]);
+  const board = room.board || activeBoard(game, room.boardId, room.seats.length);
   const humans = room.seats.filter((seat) => seat.type === "human");
   const personas = room.seats.map((seat) => seat.persona).filter(Boolean);
   const currentPhaseIndex = game?.phases.indexOf(room.phase) ?? 0;
@@ -524,7 +713,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
     <section className="room-layout">
       <header className="room-header">
         <div>
-          <p className="eyebrow">{game?.name || "桌游房间"}</p>
+          <p className="eyebrow">{game?.name || "桌游房间"}{board?.name ? ` · ${board.name}` : ""}</p>
           <h1>{room.seats.length} 人局 · {room.aiSeats} 位 AI 补位</h1>
           <p>
             当前阶段：{room.phase} · 打法方案：{modeLabel(personaModes, room.personaMode)} · AI：{runtimeLabel(room.aiRuntime)} · 消息 {room.messages.length}
@@ -702,6 +891,7 @@ function App() {
         />
       );
     }
+    if (route.page === "rules") return <RulesPage games={games} />;
     if (route.page === "personas") return <PersonasPage games={games} personaModes={personaModes} />;
     if (route.page === "reports") return <ReportsPage />;
     return <Setup games={games} personaModes={personaModes} onCreate={createRoom} />;

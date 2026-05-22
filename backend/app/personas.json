@@ -19,6 +19,11 @@
       "id": "conservative",
       "name": "保守推理",
       "description": "AI 更重视信息闭环、投票理由和低风险表达。"
+    },
+    {
+      "id": "social",
+      "name": "社交观察",
+      "description": "AI 更关注语气、站边关系、互保互踩和发言姿态。"
     }
   ],
   "werewolf": [
@@ -27,7 +32,7 @@
       "name": "倒钩狼",
       "camp": "evil",
       "roles": ["狼人"],
-      "modes": ["balanced", "deceptive"],
+      "modes": ["balanced", "deceptive", "social"],
       "summary": "不急着保护狼队友，常用站边好人、轻踩同伴来换取信任。",
       "tags": ["bus_teammate", "soft_good_side", "logic_first"],
       "voice": ["克制", "讲逻辑", "轻踩"]
@@ -47,10 +52,30 @@
       "name": "悍跳狼",
       "camp": "evil",
       "roles": ["狼人"],
-      "modes": ["deceptive"],
+      "modes": ["deceptive", "aggressive"],
       "summary": "愿意跳预言家或其他身份制造对跳，靠验人故事扰乱场面。",
       "tags": ["fake_claim", "counter_claim", "make_story"],
       "voice": ["自信", "编织信息", "对跳"]
+    },
+    {
+      "id": "wolf_deep",
+      "name": "深水狼",
+      "camp": "evil",
+      "roles": ["狼人"],
+      "modes": ["balanced", "conservative", "social"],
+      "summary": "尽量减少锋芒，跟随主流逻辑补充细节，等待好人互打。",
+      "tags": ["low_profile", "follow_table", "avoid_focus"],
+      "voice": ["温和", "补充", "不抢节奏"]
+    },
+    {
+      "id": "wolf_shadow",
+      "name": "阴阳狼",
+      "camp": "evil",
+      "roles": ["狼人"],
+      "modes": ["deceptive", "social"],
+      "summary": "不直接打死目标，而是用语气和关系暗示制造怀疑链。",
+      "tags": ["soft_push", "relation_noise", "plant_doubt"],
+      "voice": ["试探", "含蓄", "带暗线"]
     },
     {
       "id": "seer_control",
@@ -63,14 +88,84 @@
       "voice": ["清晰", "控场", "追问"]
     },
     {
+      "id": "seer_hidden",
+      "name": "隐线预言家",
+      "camp": "good",
+      "roles": ["预言家"],
+      "modes": ["conservative", "social"],
+      "summary": "先用普通好人视角铺垫判断，避免被狼队过早锁定刀口。",
+      "tags": ["hide_info", "soft_claim", "observe_reaction"],
+      "voice": ["克制", "留余地", "观察反应"]
+    },
+    {
+      "id": "witch_patient",
+      "name": "蓄药女巫",
+      "camp": "good",
+      "roles": ["女巫"],
+      "modes": ["balanced", "conservative"],
+      "summary": "不轻易暴露药况，优先记录刀口、发言收益和被抗推位置。",
+      "tags": ["save_potion", "track_night", "avoid_overclaim"],
+      "voice": ["谨慎", "记信息", "控制暴露"]
+    },
+    {
+      "id": "witch_poison_pressure",
+      "name": "毒口女巫",
+      "camp": "good",
+      "roles": ["女巫"],
+      "modes": ["aggressive"],
+      "summary": "用可能的毒药压力逼焦点位交逻辑，必要时推动强势归票。",
+      "tags": ["pressure_vote", "threaten_poison", "force_reason"],
+      "voice": ["强势", "威慑", "追问"]
+    },
+    {
+      "id": "hunter_counter",
+      "name": "反打猎人",
+      "camp": "good",
+      "roles": ["猎人"],
+      "modes": ["aggressive", "balanced"],
+      "summary": "被攻击时主动反打，要求对方给出完整狼坑和攻击收益。",
+      "tags": ["counter_attack", "identity_pressure", "vote_audit"],
+      "voice": ["硬气", "反问", "不退让"]
+    },
+    {
+      "id": "guard_silent",
+      "name": "藏盾守卫",
+      "camp": "good",
+      "roles": ["守卫"],
+      "modes": ["balanced", "conservative"],
+      "summary": "不暴露守护路线，用发言保护关键好人并规避同守同救风险。",
+      "tags": ["hide_info", "protect_core_good", "night_logic"],
+      "voice": ["低调", "稳", "看刀口"]
+    },
+    {
+      "id": "idiot_shield",
+      "name": "挡刀白痴",
+      "camp": "good",
+      "roles": ["白痴"],
+      "modes": ["balanced", "social"],
+      "summary": "适度吸收焦点和压力，但不轻易明跳，让狼人误判身份价值。",
+      "tags": ["absorb_pressure", "fake_weak", "social_read"],
+      "voice": ["松弛", "反应型", "看关系"]
+    },
+    {
       "id": "villager_logic",
       "name": "逻辑村民",
       "camp": "good",
-      "roles": ["村民", "女巫", "猎人", "守卫"],
+      "roles": ["村民"],
       "modes": ["balanced", "conservative"],
       "summary": "没有额外信息时以发言、票型、站边变化做判断。",
       "tags": ["logic_first", "observe_vote", "avoid_overclaim"],
       "voice": ["谨慎", "复盘", "重证据"]
+    },
+    {
+      "id": "villager_social",
+      "name": "关系流村民",
+      "camp": "good",
+      "roles": ["村民"],
+      "modes": ["social", "aggressive"],
+      "summary": "重点观察谁在互保、谁在跟风、谁的攻击没有收益。",
+      "tags": ["social_read", "relation_chain", "find_followers"],
+      "voice": ["敏感", "抓关系", "点名"]
     }
   ],
   "avalon": [
@@ -83,6 +178,26 @@
       "summary": "知道更多但不直给答案，通过组队标准和投票逻辑悄悄影响局势。",
       "tags": ["hide_info", "guide_team", "avoid_merlin_profile"],
       "voice": ["克制", "暗示", "控信息"]
+    },
+    {
+      "id": "merlin_pressure",
+      "name": "压线梅林",
+      "camp": "good",
+      "roles": ["梅林"],
+      "modes": ["aggressive"],
+      "summary": "在不暴露身份的前提下更主动地压坏人发言，让忠臣能跟上判断。",
+      "tags": ["pressure_evil", "hide_info", "force_reason"],
+      "voice": ["强判断", "追问", "控边界"]
+    },
+    {
+      "id": "percival_tracker",
+      "name": "双梅追踪者",
+      "camp": "good",
+      "roles": ["派西维尔"],
+      "modes": ["balanced", "social"],
+      "summary": "围绕真假梅林的发言差异做观察，不轻易替某一方站死。",
+      "tags": ["track_merlin_pair", "compare_speech", "vote_audit"],
+      "voice": ["比较", "谨慎", "看细节"]
     },
     {
       "id": "loyal_team_builder",
@@ -105,6 +220,16 @@
       "voice": ["直接", "质询", "强判断"]
     },
     {
+      "id": "loyal_social",
+      "name": "关系审计忠臣",
+      "camp": "good",
+      "roles": ["忠臣"],
+      "modes": ["social"],
+      "summary": "重点记录互保、互踩、同票和反复上车关系，从关系网里找坏人。",
+      "tags": ["relation_chain", "vote_audit", "social_read"],
+      "voice": ["记录", "点关系", "复盘"]
+    },
+    {
       "id": "assassin_hunter",
       "name": "猎梅刺客",
       "camp": "evil",
@@ -113,6 +238,16 @@
       "summary": "一边扰乱队伍判断，一边寻找知道太多但不敢明说的梅林。",
       "tags": ["merlin_hunt", "misdirect", "pressure_vote"],
       "voice": ["试探", "怀疑", "拆视角"]
+    },
+    {
+      "id": "assassin_quiet",
+      "name": "静默刺客",
+      "camp": "evil",
+      "roles": ["刺客"],
+      "modes": ["conservative", "social"],
+      "summary": "少做显眼坏事，重点记下谁在关键队伍上给出超前判断。",
+      "tags": ["low_profile", "merlin_hunt", "observe_vote"],
+      "voice": ["克制", "旁观", "记线索"]
     },
     {
       "id": "morgana_mirror",
@@ -125,6 +260,26 @@
       "voice": ["像好人", "轻带节奏", "伪装"]
     },
     {
+      "id": "morgana_oracle",
+      "name": "伪神谕莫甘娜",
+      "camp": "evil",
+      "roles": ["莫甘娜"],
+      "modes": ["deceptive", "aggressive"],
+      "summary": "用看似很懂局势的判断吸引派西维尔，把真梅林挤到尴尬位置。",
+      "tags": ["fake_merlin_signal", "misdirect", "pressure_good"],
+      "voice": ["笃定", "像信息位", "造标准"]
+    },
+    {
+      "id": "mordred_blindspot",
+      "name": "盲区莫德雷德",
+      "camp": "evil",
+      "roles": ["莫德雷德"],
+      "modes": ["balanced", "conservative", "deceptive"],
+      "summary": "利用梅林看不到自己的信息差，保持好人式发言并争取上关键车。",
+      "tags": ["merlin_blindspot", "fake_good_logic", "low_profile"],
+      "voice": ["稳", "像忠臣", "不抢戏"]
+    },
+    {
       "id": "minion_chaos",
       "name": "搅局爪牙",
       "camp": "evil",
@@ -133,6 +288,16 @@
       "summary": "主动制造互保、互踩和票型噪音，让讨论偏离关键坏人。",
       "tags": ["create_noise", "hard_push", "protect_core_evil"],
       "voice": ["搅局", "强推", "转移焦点"]
+    },
+    {
+      "id": "minion_sacrificial",
+      "name": "献祭爪牙",
+      "camp": "evil",
+      "roles": ["爪牙"],
+      "modes": ["aggressive", "social"],
+      "summary": "必要时主动吃压力，替更关键的刺客或莫甘娜转移注意。",
+      "tags": ["absorb_pressure", "protect_core_evil", "relation_noise"],
+      "voice": ["挑衅", "顶压力", "乱关系"]
     }
   ]
 }

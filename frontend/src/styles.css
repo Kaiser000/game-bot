@@ -291,6 +291,79 @@ label span {
   font-size: 13px;
 }
 
+.board-rules-card {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(217, 164, 65, 0.08), transparent 38%),
+    rgba(28, 25, 21, 0.96);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  padding: 22px;
+}
+
+.setup-panel .board-rules-card.compact {
+  margin-top: 18px;
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  box-shadow: none;
+}
+
+.board-rules-card.compact .rules-block ul {
+  max-height: 108px;
+  overflow: auto;
+}
+
+.board-summary {
+  margin-bottom: 16px;
+  color: #ead9b6;
+}
+
+.rules-block {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.rules-block strong {
+  color: #fff3d5;
+}
+
+.rules-block ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.role-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #f4f1ea;
+  background: rgba(18, 16, 13, 0.62);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.role-chip.good {
+  border-color: rgba(101, 193, 140, 0.36);
+  color: #bff4cf;
+}
+
+.role-chip.evil {
+  border-color: rgba(232, 92, 106, 0.38);
+  color: #ffc6c3;
+}
+
 .button-row,
 .room-actions {
   display: flex;
@@ -396,6 +469,66 @@ label span {
 .page-select {
   width: min(260px, 100%);
   flex: 0 0 auto;
+}
+
+.rules-hero {
+  background:
+    linear-gradient(135deg, rgba(217, 164, 65, 0.12), transparent 40%),
+    rgba(28, 25, 21, 0.96);
+}
+
+.rules-selects {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rules-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: 14px;
+}
+
+.board-list-panel {
+  min-height: 100%;
+}
+
+.board-list {
+  display: grid;
+  gap: 10px;
+}
+
+.board-option {
+  min-height: 76px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  background: rgba(18, 16, 13, 0.56);
+  color: #f4f1ea;
+  text-align: left;
+}
+
+.board-option.active {
+  border-color: rgba(217, 164, 65, 0.64);
+  background: rgba(217, 164, 65, 0.14);
+}
+
+.board-option span,
+.board-option small {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.board-option span {
+  color: #fff3d5;
+  font-weight: 900;
+}
+
+.board-option small {
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
 .persona-page-grid {
@@ -786,6 +919,7 @@ label span {
   .home-layout,
   .room-grid,
   .persona-page-grid,
+  .rules-page-grid,
   .report-grid {
     grid-template-columns: 1fr;
   }
@@ -827,8 +961,14 @@ label span {
 
   .feature-grid,
   .number-row,
+  .rules-selects,
   .composer {
     grid-template-columns: 1fr;
+  }
+
+  .rules-selects {
+    display: grid;
+    width: 100%;
   }
 
   .button-row,
