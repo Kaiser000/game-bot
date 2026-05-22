@@ -4,11 +4,11 @@
 
 ## 当前能力
 
-- 零依赖 Python 后端：房间状态、游戏模板、身份分配、AI 补位发言。
+- Python + LangChain 后端：房间状态、游戏模板、身份分配、AI 补位发言。
 - React + Vite 前端：创建文字局、切换阶段、真人发言、触发 AI 发言。
 - 外挂式 AI 人设知识库：按游戏和身份分配倒钩、冲锋、悍跳、控场、搅局等打法。
 - 支持狼人杀和阿瓦隆两个模板。
-- 当前 AI 是规则驱动模拟器，后续可以替换成真实 LLM provider。
+- 默认带规则兜底模拟器；配置 API Key 后通过 LangChain 接入 OpenAI-compatible Chat Completions。
 
 ## Web 端页面
 
@@ -27,6 +27,7 @@
 
 ```bash
 cd backend
+pip install -r requirements.txt
 python -m app.main
 ```
 
@@ -43,6 +44,53 @@ npm run dev
 ```text
 http://localhost:5173
 ```
+
+## 接入真实模型
+
+默认不配置 Key 时，后端会使用本地规则兜底，方便离线跑 demo。真实模型统一走 LangChain 的 `ChatOpenAI`。
+
+要接 OpenAI 官方接口：
+
+```powershell
+$env:OPENAI_API_KEY="你的 OpenAI Key"
+$env:OPENAI_MODEL="gpt-5.2"
+cd backend
+pip install -r requirements.txt
+python -m app.main
+```
+
+如果 CodingPlan 给的是 OpenAI-compatible 的 `base_url`：
+
+```powershell
+$env:AI_API_KEY="你的 CodingPlan Key"
+$env:AI_PROVIDER="codingplan"
+$env:AI_API_BASE_URL="https://你的-codingplan-域名/v1"
+$env:AI_MODEL="你的模型名"
+cd backend
+pip install -r requirements.txt
+python -m app.main
+```
+
+如果 CodingPlan 给的是完整接口 URL，也可以直接填，后端会自动截出 base URL 给 LangChain：
+
+```powershell
+$env:AI_API_KEY="你的 CodingPlan Key"
+$env:AI_PROVIDER="codingplan"
+$env:AI_API_URL="https://你的-codingplan-域名/v1/chat/completions"
+$env:AI_MODEL="你的模型名"
+cd backend
+pip install -r requirements.txt
+python -m app.main
+```
+
+常用环境变量：
+
+- `AI_API_KEY` / `OPENAI_API_KEY` / `CODINGPLAN_API_KEY`：模型服务 Key。
+- `AI_PROVIDER`：可选，`openai`、`openai-compatible`、`codingplan` 或 `rules`。
+- `AI_MODEL` / `OPENAI_MODEL` / `CODINGPLAN_MODEL`：模型名。
+- `AI_API_BASE_URL`：兼容服务的 base URL，例如 `https://.../v1`。
+- `AI_API_URL`：完整接口 URL，优先级高于 base URL。
+- `AI_USE_ENV_PROXY`：默认 `false`，避免本地兼容服务被系统代理误转发；确实需要代理时设为 `true`。
 
 ## 全 AI 阿瓦隆实验
 

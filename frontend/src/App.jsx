@@ -40,6 +40,11 @@ function modeLabel(modes, id) {
   return modes.find((mode) => mode.id === id)?.name || id || "自动混合";
 }
 
+function runtimeLabel(runtime) {
+  if (!runtime?.configured) return "规则兜底";
+  return `${runtime.provider} / ${runtime.model} / LangChain`;
+}
+
 function Setup({ games, personaModes, onCreate }) {
   const [gameId, setGameId] = useState(games[0]?.id || "werewolf");
   const game = games.find((item) => item.id === gameId) || games[0];
@@ -223,6 +228,44 @@ function PhaseRail({ phases, current, onChange }) {
   );
 }
 
+function seatPositionStyle(index, total) {
+  const angle = (360 / total) * index - 90;
+  const radius = 36;
+  const x = 50 + radius * Math.cos((angle * Math.PI) / 180);
+  const y = 50 + radius * Math.sin((angle * Math.PI) / 180);
+  return { left: `${x}%`, top: `${y}%` };
+}
+
+function RoundTable({ room }) {
+  const aiCount = room.seats.filter((seat) => seat.type === "ai").length;
+  const humanCount = room.seats.length - aiCount;
+
+  return (
+    <section className="roundtable-stage" aria-label="圆桌座位">
+      <div className="table-center">
+        <div className="table-dial">
+          <p className="eyebrow">ROUND TABLE</p>
+          <strong>{room.phase}</strong>
+          <span>{humanCount} 真人 · {aiCount} AI</span>
+        </div>
+      </div>
+      {room.seats.map((seat, index) => (
+        <article
+          className={`table-seat ${seat.type} ${roleCamp(room.gameId, seat.role)}`}
+          key={seat.id}
+          style={seatPositionStyle(index, room.seats.length)}
+        >
+          <div className="seat-avatar">{seat.type === "ai" ? <Bot size={18} /> : <UsersRound size={18} />}</div>
+          <div>
+            <strong>{seat.name}</strong>
+            <span>{seat.type === "ai" ? `${seat.style} AI` : "真人"}</span>
+          </div>
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function SeatBoard({ room }) {
   return (
     <div className="seat-board">
@@ -318,7 +361,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
           <p className="eyebrow">{game?.name || "桌游房间"}</p>
           <h1>{room.seats.length} 人局 · {room.aiSeats} 位 AI 补位</h1>
           <p>
-            当前阶段：{room.phase} · 打法方案：{modeLabel(personaModes, room.personaMode)} · 消息 {room.messages.length}
+            当前阶段：{room.phase} · 打法方案：{modeLabel(personaModes, room.personaMode)} · AI：{runtimeLabel(room.aiRuntime)} · 消息 {room.messages.length}
           </p>
         </div>
         <div className="room-actions">
@@ -370,6 +413,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
             <span className="pill">{room.phase}</span>
           </div>
 
+          <RoundTable room={room} />
           <Messages room={room} />
 
           {humans.length > 0 ? (

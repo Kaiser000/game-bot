@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import random
+import re
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -9,10 +11,34 @@ from pathlib import Path
 from secrets import token_hex
 from urllib.parse import parse_qs, urlparse
 
+try:
+    import httpx
+    from langchain_core.messages import HumanMessage, SystemMessage
+    from langchain_openai import ChatOpenAI
+except ImportError:  # pragma: no cover - the local rule fallback still boots without optional deps.
+    ChatOpenAI = None
+    HumanMessage = None
+    SystemMessage = None
+    httpx = None
+
 
 PORT = 8000
 APP_DIR = Path(__file__).resolve().parent
 ROOMS: dict[str, dict] = {}
+
+
+def first_env(names: list[str], default: str = "") -> str:
+    for name in names:
+        value = os.getenv(name)
+        if value:
+            return value.strip()
+    return default
+
+
+AI_PROVIDER = first_env(["AI_PROVIDER"], "openai").lower()
+AI_MODEL = first_env(["AI_MODEL", "OPENAI_MODEL", "CODINGPLAN_MODEL"], "gpt-5.2")
+AI_TIMEOUT = float(first_env(["AI_TIMEOUT", "OPENAI_TIMEOUT"], "20"))
+AI_USE_ENV_PROXY = first_env(["AI_USE_ENV_PROXY", "OPENAI_USE_ENV_PROXY"], "false").lower() in {"1", "true", "yes", "on"}
 SEAT_NAMES = ["北桥", "星野", "南风", "林深", "青石", "白夜", "洛川", "晨雾", "渡鸦", "季夏", "灰塔", "松间"]
 PERSONA_KB = json.loads((APP_DIR / "personas.json").read_text(encoding="utf-8"))
 
@@ -116,7 +142,45 @@ def public_room(room: dict) -> dict:
         **room,
         "game": GAMES[room["gameId"]],
         "aiSeats": len([seat for seat in room["seats"] if seat["type"] == "ai"]),
+        "aiRuntime": ai_runtime_status(),
     }
+
+
+def ai_runtime_status() -> dict:
+    provider = normalized_ai_provider()
+    configured = provider != "rules" and bool(model_api_key())
+    return {
+        "provider": provider if configured else "rules",
+        "model": AI_MODEL if configured else "rules-fallback",
+        "configured": configured,
+        "endpointMode": "chat" if configured else "local",
+        "engine": "langchain" if configured else "rules",
+    }
+
+
+def normalized_ai_provider() -> str:
+    if AI_PROVIDER in {"rule", "rules", "local", "mock", "fallback"}:
+        return "rules"
+    if AI_PROVIDER in {"compatible", "openai-compatible", "codingplan"}:
+        return "openai-compatible"
+    custom_endpoint = first_env(["AI_API_URL", "AI_API_BASE_URL", "CODINGPLAN_API_URL", "CODINGPLAN_BASE_URL"])
+    return "openai-compatible" if custom_endpoint else "openai"
+
+
+def model_api_key() -> str:
+    return first_env(["AI_API_KEY", "OPENAI_API_KEY", "CODINGPLAN_API_KEY"])
+
+
+def model_api_base_url() -> str:
+    explicit_base = first_env(["AI_API_BASE_URL", "OPENAI_BASE_URL", "CODINGPLAN_BASE_URL"])
+    if explicit_base:
+        return explicit_base.rstrip("/")
+
+    explicit_url = first_env(["AI_API_URL", "OPENAI_API_URL", "CODINGPLAN_API_URL"])
+    for suffix in ("/chat/completions", "/responses"):
+        if explicit_url.endswith(suffix):
+            return explicit_url[: -len(suffix)].rstrip("/")
+    return "https://api.openai.com/v1"
 
 
 def append_message(room: dict, speaker: str, text: str, message_type: str = "chat", seat_id: str | None = None) -> dict:
@@ -183,6 +247,14 @@ def role_camp(game_id: str, role: str) -> str:
 
 def recent_text(room: dict) -> str:
     return " ".join(f"{message['speaker']}: {message['text']}" for message in room["messages"][-6:] if message["type"] != "system")
+
+
+def recent_lines(room: dict, limit: int = 10) -> list[str]:
+    return [
+        f"{message['speaker']}: {message['text']}"
+        for message in room["messages"][-limit:]
+        if message["type"] != "system"
+    ]
 
 
 def other_seat_name(room: dict, seat: dict, seat_type: str = "human", exclude_names: set[str] | None = None) -> str:
@@ -400,10 +472,137 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
     )
 
 
-def generate_ai_reply(room: dict, seat: dict) -> str:
+def generate_rule_reply(room: dict, seat: dict) -> str:
     preface = "我直接一点，" if seat["style"] == "进攻" else "我先保守说，" if seat["style"] == "保守" else ""
     body = generate_werewolf_reply(room, seat) if room["gameId"] == "werewolf" else generate_avalon_reply(room, seat)
     return f"{preface}{body}"
+
+
+def generate_ai_reply(room: dict, seat: dict) -> str:
+    if not ai_runtime_status()["configured"]:
+        return generate_rule_reply(room, seat)
+    try:
+        return generate_openai_reply(room, seat)
+    except Exception as exc:
+        append_message(room, "系统", f"模型调用失败，已回退规则发言：{exc}", "system")
+        return generate_rule_reply(room, seat)
+
+
+def generate_openai_reply(room: dict, seat: dict) -> str:
+    api_key = model_api_key()
+    if not api_key:
+        return generate_rule_reply(room, seat)
+
+    context = build_model_context(room, seat)
+    instructions = build_model_instructions()
+    text = generate_langchain_reply(context, instructions, api_key).strip()
+    text = sanitize_model_reply(text, seat)
+    if not text:
+        raise RuntimeError("empty model response")
+    return text
+
+
+def generate_langchain_reply(context: dict, instructions: str, api_key: str) -> str:
+    if ChatOpenAI is None or HumanMessage is None or SystemMessage is None or httpx is None:
+        raise RuntimeError("LangChain dependencies are not installed. Run: pip install -r backend/requirements.txt")
+
+    http_client = httpx.Client(trust_env=AI_USE_ENV_PROXY, timeout=AI_TIMEOUT)
+    llm = ChatOpenAI(
+        api_key=api_key,
+        base_url=model_api_base_url(),
+        model=AI_MODEL,
+        timeout=AI_TIMEOUT,
+        max_completion_tokens=120,
+        http_client=http_client,
+        http_socket_options=(),
+    )
+    response = llm.invoke(
+        [
+            SystemMessage(content=instructions),
+            HumanMessage(content="根据以下上下文生成一句发言：\n" + json.dumps(context, ensure_ascii=False)),
+        ]
+    )
+    return str(response.content)
+
+
+def build_model_context(room: dict, seat: dict) -> dict:
+    game = GAMES[room["gameId"]]
+    persona = seat.get("persona") or {}
+    other_seats = [
+        {
+            "name": item["name"],
+            "type": item["type"],
+            "alive": item["alive"],
+            "publicRoleKnown": False,
+        }
+        for item in room["seats"]
+        if item["id"] != seat["id"]
+    ]
+    return {
+        "game": game["name"],
+        "phase": room["phase"],
+        "speaker": seat["name"],
+        "speakerRolePrivate": seat["role"],
+        "speakerCampPrivate": role_camp(room["gameId"], seat["role"]),
+        "personaPrivate": {
+            "summary": persona.get("summary", ""),
+            "tags": persona.get("tags", []),
+            "voice": persona.get("voice", []),
+        },
+        "otherSeats": other_seats,
+        "recentPublicChat": recent_lines(room),
+    }
+
+
+def build_model_instructions() -> str:
+    return (
+        "你在一个中文桌游文字房间里扮演一名玩家。"
+        "只输出当前玩家的一句自然发言，不要解释规则，不要输出 JSON。"
+        "你可以利用自己的隐藏身份和私有人设来决定策略，但绝不能泄露这些后台信息。"
+        "禁止说出自己具体身份、阵营、人设名、打法名、persona、标签或“我是AI”。"
+        "发言要像真人局里的一句话，25到70个汉字，允许质疑、试探、站边或保留意见。"
+        "如果你是坏人，可以误导和伪装；如果你是好人，要基于公开发言推理。"
+    )
+
+
+def sanitize_model_reply(text: str, seat: dict) -> str:
+    text = text.strip().strip("\"“”")
+    for marker in ["```", "json", "JSON"]:
+        text = text.replace(marker, "")
+    text = collapse_repeated_sentences(text)
+    persona = seat.get("persona") or {}
+    banned_terms = [
+        seat["role"],
+        persona.get("name", ""),
+        "好人阵营",
+        "坏人阵营",
+        "我是AI",
+        "作为AI",
+        "persona",
+        "人设",
+        "打法",
+    ]
+    if any(term and term in text for term in banned_terms):
+        raise RuntimeError("model leaked private role/persona")
+    if len(text) > 120:
+        text = text[:120].rstrip("，。；、 ") + "。"
+    return text
+
+
+def collapse_repeated_sentences(text: str) -> str:
+    parts = [part for part in re.split(r"(?<=[。！？!?])", text) if part.strip()]
+    if not parts:
+        return text
+
+    collapsed = []
+    seen = set()
+    for part in parts:
+        normalized = re.sub(r"\s+", "", part)
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        collapsed.append(part.strip())
+    return "".join(collapsed).strip()
 
 
 class ApiHandler(BaseHTTPRequestHandler):
@@ -427,6 +626,10 @@ class ApiHandler(BaseHTTPRequestHandler):
         if path == "/api/personas":
             game_id = parse_qs(parsed.query).get("gameId", [""])[0]
             self.send_json({"modes": persona_modes(), "personas": personas_for_game(game_id)})
+            return
+
+        if path == "/api/runtime":
+            self.send_json({"aiRuntime": ai_runtime_status()})
             return
 
         parts = path.strip("/").split("/")
