@@ -48,13 +48,16 @@ function runtimeLabel(runtime) {
   return `${runtime.provider} / ${runtime.model} / LangChain`;
 }
 
-function pageFromHash() {
-  const page = window.location.hash.replace(/^#\/?/, "");
-  return ["setup", "room", "personas", "reports"].includes(page) ? page : "setup";
+function routeFromHash() {
+  const value = window.location.hash.replace(/^#\/?/, "");
+  const [page, roomId] = value.split("/");
+  if (page === "rooms" && roomId) return { page: "room", roomId };
+  if (["setup", "personas", "reports"].includes(page)) return { page, roomId: "" };
+  return { page: "setup", roomId: "" };
 }
 
-function navigateTo(page) {
-  window.location.hash = `/${page}`;
+function navigateTo(path) {
+  window.location.hash = `/${path}`;
 }
 
 const reportCards = [
@@ -77,10 +80,10 @@ const reportCards = [
 
 function AppNav({ page, room, onNavigate }) {
   const items = [
-    { id: "setup", label: "开局", icon: <Home size={17} /> },
-    { id: "room", label: "圆桌", icon: <Table2 size={17} />, disabled: !room },
-    { id: "personas", label: "人设库", icon: <Library size={17} /> },
-    { id: "reports", label: "报告", icon: <FileText size={17} /> }
+    { id: "setup", label: "开局", icon: <Home size={17} />, path: "setup" },
+    { id: "room", label: "圆桌", icon: <Table2 size={17} />, disabled: !room, path: room ? `rooms/${room.id}` : "setup" },
+    { id: "personas", label: "人设库", icon: <Library size={17} />, path: "personas" },
+    { id: "reports", label: "报告", icon: <FileText size={17} />, path: "reports" }
   ];
 
   return (
@@ -97,8 +100,8 @@ function AppNav({ page, room, onNavigate }) {
             key={item.id}
             type="button"
             onClick={() => {
-              onNavigate(item.id);
-              navigateTo(item.id);
+              onNavigate({ page: item.id, roomId: item.id === "room" ? room?.id || "" : "" });
+              navigateTo(item.path);
             }}
           >
             {item.icon}
@@ -314,6 +317,26 @@ function ReportsPage() {
           </article>
         ))}
       </div>
+    </section>
+  );
+}
+
+function RoomPlaceholder({ loading, onCreate }) {
+  return (
+    <section className="content-page">
+      <header className="page-hero">
+        <div>
+          <p className="eyebrow">ROOM</p>
+          <h1>{loading ? "正在载入对局" : "还没有可进入的对局"}</h1>
+          <p>{loading ? "正在通过房间地址恢复当前对局。" : "创建一个新房间后，会进入独立的对局页面地址。"}</p>
+        </div>
+        {!loading && (
+          <button type="button" onClick={onCreate}>
+            <CirclePlay size={18} />
+            去创建
+          </button>
+        )}
+      </header>
     </section>
   );
 }
@@ -598,7 +621,8 @@ function App() {
   const [personaModes, setPersonaModes] = useState([]);
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
-  const [page, setPage] = useState(pageFromHash);
+  const [route, setRoute] = useState(routeFromHash);
+  const [roomLoading, setRoomLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([api("/api/games"), api("/api/personas")])
@@ -610,26 +634,52 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const updatePage = () => setPage(pageFromHash());
-    window.addEventListener("hashchange", updatePage);
+    const updateRoute = () => setRoute(routeFromHash());
+    window.addEventListener("hashchange", updateRoute);
     if (!window.location.hash) navigateTo("setup");
-    return () => window.removeEventListener("hashchange", updatePage);
+    return () => window.removeEventListener("hashchange", updateRoute);
   }, []);
+
+  useEffect(() => {
+    if (route.page !== "room" || !route.roomId || room?.id === route.roomId) {
+      setRoomLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setError("");
+    setRoomLoading(true);
+    api(`/api/rooms/${route.roomId}`)
+      .then((data) => {
+        if (!cancelled) setRoom(data.room);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.message);
+          setRoom(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setRoomLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [route.page, route.roomId, room?.id]);
 
   async function createRoom(payload) {
     setError("");
     try {
       const data = await api("/api/rooms", { method: "POST", body: payload });
       setRoom(data.room);
-      setPage("room");
-      navigateTo("room");
+      setRoute({ page: "room", roomId: data.room.id });
+      navigateTo(`rooms/${data.room.id}`);
     } catch (err) {
       setError(err.message);
     }
   }
 
   function renderPage() {
-    if (page === "room") {
+    if (route.page === "room") {
       return room ? (
         <Room
           room={room}
@@ -638,22 +688,28 @@ function App() {
           onRoomChange={setRoom}
           onReset={() => {
             setRoom(null);
-            setPage("setup");
+            setRoute({ page: "setup", roomId: "" });
             navigateTo("setup");
           }}
         />
       ) : (
-        <Setup games={games} personaModes={personaModes} onCreate={createRoom} />
+        <RoomPlaceholder
+          loading={roomLoading}
+          onCreate={() => {
+            setRoute({ page: "setup", roomId: "" });
+            navigateTo("setup");
+          }}
+        />
       );
     }
-    if (page === "personas") return <PersonasPage games={games} personaModes={personaModes} />;
-    if (page === "reports") return <ReportsPage />;
+    if (route.page === "personas") return <PersonasPage games={games} personaModes={personaModes} />;
+    if (route.page === "reports") return <ReportsPage />;
     return <Setup games={games} personaModes={personaModes} onCreate={createRoom} />;
   }
 
   return (
     <main className="app-shell">
-      <AppNav page={page} room={room} onNavigate={setPage} />
+      <AppNav page={route.page} room={room} onNavigate={setRoute} />
       {error && <div className="error-banner">{error}</div>}
       {renderPage()}
     </main>
