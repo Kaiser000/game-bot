@@ -208,6 +208,27 @@ function BoardSetupSummary({ game, board, aiSeats, selectedMode }) {
   );
 }
 
+function BoardChoiceStrip({ game, selectedBoard, onSelect }) {
+  const boards = game?.boards || [];
+  if (!boards.length) return null;
+
+  return (
+    <div className="board-choice-strip" aria-label="选择常用板子">
+      {boards.map((board) => (
+        <button
+          className={board.id === selectedBoard?.id ? "board-choice active" : "board-choice"}
+          key={board.id}
+          type="button"
+          onClick={() => onSelect(board.id)}
+        >
+          <strong>{board.name}</strong>
+          <span>{board.playerCount} 人</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function RulebookHeroPanel({ game, board }) {
   const counts = roleCounts(board?.roles || []);
   const goodCount = Object.entries(counts).reduce((sum, [role, count]) => sum + (roleCamp(game?.id, role) === "good" ? count : 0), 0);
@@ -343,63 +364,80 @@ function Setup({ games, personaModes, onCreate }) {
             });
           }}
         >
-          <label>
-            <span>游戏</span>
-            <select value={gameId} onChange={(event) => setGameId(event.target.value)}>
-              {games.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            <span>板子</span>
-            <select value={selectedBoard?.id || boardId} onChange={(event) => setBoardId(event.target.value)}>
-              {(game?.boards || []).map((board) => (
-                <option key={board.id} value={board.id}>
-                  {board.name} · {board.playerCount} 人
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="number-row">
+          <div className="setup-step">
+            <div className="step-heading">
+              <span>1</span>
+              <div>
+                <strong>选择游戏和板子</strong>
+                <small>先确定这局按哪个常用配置开。</small>
+              </div>
+            </div>
             <label>
-              <span>目标人数</span>
-              <input
-                type="number"
-                min={game?.minPlayers}
-                max={game?.maxPlayers}
-                value={targetPlayers}
-                disabled={Boolean(selectedBoard)}
-                onChange={(event) => setTargetPlayers(Number(event.target.value))}
-              />
+              <span>游戏</span>
+              <select value={gameId} onChange={(event) => setGameId(event.target.value)}>
+                {games.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
             </label>
-            <label>
-              <span>真人人数</span>
-              <input
-                type="number"
-                min="0"
-                max={targetPlayers}
-                value={humanPlayers}
-                onChange={(event) => setHumanPlayers(Number(event.target.value))}
-              />
-            </label>
+            <BoardChoiceStrip game={game} selectedBoard={selectedBoard} onSelect={setBoardId} />
           </div>
 
-          <label>
-            <span>AI 打法方案</span>
-            <select value={personaMode} onChange={(event) => setPersonaMode(event.target.value)}>
-              {personaModes.map((mode) => (
-                <option key={mode.id} value={mode.id}>
-                  {mode.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p className="field-hint">{selectedMode?.description || "按身份自动分配打法。"}</p>
+          <div className="setup-step">
+            <div className="step-heading">
+              <span>2</span>
+              <div>
+                <strong>确认人数</strong>
+                <small>填入到场真人数，系统自动补齐 AI。</small>
+              </div>
+            </div>
+            <div className="number-row">
+              <label>
+                <span>目标人数</span>
+                <input
+                  type="number"
+                  min={game?.minPlayers}
+                  max={game?.maxPlayers}
+                  value={targetPlayers}
+                  disabled={Boolean(selectedBoard)}
+                  onChange={(event) => setTargetPlayers(Number(event.target.value))}
+                />
+              </label>
+              <label>
+                <span>真人人数</span>
+                <input
+                  type="number"
+                  min="0"
+                  max={targetPlayers}
+                  value={humanPlayers}
+                  onChange={(event) => setHumanPlayers(Number(event.target.value))}
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className="setup-step">
+            <div className="step-heading">
+              <span>3</span>
+              <div>
+                <strong>选择 AI 打法</strong>
+                <small>不同打法会影响 AI 的发言和站边方式。</small>
+              </div>
+            </div>
+            <label>
+              <span>AI 打法方案</span>
+              <select value={personaMode} onChange={(event) => setPersonaMode(event.target.value)}>
+                {personaModes.map((mode) => (
+                  <option key={mode.id} value={mode.id}>
+                    {mode.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="field-hint">{selectedMode?.description || "按身份自动分配打法。"}</p>
+          </div>
 
           <div className="button-row">
             <button type="submit">

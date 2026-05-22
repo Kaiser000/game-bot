@@ -1,8 +1,9 @@
 :root {
   color-scheme: dark;
-  font-family: Inter, "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-family: "Microsoft YaHei UI", "PingFang SC", "Segoe UI", sans-serif;
   background: #11100d;
   color: #f7f1e6;
+  --font-display: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
   --panel: #1c1915;
   --panel-soft: #252018;
   --panel-strong: #12100d;
@@ -25,6 +26,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
+    radial-gradient(circle at 22% 12%, rgba(217, 164, 65, 0.12), transparent 28%),
+    radial-gradient(circle at 82% 4%, rgba(101, 193, 140, 0.07), transparent 24%),
     linear-gradient(135deg, rgba(217, 164, 65, 0.08), transparent 26%),
     linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(0deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
@@ -195,6 +198,8 @@ h1 {
   font-size: clamp(28px, 4vw, 48px);
   line-height: 1.05;
   letter-spacing: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
 }
 
 h2 {
@@ -209,7 +214,7 @@ p {
 }
 
 .app-shell {
-  width: min(1500px, calc(100vw - 28px));
+  width: min(1440px, calc(100vw - 28px));
   min-height: 100vh;
   margin: 0 auto;
   padding: 20px 0;
@@ -291,8 +296,8 @@ p {
 .home-layout {
   min-height: calc(100vh - 112px);
   display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(380px, 0.72fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(410px, 0.68fr);
+  gap: 18px;
   align-items: start;
   animation: pageIn 0.42s ease both;
 }
@@ -329,8 +334,10 @@ p {
   display: grid;
   align-content: start;
   background:
-    linear-gradient(160deg, rgba(217, 164, 65, 0.1), transparent 34%),
+    linear-gradient(160deg, rgba(217, 164, 65, 0.13), transparent 34%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.025) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.025) 75%),
     linear-gradient(180deg, rgba(33, 30, 24, 0.98), rgba(16, 15, 13, 0.96));
+  background-size: auto, 44px 44px, auto;
 }
 
 .intro-panel::before {
@@ -359,13 +366,13 @@ p {
 
 .brand-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .brand-mark {
-  width: 72px;
+  width: 64px;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -408,11 +415,11 @@ p {
 
 .lobby-preview {
   display: grid;
-  grid-template-columns: minmax(260px, 0.82fr) minmax(180px, 0.5fr);
-  gap: 16px;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(190px, 0.42fr);
+  gap: 20px;
   align-items: center;
-  margin: 22px 0 14px;
-  padding: 18px;
+  margin: 20px 0 14px;
+  padding: 20px;
   border: 1px solid rgba(217, 164, 65, 0.28);
   background:
     linear-gradient(135deg, rgba(38, 56, 47, 0.8), rgba(18, 16, 13, 0.88)),
@@ -427,7 +434,7 @@ p {
 
 .preview-table {
   position: relative;
-  min-height: 254px;
+  min-height: 280px;
 }
 
 .preview-table::before {
@@ -508,7 +515,8 @@ p {
 
 .preview-caption strong {
   color: #fff3d5;
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 22px;
   line-height: 1.2;
 }
 
@@ -521,6 +529,7 @@ p {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 .lobby-action-strip .ghost-button {
@@ -596,23 +605,109 @@ p {
 
 .setup-form {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .setup-panel {
   background:
+    linear-gradient(90deg, rgba(217, 164, 65, 0.08), transparent 42%),
     linear-gradient(180deg, rgba(37, 32, 24, 0.98), rgba(18, 16, 13, 0.96));
+}
+
+.setup-step {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(65, 55, 43, 0.82);
+  background:
+    linear-gradient(135deg, rgba(217, 164, 65, 0.045), transparent 48%),
+    rgba(18, 16, 13, 0.55);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.setup-step:hover {
+  transform: translateY(-1px);
+  border-color: rgba(217, 164, 65, 0.34);
+  background:
+    linear-gradient(135deg, rgba(217, 164, 65, 0.07), transparent 48%),
+    rgba(18, 16, 13, 0.65);
+}
+
+.step-heading {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.step-heading > span {
+  width: 30px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(217, 164, 65, 0.42);
+  border-radius: 999px;
+  color: var(--accent);
+  background: rgba(217, 164, 65, 0.08);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.step-heading strong,
+.board-choice strong {
+  display: block;
+  color: #fff3d5;
+  line-height: 1.2;
+}
+
+.step-heading small,
+.board-choice span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.board-choice-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.board-choice {
+  min-height: 66px;
+  display: block;
+  border: 1px solid var(--line);
+  background: rgba(18, 16, 13, 0.58);
+  color: #f4f1ea;
+  padding: 10px;
+  text-align: left;
+  box-shadow: none;
+}
+
+.board-choice:hover:not(:disabled) {
+  filter: none;
+}
+
+.board-choice.active {
+  border-color: rgba(217, 164, 65, 0.7);
+  background:
+    linear-gradient(135deg, rgba(217, 164, 65, 0.2), rgba(217, 164, 65, 0.08)),
+    rgba(18, 16, 13, 0.72);
 }
 
 .setup-summary-panel {
   display: grid;
   gap: 14px;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(217, 164, 65, 0.22);
+  background: rgba(217, 164, 65, 0.045);
 }
 
 .setup-summary-panel h2 {
+  font-family: var(--font-display);
   font-size: 24px;
 }
 
@@ -1482,6 +1577,7 @@ label span {
 
   .feature-grid,
   .dashboard-stats,
+  .board-choice-strip,
   .number-row,
   .rules-selects,
   .composer {
