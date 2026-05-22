@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.main import append_message, create_room, generate_ai_reply  # noqa: E402
+from app.main import append_message, create_room, generate_ai_reply, personas_for_game  # noqa: E402
 
 
 PHASES = ["开局确认", "组队提名", "圆桌讨论", "队伍投票", "任务结果", "刺杀梅林"]
@@ -25,6 +25,7 @@ PHASE_KEYWORDS = {
     "刺杀梅林": ["梅林", "画像", "复盘", "刺"],
 }
 FORBIDDEN_SELF_REVEAL = ["我是梅林", "我是刺客", "我是莫甘娜", "我是爪牙", "我是坏人"]
+PERSONA_NAMES = {persona["name"] for game_id in ["avalon", "werewolf"] for persona in personas_for_game(game_id)}
 FALLBACK_TARGET = "上一位发言的人"
 
 
@@ -64,6 +65,7 @@ def score_phase(phase: str, messages: list[dict]) -> dict:
     keyword_hits = sum(any(keyword in text for keyword in PHASE_KEYWORDS[phase]) for text in texts)
     target_fallbacks = sum(FALLBACK_TARGET in text for text in texts)
     self_reveals = sum(any(term in text for term in FORBIDDEN_SELF_REVEAL) for text in texts)
+    persona_leaks = sum(has_persona_leak(text) for text in texts)
     too_short = sum(len(text) < 18 for text in texts)
     duplicate_count = len(texts) - len(set(texts))
     template_duplicates = len(signatures) - len(set(signatures))
@@ -73,6 +75,7 @@ def score_phase(phase: str, messages: list[dict]) -> dict:
         "keywordHitRate": round(keyword_hits / len(messages), 3),
         "fallbackTargets": target_fallbacks,
         "selfReveals": self_reveals,
+        "personaLeaks": persona_leaks,
         "tooShort": too_short,
         "duplicates": duplicate_count,
         "templateDuplicates": template_duplicates,
@@ -86,12 +89,19 @@ def normalize_text(text: str) -> str:
     return text
 
 
+def has_persona_leak(text: str) -> bool:
+    if re.search(r"按我的.+打法", text):
+        return True
+    return any(name in text for name in PERSONA_NAMES)
+
+
 def score_game(room: dict, phase_scores: list[dict]) -> dict:
     all_messages = [message for message in room["messages"] if message["type"] == "chat"]
     text_lengths = [len(message["text"]) for message in all_messages]
     keyword_rate = statistics.mean(phase["keywordHitRate"] for phase in phase_scores)
     fallback_targets = sum(phase["fallbackTargets"] for phase in phase_scores)
     self_reveals = sum(phase["selfReveals"] for phase in phase_scores)
+    persona_leaks = sum(phase["personaLeaks"] for phase in phase_scores)
     too_short = sum(phase["tooShort"] for phase in phase_scores)
     duplicates = sum(phase["duplicates"] for phase in phase_scores)
     template_duplicates = sum(phase["templateDuplicates"] for phase in phase_scores)
@@ -100,6 +110,7 @@ def score_game(room: dict, phase_scores: list[dict]) -> dict:
     score = 80
     score -= fallback_targets * 8
     score -= self_reveals * 15
+    score -= persona_leaks * 15
     score -= too_short * 3
     score -= duplicates * 2
     score -= template_duplicates * 2
@@ -113,6 +124,7 @@ def score_game(room: dict, phase_scores: list[dict]) -> dict:
         "keywordHitRate": round(keyword_rate, 3),
         "fallbackTargets": fallback_targets,
         "selfReveals": self_reveals,
+        "personaLeaks": persona_leaks,
         "tooShort": too_short,
         "duplicates": duplicates,
         "templateDuplicates": template_duplicates,
@@ -133,6 +145,7 @@ def summarize(results: list[dict]) -> dict:
         "totalMessages": sum(item["score"]["chatMessages"] for item in results),
         "totalFallbackTargets": sum(item["score"]["fallbackTargets"] for item in results),
         "totalSelfReveals": sum(item["score"]["selfReveals"] for item in results),
+        "totalPersonaLeaks": sum(item["score"]["personaLeaks"] for item in results),
         "totalTemplateDuplicates": sum(item["score"]["templateDuplicates"] for item in results),
     }
 

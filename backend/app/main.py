@@ -185,24 +185,20 @@ def recent_text(room: dict) -> str:
     return " ".join(f"{message['speaker']}: {message['text']}" for message in room["messages"][-6:] if message["type"] != "system")
 
 
-def other_seat_name(room: dict, seat: dict, seat_type: str = "human") -> str:
-    candidates = [item for item in room["seats"] if item["id"] != seat["id"] and item["type"] == seat_type and item["alive"]]
+def other_seat_name(room: dict, seat: dict, seat_type: str = "human", exclude_names: set[str] | None = None) -> str:
+    exclude_names = exclude_names or set()
+    candidates = [
+        item
+        for item in room["seats"]
+        if item["id"] != seat["id"] and item["type"] == seat_type and item["alive"] and item["name"] not in exclude_names
+    ]
     if not candidates:
-        candidates = [item for item in room["seats"] if item["id"] != seat["id"] and item["alive"]]
+        candidates = [item for item in room["seats"] if item["id"] != seat["id"] and item["alive"] and item["name"] not in exclude_names]
     return random.choice(candidates)["name"] if candidates else "上一位发言的人"
 
 
 def has_tag(seat: dict, tag: str) -> bool:
     return tag in (seat.get("persona") or {}).get("tags", [])
-
-
-def persona_prefix(seat: dict) -> str:
-    persona = seat.get("persona")
-    if not persona or persona["id"] == "default":
-        return ""
-    if random.random() < 0.38:
-        return f"按我的{persona['name']}打法，"
-    return ""
 
 
 def generate_werewolf_reply(room: dict, seat: dict) -> str:
@@ -265,7 +261,7 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
     camp = role_camp(room["gameId"], seat["role"])
     target = other_seat_name(room, seat)
     ai_target = other_seat_name(room, seat, "ai")
-    second_target = other_seat_name(room, seat)
+    second_target = other_seat_name(room, seat, exclude_names={target})
 
     if has_tag(seat, "hard_question") and room["phase"] in {"开局确认", "圆桌讨论"}:
         return random.choice(
@@ -407,7 +403,7 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
 def generate_ai_reply(room: dict, seat: dict) -> str:
     preface = "我直接一点，" if seat["style"] == "进攻" else "我先保守说，" if seat["style"] == "保守" else ""
     body = generate_werewolf_reply(room, seat) if room["gameId"] == "werewolf" else generate_avalon_reply(room, seat)
-    return f"{preface}{persona_prefix(seat)}{body}"
+    return f"{preface}{body}"
 
 
 class ApiHandler(BaseHTTPRequestHandler):
