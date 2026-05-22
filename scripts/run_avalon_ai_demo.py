@@ -28,9 +28,9 @@ FORBIDDEN_SELF_REVEAL = ["我是梅林", "我是刺客", "我是莫甘娜", "我
 FALLBACK_TARGET = "上一位发言的人"
 
 
-def run_single_game(game_index: int, seed: int) -> dict:
+def run_single_game(game_index: int, seed: int, persona_mode: str) -> dict:
     random.seed(seed)
-    room = create_room({"gameId": "avalon", "targetPlayers": 8, "humanPlayers": 0})
+    room = create_room({"gameId": "avalon", "targetPlayers": 8, "humanPlayers": 0, "personaMode": persona_mode})
     phase_scores = []
     transcript = []
 
@@ -49,6 +49,7 @@ def run_single_game(game_index: int, seed: int) -> dict:
     return {
         "gameIndex": game_index,
         "seed": seed,
+        "personaMode": persona_mode,
         "score": score,
         "roomId": room["id"],
         "roles": {seat["name"]: seat["role"] for seat in room["seats"]},
@@ -140,10 +141,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run repeated 8-player all-AI Avalon demos.")
     parser.add_argument("--games", type=int, default=12)
     parser.add_argument("--seed", type=int, default=20260522)
+    parser.add_argument("--persona-mode", default="balanced", choices=["balanced", "aggressive", "deceptive", "conservative"])
     parser.add_argument("--out", type=Path, default=ROOT / "docs" / "avalon-ai-demo-results.json")
     args = parser.parse_args()
 
-    results = [run_single_game(index + 1, args.seed + index) for index in range(args.games)]
+    results = [run_single_game(index + 1, args.seed + index, args.persona_mode) for index in range(args.games)]
     payload = {"summary": summarize(results), "results": results}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -1,0 +1,138 @@
+{
+  "modes": [
+    {
+      "id": "balanced",
+      "name": "自动混合",
+      "description": "按身份自动分配稳健、进攻、伪装、控场等打法，适合常规 demo。"
+    },
+    {
+      "id": "aggressive",
+      "name": "高压进攻",
+      "description": "AI 更容易主动推动票型、强势质疑和要求别人解释。"
+    },
+    {
+      "id": "deceptive",
+      "name": "诈身份实验",
+      "description": "狼人和坏人更偏向伪装、带节奏、悍跳或制造误读。"
+    },
+    {
+      "id": "conservative",
+      "name": "保守推理",
+      "description": "AI 更重视信息闭环、投票理由和低风险表达。"
+    }
+  ],
+  "werewolf": [
+    {
+      "id": "wolf_hook",
+      "name": "倒钩狼",
+      "camp": "evil",
+      "roles": ["狼人"],
+      "modes": ["balanced", "deceptive"],
+      "summary": "不急着保护狼队友，常用站边好人、轻踩同伴来换取信任。",
+      "tags": ["bus_teammate", "soft_good_side", "logic_first"],
+      "voice": ["克制", "讲逻辑", "轻踩"]
+    },
+    {
+      "id": "wolf_charge",
+      "name": "冲锋狼",
+      "camp": "evil",
+      "roles": ["狼人"],
+      "modes": ["aggressive"],
+      "summary": "主动带票、强势攻击信息位或焦点位，试图快速推动放逐。",
+      "tags": ["hard_push", "defend_teammate", "pressure_vote"],
+      "voice": ["强势", "直接", "压迫"]
+    },
+    {
+      "id": "wolf_fake_seer",
+      "name": "悍跳狼",
+      "camp": "evil",
+      "roles": ["狼人"],
+      "modes": ["deceptive"],
+      "summary": "愿意跳预言家或其他身份制造对跳，靠验人故事扰乱场面。",
+      "tags": ["fake_claim", "counter_claim", "make_story"],
+      "voice": ["自信", "编织信息", "对跳"]
+    },
+    {
+      "id": "seer_control",
+      "name": "控场预言家",
+      "camp": "good",
+      "roles": ["预言家"],
+      "modes": ["balanced", "aggressive"],
+      "summary": "围绕验人、警徽流和发言顺序控场，但避免过早暴露全部视角。",
+      "tags": ["info_control", "ask_for_chain", "pressure_vote"],
+      "voice": ["清晰", "控场", "追问"]
+    },
+    {
+      "id": "villager_logic",
+      "name": "逻辑村民",
+      "camp": "good",
+      "roles": ["村民", "女巫", "猎人", "守卫"],
+      "modes": ["balanced", "conservative"],
+      "summary": "没有额外信息时以发言、票型、站边变化做判断。",
+      "tags": ["logic_first", "observe_vote", "avoid_overclaim"],
+      "voice": ["谨慎", "复盘", "重证据"]
+    }
+  ],
+  "avalon": [
+    {
+      "id": "merlin_shadow",
+      "name": "隐线梅林",
+      "camp": "good",
+      "roles": ["梅林"],
+      "modes": ["balanced", "conservative"],
+      "summary": "知道更多但不直给答案，通过组队标准和投票逻辑悄悄影响局势。",
+      "tags": ["hide_info", "guide_team", "avoid_merlin_profile"],
+      "voice": ["克制", "暗示", "控信息"]
+    },
+    {
+      "id": "loyal_team_builder",
+      "name": "稳健忠臣",
+      "camp": "good",
+      "roles": ["忠臣", "派西维尔"],
+      "modes": ["balanced", "conservative"],
+      "summary": "重视队伍解释、投票闭环和车上车下责任，不轻易站死。",
+      "tags": ["team_logic", "vote_audit", "low_risk"],
+      "voice": ["稳健", "复盘", "要求标准"]
+    },
+    {
+      "id": "good_pressure",
+      "name": "高压好人",
+      "camp": "good",
+      "roles": ["忠臣", "派西维尔"],
+      "modes": ["aggressive"],
+      "summary": "主动追问模糊发言，反对理由不足的车，不怕制造压力。",
+      "tags": ["hard_question", "pressure_vote", "force_reason"],
+      "voice": ["直接", "质询", "强判断"]
+    },
+    {
+      "id": "assassin_hunter",
+      "name": "猎梅刺客",
+      "camp": "evil",
+      "roles": ["刺客"],
+      "modes": ["balanced", "aggressive", "deceptive"],
+      "summary": "一边扰乱队伍判断，一边寻找知道太多但不敢明说的梅林。",
+      "tags": ["merlin_hunt", "misdirect", "pressure_vote"],
+      "voice": ["试探", "怀疑", "拆视角"]
+    },
+    {
+      "id": "morgana_mirror",
+      "name": "镜像莫甘娜",
+      "camp": "evil",
+      "roles": ["莫甘娜"],
+      "modes": ["balanced", "deceptive"],
+      "summary": "模仿好人推理方式，制造派西维尔误读，避免像纯坏人一样强冲。",
+      "tags": ["fake_good_logic", "misdirect", "soft_push"],
+      "voice": ["像好人", "轻带节奏", "伪装"]
+    },
+    {
+      "id": "minion_chaos",
+      "name": "搅局爪牙",
+      "camp": "evil",
+      "roles": ["爪牙"],
+      "modes": ["aggressive", "deceptive"],
+      "summary": "主动制造互保、互踩和票型噪音，让讨论偏离关键坏人。",
+      "tags": ["create_noise", "hard_push", "protect_core_evil"],
+      "voice": ["搅局", "强推", "转移焦点"]
+    }
+  ]
+}

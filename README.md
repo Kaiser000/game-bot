@@ -6,6 +6,7 @@
 
 - 零依赖 Python 后端：房间状态、游戏模板、身份分配、AI 补位发言。
 - React + Vite 前端：创建文字局、切换阶段、真人发言、触发 AI 发言。
+- 外挂式 AI 人设知识库：按游戏和身份分配倒钩、冲锋、悍跳、控场、搅局等打法。
 - 支持狼人杀和阿瓦隆两个模板。
 - 当前 AI 是规则驱动模拟器，后续可以替换成真实 LLM provider。
 
@@ -38,6 +39,12 @@ http://localhost:5173
 
 ```bash
 python scripts\run_avalon_ai_demo.py --games 12
+```
+
+也可以指定 AI 打法方案：
+
+```bash
+python scripts\run_avalon_ai_demo.py --games 12 --persona-mode deceptive
 ```
 
 脚本会创建 12 局 8 人全 AI 阿瓦隆，每局循环 6 个阶段，共生成 576 条 AI 发言，并把结果写入：

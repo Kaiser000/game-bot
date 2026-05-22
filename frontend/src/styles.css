@@ -145,7 +145,7 @@ p {
 
 .setup-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr auto;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr auto;
   gap: 14px;
   align-items: end;
 }
@@ -242,6 +242,15 @@ label span,
   color: var(--text-muted);
 }
 
+.seat em {
+  display: block;
+  margin-top: 4px;
+  color: #c9c1b2;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.35;
+}
+
 .seat-tags {
   display: flex;
   flex-wrap: wrap;
@@ -276,6 +285,11 @@ label span,
   min-width: 0;
   display: grid;
   grid-template-rows: auto 1fr auto;
+}
+
+.room-meta {
+  margin-top: 6px;
+  font-size: 13px;
 }
 
 .table-toolbar {

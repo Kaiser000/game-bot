@@ -5,13 +5,16 @@ import random
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from secrets import token_hex
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 
 PORT = 8000
+APP_DIR = Path(__file__).resolve().parent
 ROOMS: dict[str, dict] = {}
 SEAT_NAMES = ["北桥", "星野", "南风", "林深", "青石", "白夜", "洛川", "晨雾", "渡鸦", "季夏", "灰塔", "松间"]
+PERSONA_KB = json.loads((APP_DIR / "personas.json").read_text(encoding="utf-8"))
 
 GAMES = {
     "werewolf": {
@@ -64,6 +67,50 @@ def role_plan(game_id: str, players: int) -> list[str]:
     return roles[:players]
 
 
+def persona_modes() -> list[dict]:
+    return PERSONA_KB["modes"]
+
+
+def personas_for_game(game_id: str) -> list[dict]:
+    return PERSONA_KB.get(game_id, [])
+
+
+def compact_persona(persona: dict | None) -> dict:
+    if not persona:
+        return {
+            "id": "default",
+            "name": "默认玩家",
+            "summary": "使用基础桌游发言策略。",
+            "tags": [],
+            "voice": [],
+        }
+    return {
+        "id": persona["id"],
+        "name": persona["name"],
+        "summary": persona["summary"],
+        "tags": persona.get("tags", []),
+        "voice": persona.get("voice", []),
+    }
+
+
+def pick_persona(game_id: str, role: str, mode: str) -> dict:
+    camp = role_camp(game_id, role)
+    candidates = [
+        persona
+        for persona in personas_for_game(game_id)
+        if role in persona.get("roles", []) and camp == persona.get("camp") and mode in persona.get("modes", [])
+    ]
+    if not candidates:
+        candidates = [
+            persona
+            for persona in personas_for_game(game_id)
+            if role in persona.get("roles", []) and camp == persona.get("camp")
+        ]
+    if not candidates:
+        candidates = [persona for persona in personas_for_game(game_id) if camp == persona.get("camp")]
+    return compact_persona(random.choice(candidates) if candidates else None)
+
+
 def public_room(room: dict) -> dict:
     return {
         **room,
@@ -91,6 +138,9 @@ def create_room(payload: dict) -> dict:
     game = GAMES.get(payload.get("gameId"), GAMES["werewolf"])
     total = clamp(payload.get("targetPlayers", game["defaultTarget"]), game["minPlayers"], game["maxPlayers"])
     humans = clamp(payload.get("humanPlayers", total - 1), 0, total)
+    persona_mode = payload.get("personaMode", "balanced")
+    if persona_mode not in {mode["id"] for mode in persona_modes()}:
+        persona_mode = "balanced"
     roles = role_plan(game["id"], total)
     names = SEAT_NAMES[:]
     random.shuffle(roles)
@@ -106,6 +156,7 @@ def create_room(payload: dict) -> dict:
                 "type": "human" if is_human else "ai",
                 "role": roles[index],
                 "style": "human" if is_human else ["稳健", "进攻", "观察", "保守"][index % 4],
+                "persona": None if is_human else pick_persona(game["id"], roles[index], persona_mode),
                 "alive": True,
             }
         )
@@ -114,6 +165,7 @@ def create_room(payload: dict) -> dict:
         "id": random_id("room"),
         "gameId": game["id"],
         "phase": game["phases"][0],
+        "personaMode": persona_mode,
         "createdAt": now_iso(),
         "seats": seats,
         "messages": [],
@@ -140,6 +192,19 @@ def other_seat_name(room: dict, seat: dict, seat_type: str = "human") -> str:
     return random.choice(candidates)["name"] if candidates else "上一位发言的人"
 
 
+def has_tag(seat: dict, tag: str) -> bool:
+    return tag in (seat.get("persona") or {}).get("tags", [])
+
+
+def persona_prefix(seat: dict) -> str:
+    persona = seat.get("persona")
+    if not persona or persona["id"] == "default":
+        return ""
+    if random.random() < 0.38:
+        return f"按我的{persona['name']}打法，"
+    return ""
+
+
 def generate_werewolf_reply(room: dict, seat: dict) -> str:
     camp = role_camp(room["gameId"], seat["role"])
     target = other_seat_name(room, seat)
@@ -154,6 +219,25 @@ def generate_werewolf_reply(room: dict, seat: dict) -> str:
         if seat["role"] == "狼人":
             return f"夜里我想避开存在感太低的人，优先处理能整理逻辑的位置，比如 {target}。"
         return "夜晚阶段我没有主动技能，先听信息位白天怎么报，再决定站边。"
+
+    if has_tag(seat, "fake_claim") and room["phase"] in {"白天发言", "投票放逐"}:
+        return random.choice(
+            [
+                f"我可以先跳预言家。昨晚我验了 {target}，这个位置的反馈和发言不太对得上。",
+                f"我这里给信息：{target} 不是我想放过的位置。如果有人对跳，现在就出来把警徽流说清楚。",
+            ]
+        )
+
+    if has_tag(seat, "hard_push") and camp == "evil" and room["phase"] in {"白天发言", "投票放逐"}:
+        return random.choice(
+            [
+                f"我直接打 {target}。TA 一直在补逻辑，这轮不出后面只会更乱。",
+                f"别再散票了，我会归到 {target}。TA 的站边变化没有合理解释。",
+            ]
+        )
+
+    if has_tag(seat, "bus_teammate") and camp == "evil" and room["phase"] == "白天发言":
+        return f"我不会因为谁发言像同阵营就保。{target} 这一轮有明显补视角，我愿意先轻踩。"
 
     if room["phase"] == "投票放逐":
         if camp == "evil":
@@ -182,6 +266,22 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
     target = other_seat_name(room, seat)
     ai_target = other_seat_name(room, seat, "ai")
     second_target = other_seat_name(room, seat)
+
+    if has_tag(seat, "hard_question") and room["phase"] in {"开局确认", "圆桌讨论"}:
+        return random.choice(
+            [
+                f"我会直接追问 {target}：你反对这车的标准是什么？只说感觉不够。",
+                f"{target} 需要给出可复盘的理由，不然我会把 TA 放进低信任位。",
+            ]
+        )
+
+    if has_tag(seat, "create_noise") and room["phase"] in {"圆桌讨论", "队伍投票"}:
+        return random.choice(
+            [
+                f"我不想让讨论只围绕车上。{target} 和 {second_target} 的互踩也很像提前设计过。",
+                f"现在最危险的是默认某些人干净。{target} 的反应太顺了，我会优先拆这个视角。",
+            ]
+        )
 
     if room["phase"] == "开局确认":
         if camp == "evil":
@@ -307,7 +407,7 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
 def generate_ai_reply(room: dict, seat: dict) -> str:
     preface = "我直接一点，" if seat["style"] == "进攻" else "我先保守说，" if seat["style"] == "保守" else ""
     body = generate_werewolf_reply(room, seat) if room["gameId"] == "werewolf" else generate_avalon_reply(room, seat)
-    return f"{preface}{body}"
+    return f"{preface}{persona_prefix(seat)}{body}"
 
 
 class ApiHandler(BaseHTTPRequestHandler):
@@ -322,9 +422,15 @@ class ApiHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self) -> None:
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
         if path == "/api/games":
             self.send_json({"games": list(GAMES.values())})
+            return
+
+        if path == "/api/personas":
+            game_id = parse_qs(parsed.query).get("gameId", [""])[0]
+            self.send_json({"modes": persona_modes(), "personas": personas_for_game(game_id)})
             return
 
         parts = path.strip("/").split("/")

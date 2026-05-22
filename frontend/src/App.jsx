@@ -25,11 +25,12 @@ function roleCamp(gameId, role) {
   return ["刺客", "莫甘娜", "爪牙", "莫德雷德"].includes(role) ? "evil" : "good";
 }
 
-function Setup({ games, onCreate }) {
+function Setup({ games, personaModes, onCreate }) {
   const [gameId, setGameId] = useState(games[0]?.id || "werewolf");
   const game = games.find((item) => item.id === gameId) || games[0];
   const [targetPlayers, setTargetPlayers] = useState(game?.defaultTarget || 12);
   const [humanPlayers, setHumanPlayers] = useState(Math.max(1, (game?.defaultTarget || 12) - 1));
+  const [personaMode, setPersonaMode] = useState("balanced");
 
   useEffect(() => {
     if (!game) return;
@@ -55,7 +56,7 @@ function Setup({ games, onCreate }) {
         className="setup-grid"
         onSubmit={(event) => {
           event.preventDefault();
-          onCreate({ gameId, targetPlayers, humanPlayers });
+          onCreate({ gameId, targetPlayers, humanPlayers, personaMode });
         }}
       >
         <label>
@@ -88,6 +89,16 @@ function Setup({ games, onCreate }) {
             onChange={(event) => setHumanPlayers(Number(event.target.value))}
           />
         </label>
+        <label>
+          <span>AI 打法方案</span>
+          <select value={personaMode} onChange={(event) => setPersonaMode(event.target.value)}>
+            {personaModes.map((mode) => (
+              <option key={mode.id} value={mode.id}>
+                {mode.name}
+              </option>
+            ))}
+          </select>
+        </label>
         <button type="submit">
           <CirclePlay size={18} />
           创建文字局
@@ -98,7 +109,7 @@ function Setup({ games, onCreate }) {
         <button
           className="quick-demo"
           type="button"
-          onClick={() => onCreate({ gameId: "avalon", targetPlayers: 8, humanPlayers: 0 })}
+          onClick={() => onCreate({ gameId: "avalon", targetPlayers: 8, humanPlayers: 0, personaMode })}
         >
           <Sparkles size={18} />
           8 人阿瓦隆全 AI 演示
@@ -122,7 +133,8 @@ function SeatList({ room }) {
         <article className="seat" key={seat.id}>
           <div>
             <strong>{seat.name}</strong>
-            <small>{seat.type === "human" ? "真人玩家" : `${seat.style}型 AI`}</small>
+            <small>{seat.type === "human" ? "真人玩家" : `${seat.style}型 AI · ${seat.persona?.name || "默认玩家"}`}</small>
+            {seat.persona?.summary && <em>{seat.persona.summary}</em>}
           </div>
           <div className="seat-tags">
             <span className={`tag ${seat.type === "ai" ? "ai" : "human"}`}>{seat.type === "ai" ? "AI" : "真人"}</span>
@@ -193,6 +205,7 @@ function Room({ room, games, onRoomChange }) {
         <div>
           <p className="eyebrow">{game?.name || "桌游房间"}</p>
           <h2>{room.seats.length} 人局 · {room.aiSeats} 位 AI 补位</h2>
+          <p className="room-meta">打法方案：{room.personaMode || "balanced"}</p>
         </div>
 
         <label className="phase-control">
@@ -256,12 +269,16 @@ function Room({ room, games, onRoomChange }) {
 
 function App() {
   const [games, setGames] = useState([]);
+  const [personaModes, setPersonaModes] = useState([]);
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api("/api/games")
-      .then((data) => setGames(data.games))
+    Promise.all([api("/api/games"), api("/api/personas")])
+      .then(([gamesData, personasData]) => {
+        setGames(gamesData.games);
+        setPersonaModes(personasData.modes);
+      })
       .catch((err) => setError(err.message));
   }, []);
 
@@ -278,7 +295,11 @@ function App() {
   return (
     <main className="app-shell">
       {error && <div className="error-banner">{error}</div>}
-      {room ? <Room room={room} games={games} onRoomChange={setRoom} /> : <Setup games={games} onCreate={createRoom} />}
+      {room ? (
+        <Room room={room} games={games} onRoomChange={setRoom} />
+      ) : (
+        <Setup games={games} personaModes={personaModes} onCreate={createRoom} />
+      )}
     </main>
   );
 }
