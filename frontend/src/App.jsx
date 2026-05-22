@@ -2,13 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Bot,
   BookOpen,
-  BrainCircuit,
   CirclePlay,
   Clock3,
   FileText,
   Home,
   Library,
-  MessageSquareText,
   RefreshCw,
   Send,
   Sparkles,
@@ -150,30 +148,6 @@ function BoardRulesPanel({ game, board, compact = false }) {
   );
 }
 
-function DashboardStats({ games, game, board, personas, personaModes }) {
-  const stats = [
-    { label: "游戏模块", value: games.length || 0 },
-    { label: "当前板子", value: game?.boards?.length || 0 },
-    { label: "打法人设", value: personas.length || 0 },
-    { label: "策略模式", value: personaModes.length || 0 }
-  ];
-
-  return (
-    <div className="dashboard-stats">
-      {stats.map((stat) => (
-        <div className="stat-tile" key={stat.label}>
-          <strong>{stat.value}</strong>
-          <span>{stat.label}</span>
-        </div>
-      ))}
-      <div className="stat-tile wide">
-        <strong>{board?.name || "默认板子"}</strong>
-        <span>{game?.name || "桌游"} · 可直接开局</span>
-      </div>
-    </div>
-  );
-}
-
 function LobbyTablePreview({ gameId, board, humanPlayers, aiSeats }) {
   const total = board?.playerCount || Math.max(6, humanPlayers + aiSeats);
   const seats = Array.from({ length: total }, (_, index) => ({
@@ -204,6 +178,33 @@ function LobbyTablePreview({ gameId, board, humanPlayers, aiSeats }) {
         <span>创建前即可确认人数、AI 补位和身份密度</span>
       </div>
     </div>
+  );
+}
+
+function BoardSetupSummary({ game, board, aiSeats, selectedMode }) {
+  if (!game || !board) return null;
+  const counts = roleCounts(board.roles || []);
+
+  return (
+    <section className="setup-summary-panel">
+      <div>
+        <p className="eyebrow">CURRENT TABLE</p>
+        <h2>{board.name}</h2>
+        <p>{board.summary}</p>
+      </div>
+      <div className="summary-meta">
+        <span>{board.playerCount} 人</span>
+        <span>{aiSeats} 位 AI</span>
+        <span>{selectedMode?.name || "自动混合"}</span>
+      </div>
+      <div className="role-chip-grid compact">
+        {Object.entries(counts).map(([role, count]) => (
+          <span className={`role-chip ${roleCamp(game.id, role)}`} key={role}>
+            {role} × {count}
+          </span>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -273,7 +274,6 @@ function Setup({ games, personaModes, onCreate }) {
   const [targetPlayers, setTargetPlayers] = useState(game?.defaultTarget || 12);
   const [humanPlayers, setHumanPlayers] = useState(Math.max(1, (game?.defaultTarget || 12) - 1));
   const [personaMode, setPersonaMode] = useState("balanced");
-  const [personas, setPersonas] = useState([]);
   const selectedBoard = activeBoard(game, boardId, targetPlayers);
 
   useEffect(() => {
@@ -289,11 +289,6 @@ function Setup({ games, personaModes, onCreate }) {
     setTargetPlayers(selectedBoard.playerCount);
     setHumanPlayers((value) => Math.min(Math.max(0, value), selectedBoard.playerCount));
   }, [selectedBoard?.id]);
-
-  useEffect(() => {
-    if (!gameId) return;
-    api(`/api/personas?gameId=${gameId}`).then((data) => setPersonas(data.personas)).catch(() => setPersonas([]));
-  }, [gameId]);
 
   const selectedMode = personaModes.find((mode) => mode.id === personaMode);
   const aiSeats = Math.max(0, (selectedBoard?.playerCount || targetPlayers) - humanPlayers);
@@ -314,12 +309,15 @@ function Setup({ games, personaModes, onCreate }) {
         </div>
 
         <LobbyTablePreview gameId={game?.id || "werewolf"} board={selectedBoard} humanPlayers={humanPlayers} aiSeats={aiSeats} />
-        <DashboardStats games={games} game={game} board={selectedBoard} personas={personas} personaModes={personaModes} />
-
-        <div className="feature-grid">
-          <Feature icon={<UsersRound size={20} />} title="缺人补位" text="支持真人 + AI 混桌，也支持全 AI 观察局。" />
-          <Feature icon={<BrainCircuit size={20} />} title="人设打法" text="倒钩、冲锋、悍跳、隐线梅林等策略从知识库读取。" />
-          <Feature icon={<MessageSquareText size={20} />} title="文字桌面" text="阶段推进、真人发言、AI 发言都在同一个房间里完成。" />
+        <div className="lobby-action-strip">
+          <button className="ghost-button" type="button" onClick={() => navigateTo("rules")}>
+            <BookOpen size={17} />
+            查看板子规则
+          </button>
+          <button className="ghost-button" type="button" onClick={() => navigateTo("personas")}>
+            <Library size={17} />
+            查看打法库
+          </button>
         </div>
       </div>
 
@@ -429,10 +427,8 @@ function Setup({ games, personaModes, onCreate }) {
           </div>
         </form>
 
-        <BoardRulesPanel game={game} board={selectedBoard} compact />
+        <BoardSetupSummary game={game} board={selectedBoard} aiSeats={aiSeats} selectedMode={selectedMode} />
       </div>
-
-      <KnowledgePanel personas={personas} title={`${game?.name || "游戏"}打法库`} compact />
     </section>
   );
 }
@@ -604,16 +600,6 @@ function RoomPlaceholder({ loading, onCreate }) {
         )}
       </header>
     </section>
-  );
-}
-
-function Feature({ icon, title, text }) {
-  return (
-    <div className="feature">
-      <div className="feature-icon">{icon}</div>
-      <strong>{title}</strong>
-      <p>{text}</p>
-    </div>
   );
 }
 
