@@ -194,7 +194,7 @@ function LobbyTablePreview({ gameId, board, humanPlayers, aiSeats }) {
           <span
             className={`preview-seat ${seat.type} ${seat.role ? roleCamp(gameId, seat.role) : ""}`}
             key={seat.id}
-            style={seatPositionStyle(index, total)}
+            style={{ ...seatPositionStyle(index, total), "--seat-delay": index }}
             title={seat.role || seat.type}
           />
         ))}
