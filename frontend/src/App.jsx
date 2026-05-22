@@ -4,11 +4,14 @@ import {
   BrainCircuit,
   CirclePlay,
   Clock3,
+  FileText,
+  Home,
   Library,
   MessageSquareText,
   RefreshCw,
   Send,
   Sparkles,
+  Table2,
   UsersRound
 } from "lucide-react";
 import { createRoot } from "react-dom/client";
@@ -43,6 +46,68 @@ function modeLabel(modes, id) {
 function runtimeLabel(runtime) {
   if (!runtime?.configured) return "规则兜底";
   return `${runtime.provider} / ${runtime.model} / LangChain`;
+}
+
+function pageFromHash() {
+  const page = window.location.hash.replace(/^#\/?/, "");
+  return ["setup", "room", "personas", "reports"].includes(page) ? page : "setup";
+}
+
+function navigateTo(page) {
+  window.location.hash = `/${page}`;
+}
+
+const reportCards = [
+  {
+    title: "市场现状",
+    text: "现有产品更多集中在线上桌游平台、规则裁判和陪玩机器人，专门解决线下桌游缺人补位的产品仍然很少。",
+    meta: "docs/market-research-ai-tabletop-fill.md"
+  },
+  {
+    title: "Demo 结论",
+    text: "8 人阿瓦隆全 AI 循环能完成发言闭环，当前重点风险是身份泄露、重复表达和过度模板化。",
+    meta: "docs/avalon-ai-demo-effect-report.md"
+  },
+  {
+    title: "产品机会",
+    text: "人设知识库、玩家风格选择、主持人控制台和局后复盘，是这个方向最容易做出差异化的部分。",
+    meta: "docs/persona-knowledge-base.md"
+  }
+];
+
+function AppNav({ page, room, onNavigate }) {
+  const items = [
+    { id: "setup", label: "开局", icon: <Home size={17} /> },
+    { id: "room", label: "圆桌", icon: <Table2 size={17} />, disabled: !room },
+    { id: "personas", label: "人设库", icon: <Library size={17} /> },
+    { id: "reports", label: "报告", icon: <FileText size={17} /> }
+  ];
+
+  return (
+    <nav className="app-nav" aria-label="主导航">
+      <div className="nav-brand">
+        <Bot size={22} />
+        <span>桌游 AI 补位</span>
+      </div>
+      <div className="nav-links">
+        {items.map((item) => (
+          <button
+            className={page === item.id ? "nav-link active" : "nav-link"}
+            disabled={item.disabled}
+            key={item.id}
+            type="button"
+            onClick={() => {
+              onNavigate(item.id);
+              navigateTo(item.id);
+            }}
+          >
+            {item.icon}
+            {item.label}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
 }
 
 function Setup({ games, personaModes, onCreate }) {
@@ -171,6 +236,84 @@ function Setup({ games, personaModes, onCreate }) {
       </div>
 
       <KnowledgePanel personas={personas} title={`${game?.name || "游戏"}打法库`} compact />
+    </section>
+  );
+}
+
+function PersonasPage({ games, personaModes }) {
+  const [gameId, setGameId] = useState(games[0]?.id || "werewolf");
+  const [personas, setPersonas] = useState([]);
+  const game = games.find((item) => item.id === gameId) || games[0];
+
+  useEffect(() => {
+    if (!gameId) return;
+    api(`/api/personas?gameId=${gameId}`).then((data) => setPersonas(data.personas)).catch(() => setPersonas([]));
+  }, [gameId]);
+
+  return (
+    <section className="content-page">
+      <header className="page-hero">
+        <div>
+          <p className="eyebrow">PERSONA LIBRARY</p>
+          <h1>AI 人设打法库</h1>
+          <p>按游戏、身份和打法方案管理 AI 补位的行为风格，后续可以直接扩展成可编辑知识库。</p>
+        </div>
+        <label className="page-select">
+          <span>游戏模板</span>
+          <select value={gameId} onChange={(event) => setGameId(event.target.value)}>
+            {games.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <div className="persona-page-grid">
+        <section className="tool-panel">
+          <div className="panel-title">
+            <div>
+              <p className="eyebrow">MODES</p>
+              <h2>打法方案</h2>
+            </div>
+          </div>
+          <div className="mode-list">
+            {personaModes.map((mode) => (
+              <article className="mode-card" key={mode.id}>
+                <strong>{mode.name}</strong>
+                <p>{mode.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <KnowledgePanel personas={personas} title={`${game?.name || "游戏"}人设`} />
+      </div>
+    </section>
+  );
+}
+
+function ReportsPage() {
+  return (
+    <section className="content-page">
+      <header className="page-hero">
+        <div>
+          <p className="eyebrow">RESEARCH & TESTS</p>
+          <h1>调研与效果报告</h1>
+          <p>把产品判断、AI 循环实验和人设知识库文档集中在一个入口，方便继续迭代。</p>
+        </div>
+      </header>
+
+      <div className="report-grid">
+        {reportCards.map((card) => (
+          <article className="report-card" key={card.title}>
+            <FileText size={24} />
+            <strong>{card.title}</strong>
+            <p>{card.text}</p>
+            <span>{card.meta}</span>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
@@ -455,6 +598,7 @@ function App() {
   const [personaModes, setPersonaModes] = useState([]);
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(pageFromHash);
 
   useEffect(() => {
     Promise.all([api("/api/games"), api("/api/personas")])
@@ -465,24 +609,53 @@ function App() {
       .catch((err) => setError(err.message));
   }, []);
 
+  useEffect(() => {
+    const updatePage = () => setPage(pageFromHash());
+    window.addEventListener("hashchange", updatePage);
+    if (!window.location.hash) navigateTo("setup");
+    return () => window.removeEventListener("hashchange", updatePage);
+  }, []);
+
   async function createRoom(payload) {
     setError("");
     try {
       const data = await api("/api/rooms", { method: "POST", body: payload });
       setRoom(data.room);
+      setPage("room");
+      navigateTo("room");
     } catch (err) {
       setError(err.message);
     }
   }
 
-  return (
-    <main className="app-shell">
-      {error && <div className="error-banner">{error}</div>}
-      {room ? (
-        <Room room={room} games={games} personaModes={personaModes} onRoomChange={setRoom} onReset={() => setRoom(null)} />
+  function renderPage() {
+    if (page === "room") {
+      return room ? (
+        <Room
+          room={room}
+          games={games}
+          personaModes={personaModes}
+          onRoomChange={setRoom}
+          onReset={() => {
+            setRoom(null);
+            setPage("setup");
+            navigateTo("setup");
+          }}
+        />
       ) : (
         <Setup games={games} personaModes={personaModes} onCreate={createRoom} />
-      )}
+      );
+    }
+    if (page === "personas") return <PersonasPage games={games} personaModes={personaModes} />;
+    if (page === "reports") return <ReportsPage />;
+    return <Setup games={games} personaModes={personaModes} onCreate={createRoom} />;
+  }
+
+  return (
+    <main className="app-shell">
+      <AppNav page={page} room={room} onNavigate={setPage} />
+      {error && <div className="error-banner">{error}</div>}
+      {renderPage()}
     </main>
   );
 }
