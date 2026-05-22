@@ -1,0 +1,4672 @@
+{
+  "summary": {
+    "games": 12,
+    "bestGameIndex": 9,
+    "bestScore": 85,
+    "averageScore": 77.1,
+    "minScore": 64,
+    "maxScore": 85,
+    "totalMessages": 576,
+    "totalFallbackTargets": 0,
+    "totalSelfReveals": 0,
+    "totalTemplateDuplicates": 91
+  },
+  "results": [
+    {
+      "gameIndex": 1,
+      "seed": 20260522,
+      "score": {
+        "total": 72,
+        "chatMessages": 48,
+        "averageLength": 35.9,
+        "keywordHitRate": 0.75,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 4,
+        "templateDuplicates": 8,
+        "speakerBalance": {
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-松间": 6,
+          "AI-林深": 6,
+          "AI-洛川": 6,
+          "AI-渡鸦": 6,
+          "AI-灰塔": 6,
+          "AI-白夜": 6
+        }
+      },
+      "roomId": "room_e25d54ca48",
+      "roles": {
+        "AI-南风": "忠臣",
+        "AI-白夜": "梅林",
+        "AI-林深": "刺客",
+        "AI-松间": "忠臣",
+        "AI-灰塔": "爪牙",
+        "AI-洛川": "忠臣",
+        "AI-季夏": "派西维尔",
+        "AI-渡鸦": "莫甘娜"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.5,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.375,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 3,
+          "templateDuplicates": 3
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-渡鸦 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我会先控制信息量，只看谁急着定队伍。AI-林深 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "第一轮信息少，我不会急着保人。AI-灰塔 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，开局先记标准。AI-白夜 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "我先观察发言节奏。AI-林深 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-松间 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-洛川 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我想先看谁主动定义好人标准。AI-灰塔 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-渡鸦 可以进队，AI-季夏 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我可以接受我和 AI-松间 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "这轮我不想上太复杂的车，AI-白夜 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，这车最好不要全凭感觉。AI-林深 可以试，AI-白夜 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "这轮我不想上太复杂的车，AI-洛川 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，第一轮我更想上发言清楚的人。AI-季夏 可以进队，AI-渡鸦 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "我倾向让 AI-白夜 上车，因为 TA 至少给了标准；AI-林深 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我建议队伍里带 AI-松间 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-季夏 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-渡鸦 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "AI-灰塔 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，我会追问 AI-林深 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "AI-季夏 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，这局先控信息量。AI-灰塔 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "这局先控信息量。AI-渡鸦 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我不想让讨论只围着我转。AI-南风 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我会投反对。AI-林深 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "我倾向通过。AI-白夜 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，我会投反对。AI-灰塔 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我倾向通过。AI-洛川 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-松间 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，先把车上和车下的发言分开看。AI-洛川 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-洛川 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-洛川 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "我更想追 AI-白夜 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，我会同时看车上责任和车下带节奏。AI-林深 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "我会同时看车上责任和车下带节奏。AI-南风 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，如果任务失败，我不会只打车上。AI-白夜 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "刺客",
+          "text": "刺杀要找信息源，不是找发言最强的人。AI-季夏 的判断命中率值得怀疑。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先保守说，不要替坏人缩小范围。AI-白夜 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "爪牙",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "派西维尔",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 2,
+      "seed": 20260523,
+      "score": {
+        "total": 83,
+        "chatMessages": 48,
+        "averageLength": 37.7,
+        "keywordHitRate": 0.812,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 1,
+        "templateDuplicates": 6,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-松间": 6,
+          "AI-洛川": 6,
+          "AI-灰塔": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_0a38aedadd",
+      "roles": {
+        "AI-季夏": "刺客",
+        "AI-洛川": "忠臣",
+        "AI-松间": "忠臣",
+        "AI-青石": "派西维尔",
+        "AI-北桥": "梅林",
+        "AI-南风": "莫甘娜",
+        "AI-灰塔": "忠臣",
+        "AI-星野": "爪牙"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 3
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "第一轮信息少，我不会急着保人。AI-南风 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，我先不急着站边，重点看 AI-星野 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我会看谁愿意解释反对票。AI-青石 和 AI-青石 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，我先不急着站边，重点看 AI-季夏 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "开局我更看重投票逻辑，不会只听身份感。AI-洛川 和 AI-星野 的互动可以先记下来。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，我先观察发言节奏。AI-季夏 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-北桥 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，我想先看谁主动定义好人标准。AI-松间 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我会提一个低冲突队伍：我和 AI-南风。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，我倾向让 AI-青石 上车，因为 TA 至少给了标准；AI-松间 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-星野 可以进队，AI-南风 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，这车最好不要全凭感觉。AI-北桥 可以试，AI-北桥 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "我可以接受我和 AI-季夏 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，我建议队伍里带 AI-灰塔 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我倾向让 AI-北桥 上车，因为 TA 至少给了标准；AI-星野 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，这轮我不想上太复杂的车，AI-松间 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "AI-灰塔 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，这局先控信息量。AI-南风 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-青石 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-洛川 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "我会追问 AI-洛川 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，我觉得 AI-星野 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-星野 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，AI-洛川 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，我想先否掉这车。AI-青石 和 AI-青石 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-灰塔 和 AI-季夏 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "我会投反对。AI-松间 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，我倾向通过。AI-松间 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "如果任务失败，我不会只打车上。AI-星野 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，任务结果只是一个信息点。AI-松间 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "任务结果只是一个信息点。AI-青石 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-松间 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "任务结果只是一个信息点。AI-松间 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，我更想追 AI-洛川 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "任务结果只是一个信息点。AI-北桥 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，如果任务失败，我不会只打车上。AI-季夏 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "刺杀要找信息源，不是找发言最强的人。AI-松间 的判断命中率值得怀疑。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我直接一点，不要替坏人缩小范围。AI-南风 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "派西维尔",
+          "text": "我先保守说，不要替坏人缩小范围。AI-松间 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "梅林",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我直接一点，不要替坏人缩小范围。AI-季夏 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-季夏 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "爪牙",
+          "text": "我先保守说，不要替坏人缩小范围。AI-南风 这时如果还在画像梅林，我会直接反对。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 3,
+      "seed": 20260524,
+      "score": {
+        "total": 64,
+        "chatMessages": 48,
+        "averageLength": 37.6,
+        "keywordHitRate": 0.729,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 4,
+        "templateDuplicates": 12,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-晨雾": 6,
+          "AI-松间": 6,
+          "AI-渡鸦": 6,
+          "AI-白夜": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_0149eb04d2",
+      "roles": {
+        "AI-松间": "忠臣",
+        "AI-晨雾": "梅林",
+        "AI-渡鸦": "忠臣",
+        "AI-白夜": "爪牙",
+        "AI-北桥": "派西维尔",
+        "AI-季夏": "刺客",
+        "AI-南风": "忠臣",
+        "AI-青石": "莫甘娜"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 3
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.375,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 2
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-渡鸦 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，开局我更看重投票逻辑，不会只听身份感。AI-季夏 和 AI-渡鸦 的互动可以先记下来。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我会看谁愿意解释反对票。AI-白夜 和 AI-晨雾 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，第一轮信息少，我不会急着保人。AI-季夏 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-南风 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，第一轮信息少，我不会急着保人。AI-青石 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-渡鸦 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，第一轮信息少，我不会急着保人。AI-松间 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我倾向让 AI-青石 上车，因为 TA 至少给了标准；AI-渡鸦 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，我会倾向排除发言太顺的人，队伍可以先从我、AI-松间 开始，但还要听反对理由。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-晨雾 可以进队，AI-晨雾 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，我建议队伍里带 AI-晨雾 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我倾向让 AI-南风 上车，因为 TA 至少给了标准；AI-渡鸦 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，这轮我不想上太复杂的车，AI-渡鸦 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "这车最好不要全凭感觉。AI-渡鸦 可以试，AI-青石 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，这轮我不想上太复杂的车，AI-白夜 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "现在不要只说感觉。AI-北桥 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，现在不要只说感觉。AI-松间 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-松间 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，我觉得 AI-青石 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-晨雾 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，AI-北桥 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-青石 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，AI-松间 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我会投反对。AI-渡鸦 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-松间 和 AI-白夜 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我会投反对。AI-松间 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-渡鸦 和 AI-晨雾 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，我倾向通过。AI-晨雾 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-白夜 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，任务结果只是一个信息点。AI-北桥 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-白夜 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，我更想追 AI-南风 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我会同时看车上责任和车下带节奏。AI-青石 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，我更想追 AI-青石 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-白夜 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，我更想追 AI-渡鸦 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "爪牙",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "刺客",
+          "text": "我直接一点，最后我会看谁一直在保护关键好人又不敢说死。AI-青石 比较像这个位置。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "莫甘娜",
+          "text": "我先保守说，不要替坏人缩小范围。AI-松间 这时如果还在画像梅林，我会直接反对。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 4,
+      "seed": 20260525,
+      "score": {
+        "total": 79,
+        "chatMessages": 48,
+        "averageLength": 37.8,
+        "keywordHitRate": 0.771,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 1,
+        "templateDuplicates": 8,
+        "speakerBalance": {
+          "AI-南风": 6,
+          "AI-晨雾": 6,
+          "AI-林深": 6,
+          "AI-洛川": 6,
+          "AI-渡鸦": 6,
+          "AI-灰塔": 6,
+          "AI-白夜": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_9baedc4d10",
+      "roles": {
+        "AI-洛川": "派西维尔",
+        "AI-林深": "莫甘娜",
+        "AI-青石": "忠臣",
+        "AI-南风": "忠臣",
+        "AI-渡鸦": "爪牙",
+        "AI-晨雾": "刺客",
+        "AI-白夜": "忠臣",
+        "AI-灰塔": "梅林"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.5,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 2
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "我会看谁愿意解释反对票。AI-晨雾 和 AI-灰塔 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，我先观察发言节奏。AI-灰塔 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-白夜 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，我会看谁愿意解释反对票。AI-白夜 和 AI-晨雾 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "我先观察发言节奏。AI-灰塔 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，第一轮信息少，我不会急着保人。AI-渡鸦 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "我会看谁愿意解释反对票。AI-林深 和 AI-林深 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，开局我更看重投票逻辑，不会只听身份感。AI-林深 和 AI-洛川 的互动可以先记下来。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "这车最好不要全凭感觉。AI-林深 可以试，AI-青石 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，这轮我不想上太复杂的车，AI-渡鸦 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-林深 可以进队，AI-洛川 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，第一轮我更想上发言清楚的人。AI-林深 可以进队，AI-灰塔 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "我建议队伍里带 AI-白夜 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，这轮我不想上太复杂的车，AI-洛川 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "这车最好不要全凭感觉。AI-渡鸦 可以试，AI-南风 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，我会倾向排除发言太顺的人，队伍可以先从我、AI-洛川 开始，但还要听反对理由。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "我会追问 AI-灰塔 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，我觉得 AI-灰塔 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我会追问 AI-洛川 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，这局先控信息量。AI-晨雾 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "我不想让讨论只围着我转。AI-林深 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，我觉得 AI-林深 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "AI-青石 和 AI-洛川 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-晨雾 这轮需要给出标准。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我会投反对。AI-白夜 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，我想先否掉这车。AI-洛川 和 AI-青石 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "我倾向通过。AI-洛川 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，我倾向通过。AI-南风 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-林深 和 AI-渡鸦 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，我会投反对。AI-洛川 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "任务结果只是一个信息点。AI-南风 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，如果任务失败，我不会只打车上。AI-灰塔 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-渡鸦 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，任务结果只是一个信息点。AI-晨雾 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-灰塔 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-南风 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-林深 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-晨雾 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "派西维尔",
+          "text": "不要替坏人缩小范围。AI-渡鸦 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "莫甘娜",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我先保守说，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "爪牙",
+          "text": "不要替坏人缩小范围。AI-林深 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，我会从知道太多但不敢直说的人里找梅林。AI-渡鸦 的站边有点过于精准。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-林深 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "梅林",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 5,
+      "seed": 20260526,
+      "score": {
+        "total": 84,
+        "chatMessages": 48,
+        "averageLength": 37.2,
+        "keywordHitRate": 0.875,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 2,
+        "templateDuplicates": 5,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-晨雾": 6,
+          "AI-松间": 6,
+          "AI-洛川": 6,
+          "AI-白夜": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_6867d030b3",
+      "roles": {
+        "AI-晨雾": "忠臣",
+        "AI-白夜": "派西维尔",
+        "AI-青石": "梅林",
+        "AI-松间": "刺客",
+        "AI-北桥": "爪牙",
+        "AI-季夏": "忠臣",
+        "AI-星野": "莫甘娜",
+        "AI-洛川": "忠臣"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 2
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-星野 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，我会看谁愿意解释反对票。AI-北桥 和 AI-星野 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "我会先控制信息量，只看谁急着定队伍。AI-晨雾 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，第一轮信息少，我不会急着保人。AI-洛川 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "我想先看谁主动定义好人标准。AI-白夜 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-青石 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "第一轮信息少，我不会急着保人。AI-季夏 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，我先不急着站边，重点看 AI-白夜 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我倾向让 AI-松间 上车，因为 TA 至少给了标准；AI-洛川 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，我倾向让 AI-松间 上车，因为 TA 至少给了标准；AI-松间 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "我会倾向排除发言太顺的人，队伍可以先从我、AI-松间 开始，但还要听反对理由。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，这轮我不想上太复杂的车，AI-季夏 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "我会提一个低冲突队伍：我和 AI-星野。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我倾向让 AI-青石 上车，因为 TA 至少给了标准；AI-星野 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我建议队伍里带 AI-洛川 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，我倾向让 AI-晨雾 上车，因为 TA 至少给了标准；AI-季夏 先留在车下看票型。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-北桥 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，现在不要只说感觉。AI-青石 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "现在不要只说感觉。AI-北桥 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，我觉得 AI-季夏 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "我不想让讨论只围着我转。AI-青石 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，现在不要只说感觉。AI-松间 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "AI-白夜 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，现在不要只说感觉。AI-松间 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我会投反对。AI-白夜 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，我想先否掉这车。AI-青石 和 AI-晨雾 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我会投反对。AI-星野 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-北桥 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，先把车上和车下的发言分开看。AI-洛川 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "任务结果只是一个信息点。AI-星野 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，我更想追 AI-晨雾 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "如果任务失败，我不会只打车上。AI-白夜 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我会同时看车上责任和车下带节奏。AI-晨雾 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "如果任务失败，我不会只打车上。AI-青石 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，任务结果只是一个信息点。AI-白夜 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "梅林",
+          "text": "不要替坏人缩小范围。AI-晨雾 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我先保守说，最后我会看谁一直在保护关键好人又不敢说死。AI-白夜 比较像这个位置。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "爪牙",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "不要替坏人缩小范围。AI-晨雾 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "忠臣",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 6,
+      "seed": 20260527,
+      "score": {
+        "total": 78,
+        "chatMessages": 48,
+        "averageLength": 37.5,
+        "keywordHitRate": 0.875,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 3,
+        "templateDuplicates": 7,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-晨雾": 6,
+          "AI-洛川": 6,
+          "AI-渡鸦": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_adf80f0e54",
+      "roles": {
+        "AI-北桥": "忠臣",
+        "AI-渡鸦": "莫甘娜",
+        "AI-季夏": "爪牙",
+        "AI-星野": "刺客",
+        "AI-南风": "派西维尔",
+        "AI-晨雾": "忠臣",
+        "AI-青石": "忠臣",
+        "AI-洛川": "梅林"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 3
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-青石 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，我想先看谁主动定义好人标准。AI-星野 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我想先看谁主动定义好人标准。AI-北桥 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，第一轮信息少，我不会急着保人。AI-晨雾 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-青石 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-渡鸦 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-晨雾 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，我会先控制信息量，只看谁急着定队伍。AI-北桥 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-渡鸦 可以进队，AI-星野 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，我建议队伍里带 AI-南风 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我会提一个低冲突队伍：我和 AI-晨雾。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，我建议队伍里带 AI-渡鸦 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "这车最好不要全凭感觉。AI-星野 可以试，AI-星野 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，这车最好不要全凭感觉。AI-洛川 可以试，AI-星野 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我倾向让 AI-渡鸦 上车，因为 TA 至少给了标准；AI-洛川 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，我可以接受我和 AI-青石 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-季夏 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，我不想让讨论只围着我转。AI-晨雾 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我不想让讨论只围着我转。AI-晨雾 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，我觉得 AI-渡鸦 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "现在不要只说感觉。AI-季夏 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，现在不要只说感觉。AI-渡鸦 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我会追问 AI-北桥 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，这局先控信息量。AI-渡鸦 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，我倾向通过。AI-季夏 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，我倾向通过。AI-洛川 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "我会投反对。AI-青石 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，我会投反对。AI-青石 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-南风 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，如果任务失败，我不会只打车上。AI-洛川 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我更想追 AI-青石 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，我更想追 AI-南风 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "先把车上和车下的发言分开看。AI-洛川 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，任务结果只是一个信息点。AI-青石 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-季夏 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，任务结果只是一个信息点。AI-季夏 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-星野 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "刺客",
+          "text": "我先保守说，我会从知道太多但不敢直说的人里找梅林。AI-青石 的站边有点过于精准。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "忠臣",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-洛川 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "梅林",
+          "text": "我先保守说，不要替坏人缩小范围。AI-青石 这时如果还在画像梅林，我会直接反对。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 7,
+      "seed": 20260528,
+      "score": {
+        "total": 66,
+        "chatMessages": 48,
+        "averageLength": 35.9,
+        "keywordHitRate": 0.708,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 3,
+        "templateDuplicates": 12,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-晨雾": 6,
+          "AI-松间": 6,
+          "AI-林深": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_52463dfb57",
+      "roles": {
+        "AI-松间": "忠臣",
+        "AI-季夏": "爪牙",
+        "AI-青石": "忠臣",
+        "AI-北桥": "刺客",
+        "AI-南风": "派西维尔",
+        "AI-晨雾": "梅林",
+        "AI-林深": "忠臣",
+        "AI-星野": "莫甘娜"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 3
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.375,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 3,
+          "templateDuplicates": 3
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-林深 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，第一轮信息少，我不会急着保人。AI-晨雾 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-晨雾 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，我想先看谁主动定义好人标准。AI-星野 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-季夏 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，先别把话说死。AI-南风 如果持续给出过准判断，我反而会更谨慎。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-南风 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，我先观察发言节奏。AI-季夏 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "这车最好不要全凭感觉。AI-南风 可以试，AI-北桥 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，我建议队伍里带 AI-青石 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "第一轮我更想上发言清楚的人。AI-星野 可以进队，AI-星野 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，我会提一个低冲突队伍：我和 AI-晨雾。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "第一轮我更想上发言清楚的人。AI-星野 可以进队，AI-晨雾 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，我可以接受我和 AI-季夏 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我倾向让 AI-青石 上车，因为 TA 至少给了标准；AI-青石 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，这轮我不想上太复杂的车，AI-季夏 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "现在不要只说感觉。AI-星野 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，我不想让讨论只围着我转。AI-松间 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-北桥 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，AI-青石 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "现在不要只说感觉。AI-林深 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，现在不要只说感觉。AI-星野 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-晨雾 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，AI-季夏 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我会投反对。AI-青石 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，我倾向通过。AI-星野 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-季夏 和 AI-星野 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，我倾向通过。AI-晨雾 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "我想先否掉这车。AI-星野 和 AI-北桥 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-青石 和 AI-星野 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-季夏 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-松间 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-季夏 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，我更想追 AI-青石 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "任务结果只是一个信息点。AI-林深 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，我会同时看车上责任和车下带节奏。AI-林深 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-青石 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-松间 这点比较明显。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "爪牙",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我先保守说，最后我会看谁一直在保护关键好人又不敢说死。AI-松间 比较像这个位置。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "派西维尔",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "梅林",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我先保守说，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 8,
+      "seed": 20260529,
+      "score": {
+        "total": 77,
+        "chatMessages": 48,
+        "averageLength": 36.0,
+        "keywordHitRate": 0.771,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 3,
+        "templateDuplicates": 7,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-晨雾": 6,
+          "AI-林深": 6,
+          "AI-灰塔": 6,
+          "AI-白夜": 6
+        }
+      },
+      "roomId": "room_73f0ba6a12",
+      "roles": {
+        "AI-星野": "忠臣",
+        "AI-晨雾": "刺客",
+        "AI-季夏": "梅林",
+        "AI-灰塔": "忠臣",
+        "AI-白夜": "忠臣",
+        "AI-林深": "爪牙",
+        "AI-北桥": "派西维尔",
+        "AI-南风": "莫甘娜"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.5,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.375,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 2
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-林深 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，我先观察发言节奏。AI-南风 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "我会先控制信息量，只看谁急着定队伍。AI-南风 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，开局先记标准。AI-星野 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-晨雾 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，我先观察发言节奏。AI-晨雾 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-林深 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，我想先看谁主动定义好人标准。AI-晨雾 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我倾向让 AI-白夜 上车，因为 TA 至少给了标准；AI-林深 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，这轮我不想上太复杂的车，AI-灰塔 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "我可以接受我和 AI-北桥 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，我倾向让 AI-晨雾 上车，因为 TA 至少给了标准；AI-白夜 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "这车最好不要全凭感觉。AI-晨雾 可以试，AI-林深 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，我会提一个低冲突队伍：我和 AI-晨雾。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "第一轮我更想上发言清楚的人。AI-白夜 可以进队，AI-白夜 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，这轮我不想上太复杂的车，AI-晨雾 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "现在不要只说感觉。AI-白夜 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，AI-林深 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "现在不要只说感觉。AI-星野 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，这局先控信息量。AI-林深 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "这局先控信息量。AI-灰塔 的发言有价值，但我还没到完全信任。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，我不想让讨论只围着我转。AI-晨雾 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "AI-晨雾 和 AI-白夜 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，我觉得 AI-晨雾 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我会投反对。AI-晨雾 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，我倾向通过。AI-星野 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "我想先否掉这车。AI-北桥 和 AI-南风 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，我会投反对。AI-北桥 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我会投反对。AI-晨雾 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，我倾向通过。AI-季夏 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-林深 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-林深 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "我会同时看车上责任和车下带节奏。AI-林深 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-白夜 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "任务结果只是一个信息点。AI-林深 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，如果任务失败，我不会只打车上。AI-季夏 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我会同时看车上责任和车下带节奏。AI-星野 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，如果任务失败，我不会只打车上。AI-林深 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-南风 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我直接一点，最后我会看谁一直在保护关键好人又不敢说死。AI-南风 比较像这个位置。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "梅林",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我先保守说，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "爪牙",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 9,
+      "seed": 20260530,
+      "score": {
+        "total": 85,
+        "chatMessages": 48,
+        "averageLength": 37.1,
+        "keywordHitRate": 0.812,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 2,
+        "templateDuplicates": 4,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-晨雾": 6,
+          "AI-松间": 6,
+          "AI-林深": 6,
+          "AI-渡鸦": 6,
+          "AI-灰塔": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_6b5c42c483",
+      "roles": {
+        "AI-南风": "梅林",
+        "AI-灰塔": "忠臣",
+        "AI-林深": "派西维尔",
+        "AI-青石": "忠臣",
+        "AI-北桥": "刺客",
+        "AI-松间": "忠臣",
+        "AI-晨雾": "爪牙",
+        "AI-渡鸦": "莫甘娜"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 2
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我会先控制信息量，只看谁急着定队伍。AI-渡鸦 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-渡鸦 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "开局先记标准。AI-北桥 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，我会看谁愿意解释反对票。AI-渡鸦 和 AI-南风 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我想先看谁主动定义好人标准。AI-林深 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-林深 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "我先观察发言节奏。AI-林深 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我想先看谁主动定义好人标准。AI-南风 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我可以接受我和 AI-松间 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，第一轮我更想上发言清楚的人。AI-北桥 可以进队，AI-林深 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "我倾向让 AI-晨雾 上车，因为 TA 至少给了标准；AI-晨雾 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，我倾向让 AI-林深 上车，因为 TA 至少给了标准；AI-晨雾 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我建议队伍里带 AI-林深 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，我倾向让 AI-渡鸦 上车，因为 TA 至少给了标准；AI-灰塔 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "我会提一个低冲突队伍：我和 AI-松间。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我会提一个低冲突队伍：我和 AI-青石。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-林深 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，我会追问 AI-晨雾 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "现在不要只说感觉。AI-晨雾 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，AI-南风 和 AI-晨雾 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "我不想让讨论只围着我转。AI-南风 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，现在不要只说感觉。AI-晨雾 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "AI-灰塔 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，我觉得 AI-青石 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我想先否掉这车。AI-松间 和 AI-林深 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，我想先否掉这车。AI-林深 和 AI-青石 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，我会投反对。AI-渡鸦 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，我想先否掉这车。AI-北桥 和 AI-北桥 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "我倾向通过。AI-青石 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "先把车上和车下的发言分开看。AI-渡鸦 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，先把车上和车下的发言分开看。AI-渡鸦 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "我会同时看车上责任和车下带节奏。AI-灰塔 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-晨雾 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-青石 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，我会同时看车上责任和车下带节奏。AI-南风 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "如果任务失败，我不会只打车上。AI-南风 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，如果任务失败，我不会只打车上。AI-青石 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "忠臣",
+          "text": "我直接一点，不要替坏人缩小范围。AI-渡鸦 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "派西维尔",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "刺客",
+          "text": "刺杀要找信息源，不是找发言最强的人。AI-渡鸦 的判断命中率值得怀疑。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "忠臣",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "爪牙",
+          "text": "不要替坏人缩小范围。AI-松间 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "莫甘娜",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 10,
+      "seed": 20260531,
+      "score": {
+        "total": 79,
+        "chatMessages": 48,
+        "averageLength": 37.0,
+        "keywordHitRate": 0.917,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 2,
+        "templateDuplicates": 8,
+        "speakerBalance": {
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-松间": 6,
+          "AI-林深": 6,
+          "AI-渡鸦": 6,
+          "AI-灰塔": 6,
+          "AI-白夜": 6,
+          "AI-青石": 6
+        }
+      },
+      "roomId": "room_d57d875987",
+      "roles": {
+        "AI-林深": "忠臣",
+        "AI-季夏": "忠臣",
+        "AI-松间": "爪牙",
+        "AI-青石": "忠臣",
+        "AI-渡鸦": "梅林",
+        "AI-灰塔": "刺客",
+        "AI-南风": "莫甘娜",
+        "AI-白夜": "派西维尔"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 3
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 1,
+          "templateDuplicates": 1
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我先不急着站边，重点看 AI-灰塔 的组队标准是不是前后一致。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-松间 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "我先观察发言节奏。AI-季夏 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，开局先记标准。AI-林深 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "我会先控制信息量，只看谁急着定队伍。AI-松间 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，我想先看谁主动定义好人标准。AI-林深 现在还不能放过，但也没到直接打死。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我先观察发言节奏。AI-渡鸦 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，开局先记标准。AI-季夏 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我倾向让 AI-季夏 上车，因为 TA 至少给了标准；AI-渡鸦 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我倾向让 AI-青石 上车，因为 TA 至少给了标准；AI-松间 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "我建议队伍里带 AI-青石 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，第一轮我更想上发言清楚的人。AI-灰塔 可以进队，AI-南风 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "提名不要只看谁像好人。我更想让 AI-松间 上车，同时听 AI-南风 的反对点。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，这轮我不想上太复杂的车，AI-南风 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我会提一个低冲突队伍：我和 AI-白夜。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，第一轮我更想上发言清楚的人。AI-青石 可以进队，AI-灰塔 暂时观察。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "现在不要只说感觉。AI-灰塔 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，现在不要只说感觉。AI-林深 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "我不想让讨论只围着我转。AI-林深 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，AI-渡鸦 和 AI-林深 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-季夏 这轮需要给出标准。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，我觉得 AI-白夜 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我不想让讨论只围着我转。AI-灰塔 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，我想把提名理由写清楚：谁上车、谁不上车、为什么。AI-松间 这轮需要给出标准。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我想先否掉这车。AI-南风 和 AI-松间 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我会投反对。AI-林深 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "我会投反对。AI-白夜 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，我会投反对。AI-季夏 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-松间 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，任务结果只是一个信息点。AI-白夜 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-青石 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，先把车上和车下的发言分开看。AI-白夜 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "我会同时看车上责任和车下带节奏。AI-灰塔 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，如果任务失败，我不会只打车上。AI-白夜 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-青石 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，先把车上和车下的发言分开看。AI-季夏 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "爪牙",
+          "text": "不要替坏人缩小范围。AI-灰塔 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-青石",
+          "role": "忠臣",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "梅林",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "刺客",
+          "text": "我直接一点，刺杀要找信息源，不是找发言最强的人。AI-南风 的判断命中率值得怀疑。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "莫甘娜",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "派西维尔",
+          "text": "我先保守说，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 11,
+      "seed": 20260532,
+      "score": {
+        "total": 74,
+        "chatMessages": 48,
+        "averageLength": 37.3,
+        "keywordHitRate": 0.75,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 2,
+        "templateDuplicates": 9,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-季夏": 6,
+          "AI-星野": 6,
+          "AI-晨雾": 6,
+          "AI-林深": 6,
+          "AI-洛川": 6,
+          "AI-白夜": 6
+        }
+      },
+      "roomId": "room_d6f31f6a49",
+      "roles": {
+        "AI-洛川": "爪牙",
+        "AI-季夏": "忠臣",
+        "AI-白夜": "莫甘娜",
+        "AI-南风": "梅林",
+        "AI-林深": "忠臣",
+        "AI-北桥": "派西维尔",
+        "AI-晨雾": "刺客",
+        "AI-星野": "忠臣"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.5,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 0.75,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 3
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先观察发言节奏。AI-季夏 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我会看谁愿意解释反对票。AI-南风 和 AI-白夜 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "第一轮信息少，我不会急着保人。AI-晨雾 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，我会先控制信息量，只看谁急着定队伍。AI-星野 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-白夜 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，开局先记标准。AI-洛川 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我先观察发言节奏。AI-南风 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，开局先记标准。AI-白夜 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我建议队伍里带 AI-林深 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，这车最好不要全凭感觉。AI-白夜 可以试，AI-晨雾 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "这轮我不想上太复杂的车，AI-北桥 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，我可以接受我和 AI-晨雾 先试一车，但不希望大家无脑通过。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我倾向让 AI-北桥 上车，因为 TA 至少给了标准；AI-季夏 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，第一轮我更想上发言清楚的人。AI-星野 可以进队，AI-季夏 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "这轮我不想上太复杂的车，AI-季夏 加我就够了，先让任务给信息。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，我倾向让 AI-晨雾 上车，因为 TA 至少给了标准；AI-洛川 先留在车下看票型。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "AI-林深 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，现在不要只说感觉。AI-北桥 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "我觉得 AI-北桥 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，现在不要只说感觉。AI-白夜 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我会追问 AI-白夜 的反对理由。只说不舒服不够，要能落到车和票上。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，AI-洛川 和 AI-南风 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "AI-洛川 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，AI-季夏 和 AI-南风 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我倾向通过。AI-晨雾 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，我想先否掉这车。AI-星野 和 AI-晨雾 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，我会投反对。AI-林深 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "我会投反对。AI-晨雾 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我倾向通过。AI-季夏 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，我想先否掉这车。AI-季夏 和 AI-南风 的互保关系还没解释干净。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我更想追 AI-白夜 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，任务结果只是一个信息点。AI-晨雾 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "如果任务失败，我不会只打车上。AI-南风 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，我会同时看车上责任和车下带节奏。AI-北桥 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "先把车上和车下的发言分开看。AI-北桥 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，任务结果只是一个信息点。AI-南风 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "我更想追 AI-洛川 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，任务结果只是一个信息点。AI-晨雾 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "不要替坏人缩小范围。AI-季夏 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-季夏",
+          "role": "忠臣",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "莫甘娜",
+          "text": "不要替坏人缩小范围。AI-季夏 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "梅林",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-林深",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-星野 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "派西维尔",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-晨雾",
+          "role": "刺客",
+          "text": "刺杀要找信息源，不是找发言最强的人。AI-白夜 的判断命中率值得怀疑。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "忠臣",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    },
+    {
+      "gameIndex": 12,
+      "seed": 20260533,
+      "score": {
+        "total": 84,
+        "chatMessages": 48,
+        "averageLength": 37.9,
+        "keywordHitRate": 0.896,
+        "fallbackTargets": 0,
+        "selfReveals": 0,
+        "tooShort": 0,
+        "duplicates": 2,
+        "templateDuplicates": 5,
+        "speakerBalance": {
+          "AI-北桥": 6,
+          "AI-南风": 6,
+          "AI-星野": 6,
+          "AI-松间": 6,
+          "AI-洛川": 6,
+          "AI-渡鸦": 6,
+          "AI-灰塔": 6,
+          "AI-白夜": 6
+        }
+      },
+      "roomId": "room_2471fb44d6",
+      "roles": {
+        "AI-南风": "忠臣",
+        "AI-渡鸦": "忠臣",
+        "AI-灰塔": "派西维尔",
+        "AI-洛川": "爪牙",
+        "AI-松间": "刺客",
+        "AI-白夜": "梅林",
+        "AI-星野": "莫甘娜",
+        "AI-北桥": "忠臣"
+      },
+      "phaseScores": [
+        {
+          "phase": "开局确认",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "组队提名",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "圆桌讨论",
+          "messages": 8,
+          "keywordHitRate": 0.875,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        },
+        {
+          "phase": "队伍投票",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 2,
+          "templateDuplicates": 2
+        },
+        {
+          "phase": "任务结果",
+          "messages": 8,
+          "keywordHitRate": 1.0,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 0
+        },
+        {
+          "phase": "刺杀梅林",
+          "messages": 8,
+          "keywordHitRate": 0.625,
+          "fallbackTargets": 0,
+          "selfReveals": 0,
+          "tooShort": 0,
+          "duplicates": 0,
+          "templateDuplicates": 1
+        }
+      ],
+      "transcript": [
+        {
+          "phase": "开局确认",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "开局先记标准。AI-灰塔 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，开局先记标准。AI-松间 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "我会看谁愿意解释反对票。AI-南风 和 AI-白夜 这轮的态度差异值得观察。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，我先观察发言节奏。AI-渡鸦 如果过早给强结论，我会把 TA 放进重点观察位。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "第一轮信息少，我不会急着保人。AI-灰塔 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我会先控制信息量，只看谁急着定队伍。AI-灰塔 的第一轮标准值得记录。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "第一轮信息少，我不会急着保人。AI-北桥 的标准如果变来变去，后面要重点追问。"
+        },
+        {
+          "phase": "开局确认",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，开局先记标准。AI-松间 讲理由时如果只给结论，我会降低信任。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我倾向让 AI-洛川 上车，因为 TA 至少给了标准；AI-灰塔 先留在车下看票型。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，这车最好不要全凭感觉。AI-洛川 可以试，AI-星野 需要再给一轮解释。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "第一轮我更想上发言清楚的人。AI-星野 可以进队，AI-渡鸦 暂时观察。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，我建议队伍里带 AI-星野 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我会提一个低冲突队伍：我和 AI-北桥。如果有人强反对，请给具体原因。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，提名不要只看谁像好人。我更想让 AI-南风 上车，同时听 AI-北桥 的反对点。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我建议队伍里带 AI-洛川 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+        },
+        {
+          "phase": "组队提名",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，我倾向让 AI-星野 上车，因为 TA 至少给了标准；AI-星野 先留在车下看票型。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "AI-渡鸦 和 AI-松间 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，AI-星野 和 AI-松间 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "现在不要只说感觉。AI-松间 的投票和发言能不能对上，是我判断的重点。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，AI-白夜 的结论来得太快，我更想听 TA 为什么排除了其他可能。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我觉得 AI-北桥 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，AI-渡鸦 和 AI-松间 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我不想让讨论只围着我转。AI-洛川 的投票和发言也需要被检验。"
+        },
+        {
+          "phase": "圆桌讨论",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，AI-灰塔 和 AI-南风 的判断方向不一样，我想先听他们各自补一轮逻辑。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "我会投反对。AI-松间 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，我倾向通过。AI-灰塔 反对得有点泛，没有指出车上具体哪一位危险。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
+        },
+        {
+          "phase": "队伍投票",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，我会投反对。AI-松间 的理由太像补出来的，车上风险没有讲清楚。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "我会同时看车上责任和车下带节奏。AI-洛川 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，我会同时看车上责任和车下带节奏。AI-白夜 现在的复盘有点跳步。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "任务结果只是一个信息点。AI-白夜 需要解释为什么投票和现在的指控能对上。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，如果任务失败，我不会只打车上。AI-渡鸦 在车下的反应也很像提前准备过。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "我更想追 AI-洛川 的投票，不是只看任务成败。TA 前面已经给自己留了退路。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，先把车上和车下的发言分开看。AI-南风 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "任务结果不能只看失败牌，关键是车上谁提前铺了退路。AI-白夜 这点比较明显。"
+        },
+        {
+          "phase": "任务结果",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，先把车上和车下的发言分开看。AI-南风 如果一直只攻击结果，不解释投票，我会降低信任。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-南风",
+          "role": "忠臣",
+          "text": "不要替坏人缩小范围。AI-灰塔 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-渡鸦",
+          "role": "忠臣",
+          "text": "我直接一点，最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-灰塔",
+          "role": "派西维尔",
+          "text": "不要替坏人缩小范围。AI-渡鸦 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-洛川",
+          "role": "爪牙",
+          "text": "我先保守说，不要替坏人缩小范围。AI-南风 这时如果还在画像梅林，我会直接反对。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-松间",
+          "role": "刺客",
+          "text": "最后我会看谁一直在保护关键好人又不敢说死。AI-渡鸦 比较像这个位置。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-白夜",
+          "role": "梅林",
+          "text": "我直接一点，现在只讨论票型和任务线，不讨论谁像信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-星野",
+          "role": "莫甘娜",
+          "text": "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+        },
+        {
+          "phase": "刺杀梅林",
+          "speaker": "AI-北桥",
+          "role": "忠臣",
+          "text": "我先保守说，现在只讨论票型和任务线，不讨论谁像信息位。"
+        }
+      ]
+    }
+  ]
+}

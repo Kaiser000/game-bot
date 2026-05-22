@@ -32,6 +32,26 @@ npm run dev
 http://localhost:5173
 ```
 
+## 全 AI 阿瓦隆实验
+
+仓库内置了 8 人阿瓦隆全 AI 循环脚本，用于回归 AI 补位发言质量：
+
+```bash
+python scripts\run_avalon_ai_demo.py --games 12
+```
+
+脚本会创建 12 局 8 人全 AI 阿瓦隆，每局循环 6 个阶段，共生成 576 条 AI 发言，并把结果写入：
+
+```text
+docs/avalon-ai-demo-results.json
+```
+
+效果报告见：
+
+```text
+docs/avalon-ai-demo-effect-report.md
+```
+
 ## 后续路线
 
 - 接入真实大模型，让 AI 根据完整上下文和隐藏身份进行自然语言推理。

@@ -90,7 +90,7 @@ def append_message(room: dict, speaker: str, text: str, message_type: str = "cha
 def create_room(payload: dict) -> dict:
     game = GAMES.get(payload.get("gameId"), GAMES["werewolf"])
     total = clamp(payload.get("targetPlayers", game["defaultTarget"]), game["minPlayers"], game["maxPlayers"])
-    humans = clamp(payload.get("humanPlayers", total - 1), 1, total)
+    humans = clamp(payload.get("humanPlayers", total - 1), 0, total)
     roles = role_plan(game["id"], total)
     names = SEAT_NAMES[:]
     random.shuffle(roles)
@@ -135,6 +135,8 @@ def recent_text(room: dict) -> str:
 
 def other_seat_name(room: dict, seat: dict, seat_type: str = "human") -> str:
     candidates = [item for item in room["seats"] if item["id"] != seat["id"] and item["type"] == seat_type and item["alive"]]
+    if not candidates:
+        candidates = [item for item in room["seats"] if item["id"] != seat["id"] and item["alive"]]
     return random.choice(candidates)["name"] if candidates else "上一位发言的人"
 
 
@@ -179,37 +181,125 @@ def generate_avalon_reply(room: dict, seat: dict) -> str:
     camp = role_camp(room["gameId"], seat["role"])
     target = other_seat_name(room, seat)
     ai_target = other_seat_name(room, seat, "ai")
+    second_target = other_seat_name(room, seat)
+
+    if room["phase"] == "开局确认":
+        if camp == "evil":
+            return random.choice(
+                [
+                    f"我先观察发言节奏。{target} 如果过早给强结论，我会把 TA 放进重点观察位。",
+                    f"第一轮信息少，我不会急着保人。{target} 的标准如果变来变去，后面要重点追问。",
+                    f"我想先看谁主动定义好人标准。{target} 现在还不能放过，但也没到直接打死。",
+                ]
+            )
+        if seat["role"] == "梅林":
+            return random.choice(
+                [
+                    f"我会先控制信息量，只看谁急着定队伍。{target} 的第一轮标准值得记录。",
+                    f"开局我更看重投票逻辑，不会只听身份感。{target} 和 {second_target} 的互动可以先记下来。",
+                    f"先别把话说死。{target} 如果持续给出过准判断，我反而会更谨慎。",
+                ]
+            )
+        return random.choice(
+            [
+                f"我先不急着站边，重点看 {target} 的组队标准是不是前后一致。",
+                f"开局先记标准。{target} 讲理由时如果只给结论，我会降低信任。",
+                f"我会看谁愿意解释反对票。{target} 和 {second_target} 这轮的态度差异值得观察。",
+            ]
+        )
 
     if room["phase"] == "组队提名":
         if camp == "evil":
-            return f"我建议队伍里带 {target} 和我。这个组合发言压力比较低，后续任务结果也更好判断。"
+            return random.choice(
+                [
+                    f"我建议队伍里带 {target} 和我。这个组合发言压力比较低，后续任务结果也更好判断。",
+                    f"这轮我不想上太复杂的车，{target} 加我就够了，先让任务给信息。",
+                    f"我会提一个低冲突队伍：我和 {target}。如果有人强反对，请给具体原因。",
+                ]
+            )
         if seat["role"] == "梅林":
-            return f"我会倾向排除发言太顺的人，队伍可以先从我、{target} 开始，但还要听反对理由。"
-        return f"第一轮我更想上发言清楚的人。{target} 可以进队，{ai_target} 暂时观察。"
+            return random.choice(
+                [
+                    f"我会倾向排除发言太顺的人，队伍可以先从我、{target} 开始，但还要听反对理由。",
+                    f"提名不要只看谁像好人。我更想让 {target} 上车，同时听 {second_target} 的反对点。",
+                    f"我可以接受我和 {target} 先试一车，但不希望大家无脑通过。",
+                ]
+            )
+        return random.choice(
+            [
+                f"第一轮我更想上发言清楚的人。{target} 可以进队，{ai_target} 暂时观察。",
+                f"我倾向让 {target} 上车，因为 TA 至少给了标准；{ai_target} 先留在车下看票型。",
+                f"这车最好不要全凭感觉。{target} 可以试，{ai_target} 需要再给一轮解释。",
+            ]
+        )
 
     if room["phase"] == "队伍投票":
         if camp == "evil":
-            return "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。"
-        return "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。"
+            return random.choice(
+                [
+                    "我会同意这车。现在反复换队只会让信息更乱，先让任务给结果。",
+                    f"我倾向通过。{target} 反对得有点泛，没有指出车上具体哪一位危险。",
+                    "这车不是完美，但第一轮需要信息。我先同意，任务后再复盘票型。",
+                ]
+            )
+        return random.choice(
+            [
+                "我不太满意这车的解释。如果提名人不能说明为什么排除某些人，我会投反对。",
+                f"我会投反对。{target} 的理由太像补出来的，车上风险没有讲清楚。",
+                f"我想先否掉这车。{target} 和 {second_target} 的互保关系还没解释干净。",
+            ]
+        )
 
     if room["phase"] == "任务结果":
         if camp == "evil":
-            return f"任务结果不能只看失败牌，关键是车上谁提前铺了退路。{target} 这点比较明显。"
-        return f"先把车上和车下的发言分开看。{target} 如果一直只攻击结果，不解释投票，我会降低信任。"
+            return random.choice(
+                [
+                    f"任务结果不能只看失败牌，关键是车上谁提前铺了退路。{target} 这点比较明显。",
+                    f"我更想追 {target} 的投票，不是只看任务成败。TA 前面已经给自己留了退路。",
+                    f"如果任务失败，我不会只打车上。{target} 在车下的反应也很像提前准备过。",
+                ]
+            )
+        return random.choice(
+            [
+                f"先把车上和车下的发言分开看。{target} 如果一直只攻击结果，不解释投票，我会降低信任。",
+                f"任务结果只是一个信息点。{target} 需要解释为什么投票和现在的指控能对上。",
+                f"我会同时看车上责任和车下带节奏。{target} 现在的复盘有点跳步。",
+            ]
+        )
 
     if room["phase"] == "刺杀梅林":
         if seat["role"] == "刺客":
-            return f"我会从知道太多但不敢直说的人里找梅林。{target} 的站边有点过于精准。"
-        return "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。"
+            return random.choice(
+                [
+                    f"我会从知道太多但不敢直说的人里找梅林。{target} 的站边有点过于精准。",
+                    f"最后我会看谁一直在保护关键好人又不敢说死。{target} 比较像这个位置。",
+                    f"刺杀要找信息源，不是找发言最强的人。{target} 的判断命中率值得怀疑。",
+                ]
+            )
+        return random.choice(
+            [
+                "最后阶段不要给梅林画像。我们只复盘投票，不暴露信息位。",
+                f"不要替坏人缩小范围。{target} 这时如果还在画像梅林，我会直接反对。",
+                "现在只讨论票型和任务线，不讨论谁像信息位。",
+            ]
+        )
 
     if camp == "evil":
-        return f"我觉得 {target} 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。"
+        return random.choice(
+            [
+                f"我觉得 {target} 的逻辑有点过度自信。阿瓦隆里太确定的人经常是在藏视角。",
+                f"{target} 的结论来得太快，我更想听 TA 为什么排除了其他可能。",
+                f"我不想让讨论只围着我转。{target} 的投票和发言也需要被检验。",
+            ]
+        )
 
     return random.choice(
         [
             f"我想把提名理由写清楚：谁上车、谁不上车、为什么。{target} 这轮需要给出标准。",
             f"现在不要只说感觉。{target} 的投票和发言能不能对上，是我判断的重点。",
             f"这局先控信息量。{ai_target} 的发言有价值，但我还没到完全信任。",
+            f"我会追问 {target} 的反对理由。只说不舒服不够，要能落到车和票上。",
+            f"{target} 和 {second_target} 的判断方向不一样，我想先听他们各自补一轮逻辑。",
         ]
     )
 

@@ -37,6 +37,8 @@ function Setup({ games, onCreate }) {
     setHumanPlayers(Math.max(1, game.defaultTarget - 1));
   }, [game?.id]);
 
+  const avalon = games.find((item) => item.id === "avalon");
+
   return (
     <section className="setup-panel">
       <div className="brand-row">
@@ -80,7 +82,7 @@ function Setup({ games, onCreate }) {
           <span>真人人数</span>
           <input
             type="number"
-            min="1"
+            min="0"
             max={targetPlayers}
             value={humanPlayers}
             onChange={(event) => setHumanPlayers(Number(event.target.value))}
@@ -91,6 +93,17 @@ function Setup({ games, onCreate }) {
           创建文字局
         </button>
       </form>
+
+      {avalon && (
+        <button
+          className="quick-demo"
+          type="button"
+          onClick={() => onCreate({ gameId: "avalon", targetPlayers: 8, humanPlayers: 0 })}
+        >
+          <Sparkles size={18} />
+          8 人阿瓦隆全 AI 演示
+        </button>
+      )}
 
       <div className="demo-strip" aria-hidden="true">
         <span>身份分配</span>
@@ -155,7 +168,7 @@ function Room({ room, games, onRoomChange }) {
 
   async function sendMessage(event) {
     event.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() || !speakerId) return;
     const data = await api(`/api/rooms/${room.id}/message`, {
       method: "POST",
       body: { seatId: speakerId, text: text.trim() }
@@ -210,25 +223,32 @@ function Room({ room, games, onRoomChange }) {
 
         <Messages room={room} />
 
-        <form className="composer" onSubmit={sendMessage}>
-          <select value={speakerId} onChange={(event) => setSpeakerId(event.target.value)} aria-label="选择发言玩家">
-            {humans.map((seat) => (
-              <option key={seat.id} value={seat.id}>
-                {seat.name}
-              </option>
-            ))}
-          </select>
-          <textarea
-            rows="3"
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            placeholder="输入真人玩家发言，例如：我觉得 3 号刚才在强行站边。"
-          />
-          <button type="submit">
-            <Send size={18} />
-            发送
-          </button>
-        </form>
+        {humans.length > 0 ? (
+          <form className="composer" onSubmit={sendMessage}>
+            <select value={speakerId} onChange={(event) => setSpeakerId(event.target.value)} aria-label="选择发言玩家">
+              {humans.map((seat) => (
+                <option key={seat.id} value={seat.id}>
+                  {seat.name}
+                </option>
+              ))}
+            </select>
+            <textarea
+              rows="3"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              placeholder="输入真人玩家发言，例如：我觉得 3 号刚才在强行站边。"
+            />
+            <button type="submit">
+              <Send size={18} />
+              发送
+            </button>
+          </form>
+        ) : (
+          <div className="observer-bar">
+            <Bot size={18} />
+            全 AI 观察模式：切换阶段后点击“AI 发言”，观察 8 位 AI 的讨论质量。
+          </div>
+        )}
       </section>
     </section>
   );
