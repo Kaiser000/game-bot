@@ -150,6 +150,86 @@ function BoardRulesPanel({ game, board, compact = false }) {
   );
 }
 
+function DashboardStats({ games, game, board, personas, personaModes }) {
+  const stats = [
+    { label: "游戏模块", value: games.length || 0 },
+    { label: "当前板子", value: game?.boards?.length || 0 },
+    { label: "打法人设", value: personas.length || 0 },
+    { label: "策略模式", value: personaModes.length || 0 }
+  ];
+
+  return (
+    <div className="dashboard-stats">
+      {stats.map((stat) => (
+        <div className="stat-tile" key={stat.label}>
+          <strong>{stat.value}</strong>
+          <span>{stat.label}</span>
+        </div>
+      ))}
+      <div className="stat-tile wide">
+        <strong>{board?.name || "默认板子"}</strong>
+        <span>{game?.name || "桌游"} · 可直接开局</span>
+      </div>
+    </div>
+  );
+}
+
+function LobbyTablePreview({ gameId, board, humanPlayers, aiSeats }) {
+  const total = board?.playerCount || Math.max(6, humanPlayers + aiSeats);
+  const seats = Array.from({ length: total }, (_, index) => ({
+    id: index,
+    type: index < humanPlayers ? "human" : "ai",
+    role: board?.roles?.[index] || ""
+  }));
+
+  return (
+    <div className="lobby-preview" aria-label="开局座位预览">
+      <div className="preview-table">
+        <div className="preview-table-core">
+          <span>ROUND</span>
+          <strong>{total}</strong>
+          <small>{humanPlayers} 真人 · {aiSeats} AI</small>
+        </div>
+        {seats.map((seat, index) => (
+          <span
+            className={`preview-seat ${seat.type} ${seat.role ? roleCamp(gameId, seat.role) : ""}`}
+            key={seat.id}
+            style={seatPositionStyle(index, total)}
+            title={seat.role || seat.type}
+          />
+        ))}
+      </div>
+      <div className="preview-caption">
+        <strong>{board?.name || "选择板子后生成座位"}</strong>
+        <span>创建前即可确认人数、AI 补位和身份密度</span>
+      </div>
+    </div>
+  );
+}
+
+function RulebookHeroPanel({ game, board }) {
+  const counts = roleCounts(board?.roles || []);
+  const goodCount = Object.entries(counts).reduce((sum, [role, count]) => sum + (roleCamp(game?.id, role) === "good" ? count : 0), 0);
+  const evilCount = Object.entries(counts).reduce((sum, [role, count]) => sum + (roleCamp(game?.id, role) === "evil" ? count : 0), 0);
+
+  return (
+    <div className="rulebook-card">
+      <div>
+        <p className="eyebrow">CURRENT PRESET</p>
+        <strong>{board?.name || "请选择板子"}</strong>
+      </div>
+      <div className="rulebook-meter">
+        <span style={{ width: `${board?.playerCount ? (goodCount / board.playerCount) * 100 : 50}%` }} />
+      </div>
+      <div className="rulebook-numbers">
+        <span>{board?.playerCount || 0} 人</span>
+        <span>{goodCount} 好人</span>
+        <span>{evilCount} 坏人</span>
+      </div>
+    </div>
+  );
+}
+
 function AppNav({ page, room, onNavigate }) {
   const items = [
     { id: "setup", label: "开局", icon: <Home size={17} />, path: "setup" },
@@ -232,6 +312,9 @@ function Setup({ games, personaModes, onCreate }) {
             <p>给狼人杀、阿瓦隆这类文字桌游补上缺席玩家，让朋友局能按原板子开起来。</p>
           </div>
         </div>
+
+        <LobbyTablePreview gameId={game?.id || "werewolf"} board={selectedBoard} humanPlayers={humanPlayers} aiSeats={aiSeats} />
+        <DashboardStats games={games} game={game} board={selectedBoard} personas={personas} personaModes={personaModes} />
 
         <div className="feature-grid">
           <Feature icon={<UsersRound size={20} />} title="缺人补位" text="支持真人 + AI 混桌，也支持全 AI 观察局。" />
@@ -394,6 +477,7 @@ function RulesPage({ games }) {
               ))}
             </select>
           </label>
+          <RulebookHeroPanel game={game} board={selectedBoard} />
         </div>
       </header>
 
