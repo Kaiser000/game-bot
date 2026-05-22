@@ -49,10 +49,42 @@ http://localhost:5173
 
 默认不配置 Key 时，后端会使用本地规则兜底，方便离线跑 demo。真实模型统一走 LangChain 的 `ChatOpenAI`。
 
+### 推荐 env 模板
+
+本地可以按下面格式准备 `.env.local`，但不要提交真实值。仓库已经忽略 `.env` 和 `.env.*`，README 里也只保留脱敏占位符：
+
+```dotenv
+AI_PROVIDER=codingplan
+AI_API_BASE_URL=http://<OPENAI_COMPATIBLE_HOST>:<PORT>/v1
+AI_API_KEY=<YOUR_OPENAI_COMPATIBLE_API_KEY>
+AI_MODEL=gpt-5.5
+AI_USE_ENV_PROXY=false
+```
+
+如果服务方给的是完整 Chat Completions URL，也可以这样写：
+
+```dotenv
+AI_PROVIDER=codingplan
+AI_API_URL=http://<OPENAI_COMPATIBLE_HOST>:<PORT>/v1/chat/completions
+AI_API_KEY=<YOUR_OPENAI_COMPATIBLE_API_KEY>
+AI_MODEL=gpt-5.5
+AI_USE_ENV_PROXY=false
+```
+
+当前后端读取的是进程环境变量。Windows PowerShell 启动前可按下面方式设置：
+
+```powershell
+$env:AI_PROVIDER="codingplan"
+$env:AI_API_BASE_URL="http://<OPENAI_COMPATIBLE_HOST>:<PORT>/v1"
+$env:AI_API_KEY="<YOUR_OPENAI_COMPATIBLE_API_KEY>"
+$env:AI_MODEL="gpt-5.5"
+$env:AI_USE_ENV_PROXY="false"
+```
+
 要接 OpenAI 官方接口：
 
 ```powershell
-$env:OPENAI_API_KEY="你的 OpenAI Key"
+$env:OPENAI_API_KEY="<YOUR_OPENAI_API_KEY>"
 $env:OPENAI_MODEL="gpt-5.2"
 cd backend
 pip install -r requirements.txt
@@ -62,10 +94,10 @@ python -m app.main
 如果 CodingPlan 给的是 OpenAI-compatible 的 `base_url`：
 
 ```powershell
-$env:AI_API_KEY="你的 CodingPlan Key"
+$env:AI_API_KEY="<YOUR_OPENAI_COMPATIBLE_API_KEY>"
 $env:AI_PROVIDER="codingplan"
-$env:AI_API_BASE_URL="https://你的-codingplan-域名/v1"
-$env:AI_MODEL="你的模型名"
+$env:AI_API_BASE_URL="http://<OPENAI_COMPATIBLE_HOST>:<PORT>/v1"
+$env:AI_MODEL="gpt-5.5"
 cd backend
 pip install -r requirements.txt
 python -m app.main
@@ -74,10 +106,10 @@ python -m app.main
 如果 CodingPlan 给的是完整接口 URL，也可以直接填，后端会自动截出 base URL 给 LangChain：
 
 ```powershell
-$env:AI_API_KEY="你的 CodingPlan Key"
+$env:AI_API_KEY="<YOUR_OPENAI_COMPATIBLE_API_KEY>"
 $env:AI_PROVIDER="codingplan"
-$env:AI_API_URL="https://你的-codingplan-域名/v1/chat/completions"
-$env:AI_MODEL="你的模型名"
+$env:AI_API_URL="http://<OPENAI_COMPATIBLE_HOST>:<PORT>/v1/chat/completions"
+$env:AI_MODEL="gpt-5.5"
 cd backend
 pip install -r requirements.txt
 python -m app.main
