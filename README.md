@@ -1,4 +1,4 @@
-# Tabletop AI Fill Demo
+# game-bot
 
 一个纯文字桌游 AI 补位 demo：当狼人杀、阿瓦隆等桌游缺 1-2 人时，用 AI 玩家补齐座位并参与文字发言。
 
