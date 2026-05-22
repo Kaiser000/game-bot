@@ -175,7 +175,7 @@ function LobbyTablePreview({ gameId, board, humanPlayers, aiSeats }) {
       </div>
       <div className="preview-caption">
         <strong>{board?.name || "选择板子后生成座位"}</strong>
-        <span>创建前即可确认人数、AI 补位和身份密度</span>
+        <span>创建前即可确认人数、AI 代入和身份密度</span>
       </div>
     </div>
   );
@@ -264,7 +264,7 @@ function AppNav({ page, room, onNavigate }) {
     <nav className="app-nav" aria-label="主导航">
       <div className="nav-brand">
         <Bot size={22} />
-        <span>桌游 AI 补位</span>
+        <span>圆桌智核</span>
       </div>
       <div className="nav-links">
         {items.map((item) => (
@@ -322,9 +322,9 @@ function Setup({ games, personaModes, onCreate }) {
             <Bot size={34} />
           </div>
           <div>
-            <p className="eyebrow">AI BOARD GAME SEAT FILLER</p>
-            <h1>桌游 AI 补位</h1>
-            <p>给狼人杀、阿瓦隆这类文字桌游补上缺席玩家，让朋友局能按原板子开起来。</p>
+            <p className="eyebrow">ROUND TABLE INTELLIGENCE</p>
+            <h1>圆桌智核</h1>
+            <p>缺人也能开局的桌游 AI 玩家，让狼人杀、阿瓦隆这类朋友局按原板子开起来。</p>
           </div>
         </div>
 
@@ -558,7 +558,7 @@ function PersonasPage({ games, personaModes }) {
         <div>
           <p className="eyebrow">PERSONA LIBRARY</p>
           <h1>AI 人设打法库</h1>
-          <p>按游戏、身份和打法方案管理 AI 补位的行为风格，后续可以直接扩展成可编辑知识库。</p>
+          <p>按游戏、身份和打法方案管理 AI 玩家的行为风格，后续可以直接扩展成可编辑知识库。</p>
         </div>
         <label className="page-select">
           <span>游戏模板</span>
@@ -821,7 +821,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
       <header className="room-header">
         <div>
           <p className="eyebrow">{game?.name || "桌游房间"}{board?.name ? ` · ${board.name}` : ""}</p>
-          <h1>{room.seats.length} 人局 · {room.aiSeats} 位 AI 补位</h1>
+          <h1>{room.seats.length} 人局 · {room.aiSeats} 位 AI 入局</h1>
           <p>
             当前阶段：{room.phase} · 打法方案：{modeLabel(personaModes, room.personaMode)} · AI：{runtimeLabel(room.aiRuntime)} · 消息 {room.messages.length}
           </p>
