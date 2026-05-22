@@ -190,7 +190,6 @@ function BoardSetupSummary({ game, board, aiSeats, selectedMode }) {
       <div>
         <p className="eyebrow">CURRENT TABLE</p>
         <h2>{board.name}</h2>
-        <p>{board.summary}</p>
       </div>
       <div className="summary-meta">
         <span>{board.playerCount} 人</span>

@@ -217,16 +217,16 @@ p {
   width: min(1440px, calc(100vw - 28px));
   min-height: 100vh;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 14px 0;
 }
 
 .app-nav {
-  min-height: 58px;
+  min-height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   padding: 10px 12px;
   border: 1px solid var(--line);
   background:
@@ -294,7 +294,7 @@ p {
 }
 
 .home-layout {
-  min-height: calc(100vh - 112px);
+  min-height: calc(100vh - 92px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(410px, 0.68fr);
   gap: 18px;
@@ -325,7 +325,7 @@ p {
 .intro-panel,
 .setup-panel,
 .knowledge-panel {
-  padding: 24px;
+  padding: 20px;
 }
 
 .intro-panel {
@@ -368,7 +368,7 @@ p {
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 
 .brand-mark {
@@ -418,8 +418,8 @@ p {
   grid-template-columns: minmax(300px, 0.9fr) minmax(190px, 0.42fr);
   gap: 20px;
   align-items: center;
-  margin: 20px 0 14px;
-  padding: 20px;
+  margin: 16px 0 12px;
+  padding: 16px;
   border: 1px solid rgba(217, 164, 65, 0.28);
   background:
     linear-gradient(135deg, rgba(38, 56, 47, 0.8), rgba(18, 16, 13, 0.88)),
@@ -434,7 +434,7 @@ p {
 
 .preview-table {
   position: relative;
-  min-height: 280px;
+  min-height: 235px;
 }
 
 .preview-table::before {
@@ -605,7 +605,7 @@ p {
 
 .setup-form {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .setup-panel {
@@ -616,8 +616,8 @@ p {
 
 .setup-step {
   display: grid;
-  gap: 12px;
-  padding: 15px;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid rgba(65, 55, 43, 0.82);
   background:
     linear-gradient(135deg, rgba(217, 164, 65, 0.045), transparent 48%),
@@ -676,7 +676,7 @@ p {
 }
 
 .board-choice {
-  min-height: 66px;
+  min-height: 58px;
   display: block;
   border: 1px solid var(--line);
   background: rgba(18, 16, 13, 0.58);
@@ -698,17 +698,18 @@ p {
 }
 
 .setup-summary-panel {
-  display: grid;
-  gap: 14px;
-  margin-top: 16px;
-  padding: 16px;
+  display: none;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
   border: 1px solid rgba(217, 164, 65, 0.22);
   background: rgba(217, 164, 65, 0.045);
 }
 
 .setup-summary-panel h2 {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 21px;
 }
 
 .setup-summary-panel p {
@@ -746,7 +747,7 @@ label span {
 }
 
 .field-hint {
-  min-height: 44px;
+  min-height: 22px;
   margin-top: -6px;
   font-size: 13px;
 }
@@ -1539,6 +1540,10 @@ label span {
 
   .lobby-preview {
     grid-template-columns: 1fr;
+  }
+
+  .setup-summary-panel {
+    display: grid;
   }
 
   .seat-board,
