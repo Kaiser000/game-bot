@@ -75,8 +75,23 @@ function saveRoomToken(roomId, token) {
   if (roomId && token) window.localStorage.setItem(roomTokenKey(roomId), token);
 }
 
-function roomApiPath(roomId, playerToken = "") {
-  const suffix = playerToken ? `?playerToken=${encodeURIComponent(playerToken)}` : "";
+function roomHostTokenKey(roomId) {
+  return `roundtable-host-token:${roomId}`;
+}
+
+function getRoomHostToken(roomId) {
+  return roomId ? window.localStorage.getItem(roomHostTokenKey(roomId)) || "" : "";
+}
+
+function saveRoomHostToken(roomId, token) {
+  if (roomId && token) window.localStorage.setItem(roomHostTokenKey(roomId), token);
+}
+
+function roomApiPath(roomId, playerToken = "", hostToken = "") {
+  const params = new URLSearchParams();
+  if (playerToken) params.set("playerToken", playerToken);
+  if (hostToken) params.set("hostToken", hostToken);
+  const suffix = params.toString() ? `?${params.toString()}` : "";
   return `/api/rooms/${roomId}${suffix}`;
 }
 
@@ -854,7 +869,7 @@ function Messages({ room }) {
   );
 }
 
-function Room({ room, games, personaModes, playerToken, onPlayerTokenChange, onRoomChange, onReset }) {
+function Room({ room, games, personaModes, playerToken, hostToken, onPlayerTokenChange, onRoomChange, onReset }) {
   const [text, setText] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -865,16 +880,18 @@ function Room({ room, games, personaModes, playerToken, onPlayerTokenChange, onR
   const currentPlayer = room.currentPlayer || room.seats.find((seat) => seat.isYou);
   const currentPhaseIndex = game?.phases.indexOf(room.phase) ?? 0;
   const nextPhase = game?.phases[(currentPhaseIndex + 1) % game.phases.length];
+  const isHost = Boolean(room.host?.isHost);
 
   async function updatePhase(phase) {
-    const data = await api(`/api/rooms/${room.id}/phase`, { method: "POST", body: { phase, playerToken } });
+    if (!isHost) return;
+    const data = await api(`/api/rooms/${room.id}/phase`, { method: "POST", body: { phase, playerToken, hostToken } });
     onRoomChange(data.room);
   }
 
   async function joinSeat(seatId) {
     const data = await api(`/api/rooms/${room.id}/join`, {
       method: "POST",
-      body: { seatId, playerName: playerName.trim() || "玩家", playerToken }
+      body: { seatId, playerName: playerName.trim() || "玩家", playerToken, hostToken }
     });
     saveRoomToken(room.id, data.playerToken);
     onPlayerTokenChange(data.playerToken);
@@ -890,16 +907,17 @@ function Room({ room, games, personaModes, playerToken, onPlayerTokenChange, onR
     if (!text.trim() || !currentPlayer) return;
     const data = await api(`/api/rooms/${room.id}/message`, {
       method: "POST",
-      body: { seatId: currentPlayer.id, text: text.trim(), playerToken }
+      body: { seatId: currentPlayer.id, text: text.trim(), playerToken, hostToken }
     });
     setText("");
     onRoomChange(data.room);
   }
 
   async function runAiTurn() {
+    if (!isHost) return;
     setThinking(true);
     try {
-      const data = await api(`/api/rooms/${room.id}/ai-turn`, { method: "POST", body: { playerToken } });
+      const data = await api(`/api/rooms/${room.id}/ai-turn`, { method: "POST", body: { playerToken, hostToken } });
       onRoomChange(data.room);
     } finally {
       setThinking(false);
@@ -920,13 +938,14 @@ function Room({ room, games, personaModes, playerToken, onPlayerTokenChange, onR
           <p>
             当前阶段：{room.phase} · 打法方案：{modeLabel(personaModes, room.personaMode)} · AI：{runtimeLabel(room.aiRuntime)} · 消息 {room.messages.length}
           </p>
+          <p className="host-note">{isHost ? "房主控制台已解锁" : "玩家视图：等待房主推进流程"}</p>
         </div>
         <div className="room-actions">
-          <button type="button" onClick={runAiTurn} disabled={thinking}>
+          <button type="button" onClick={runAiTurn} disabled={thinking || !isHost}>
             <Sparkles size={18} />
             {thinking ? "思考中" : "AI 发言"}
           </button>
-          <button className="secondary-button" type="button" onClick={advancePhase}>
+          <button className="secondary-button" type="button" onClick={advancePhase} disabled={!isHost}>
             <Clock3 size={18} />
             下一阶段
           </button>
@@ -1023,6 +1042,7 @@ function App() {
   const [route, setRoute] = useState(routeFromHash);
   const [roomLoading, setRoomLoading] = useState(false);
   const [playerToken, setPlayerToken] = useState("");
+  const [hostToken, setHostToken] = useState("");
 
   useEffect(() => {
     Promise.all([api("/api/games"), api("/api/personas")])
@@ -1044,9 +1064,11 @@ function App() {
     if (route.page !== "room" || !route.roomId) {
       setRoomLoading(false);
       setPlayerToken("");
+      setHostToken("");
       return;
     }
     setPlayerToken(getRoomToken(route.roomId));
+    setHostToken(getRoomHostToken(route.roomId));
   }, [route.page, route.roomId]);
 
   useEffect(() => {
@@ -1057,7 +1079,7 @@ function App() {
     async function loadRoom(showLoading = false) {
       if (showLoading) setRoomLoading(true);
       try {
-        const data = await api(roomApiPath(route.roomId, playerToken));
+        const data = await api(roomApiPath(route.roomId, playerToken, hostToken));
         if (!cancelled) {
           setRoom(data.room);
           setError("");
@@ -1078,7 +1100,7 @@ function App() {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [route.page, route.roomId, playerToken]);
+  }, [route.page, route.roomId, playerToken, hostToken]);
 
   async function createRoom(payload) {
     setError("");
@@ -1086,6 +1108,10 @@ function App() {
       const data = await api("/api/rooms", { method: "POST", body: payload });
       setRoom(data.room);
       setPlayerToken("");
+      if (data.hostToken) {
+        saveRoomHostToken(data.room.id, data.hostToken);
+        setHostToken(data.hostToken);
+      }
       setRoute({ page: "room", roomId: data.room.id });
       navigateTo(`rooms/${data.room.id}`);
     } catch (err) {
@@ -1101,11 +1127,13 @@ function App() {
           games={games}
           personaModes={personaModes}
           playerToken={playerToken}
+          hostToken={hostToken}
           onPlayerTokenChange={setPlayerToken}
           onRoomChange={setRoom}
           onReset={() => {
             setRoom(null);
             setPlayerToken("");
+            setHostToken("");
             setRoute({ page: "setup", roomId: "" });
             navigateTo("setup");
           }}

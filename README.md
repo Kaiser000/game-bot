@@ -56,6 +56,35 @@ http://localhost:5173
 
 当前实时同步使用 2.5 秒自动轮询，适合 demo 和同桌局域网试玩；后续可以升级为 WebSocket。
 
+## 公网域名部署
+
+生产部署走 Docker Compose：
+
+1. 在服务器安装 Docker 和 Docker Compose。
+2. 把域名 A 记录解析到服务器公网 IP。
+3. 复制 `.env.example` 为 `.env`，填写 `PUBLIC_DOMAIN`、`PUBLIC_ORIGIN` 和模型服务环境变量。
+4. 启动：
+
+```bash
+docker compose up -d --build
+```
+
+打开 `https://你的域名`，房主创建房间后把邀请链接发给玩家即可。
+
+部署结构：
+
+- Caddy 服务前端静态文件，并把 `/api/*` 反代到 Python 后端。
+- 配置真实公网域名后，Caddy 会自动申请和续期 HTTPS 证书。
+- 房间状态写入 Docker volume 中的 `/data/rooms.json`，容器重启后不会丢房间。
+- 房主 token 只保存在创建房间的浏览器 localStorage，不会出现在邀请链接里；只有房主可以推进阶段和触发 AI 发言。
+- 普通玩家只能看到自己认领席位的隐藏身份，其他真人身份会被后端脱敏。
+
+安全注意：
+
+- `.env` 和 `.env.*` 已加入 `.gitignore`，禁止提交真实 `AI_API_KEY`、服务器密码、私有域名后台口令。
+- 生产环境建议把 `PUBLIC_ORIGIN` 设置为正式域名，例如 `https://roundtable.example.com`，不要长期使用 `*`。
+- 当前 demo 已有基础限流和请求体大小限制；如果开放给大量陌生用户，建议继续增加登录、房间密码、WebSocket 鉴权和审计日志。
+
 ## 接入真实模型
 
 默认不配置 Key 时，后端会使用本地规则兜底，方便离线跑 demo。真实模型统一走 LangChain 的 `ChatOpenAI`。

@@ -4,11 +4,13 @@ import json
 import os
 import random
 import re
+import time
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from secrets import token_hex
+from threading import RLock
 from urllib.parse import parse_qs, urlparse
 
 try:
@@ -25,6 +27,8 @@ except ImportError:  # pragma: no cover - the local rule fallback still boots wi
 PORT = 8000
 APP_DIR = Path(__file__).resolve().parent
 ROOMS: dict[str, dict] = {}
+ROOMS_LOCK = RLock()
+RATE_LIMITS: dict[str, list[float]] = {}
 
 
 def first_env(names: list[str], default: str = "") -> str:
@@ -35,6 +39,9 @@ def first_env(names: list[str], default: str = "") -> str:
     return default
 
 
+ROOM_STORE_VALUE = first_env(["ROOM_STORE_PATH"], "")
+ROOM_STORE_PATH = Path(ROOM_STORE_VALUE).expanduser() if ROOM_STORE_VALUE else None
+ALLOWED_ORIGINS = [origin.strip() for origin in first_env(["ALLOWED_ORIGINS", "PUBLIC_ORIGIN"], "*").split(",") if origin.strip()]
 AI_PROVIDER = first_env(["AI_PROVIDER"], "openai").lower()
 AI_MODEL = first_env(["AI_MODEL", "OPENAI_MODEL", "CODINGPLAN_MODEL"], "gpt-5.2")
 AI_TIMEOUT = float(first_env(["AI_TIMEOUT", "OPENAI_TIMEOUT"], "20"))
@@ -136,6 +143,42 @@ def random_id(prefix: str) -> str:
 
 def random_code() -> str:
     return token_hex(3).upper()
+
+
+def load_rooms() -> None:
+    if ROOM_STORE_PATH is None:
+        return
+    try:
+        if ROOM_STORE_PATH.exists():
+            data = json.loads(ROOM_STORE_PATH.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                ROOMS.update(data.get("rooms", {}))
+    except Exception as exc:
+        print(f"Failed to load room store: {exc}")
+
+
+def persist_rooms() -> None:
+    if ROOM_STORE_PATH is None:
+        return
+    try:
+        ROOM_STORE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = ROOM_STORE_PATH.with_suffix(ROOM_STORE_PATH.suffix + ".tmp")
+        tmp_path.write_text(json.dumps({"rooms": ROOMS}, ensure_ascii=False), encoding="utf-8")
+        tmp_path.replace(ROOM_STORE_PATH)
+    except Exception as exc:
+        print(f"Failed to persist room store: {exc}")
+
+
+def allow_request(client_id: str, limit: int = 240, window_seconds: int = 60) -> bool:
+    now = time.time()
+    bucket = RATE_LIMITS.setdefault(client_id, [])
+    cutoff = now - window_seconds
+    while bucket and bucket[0] < cutoff:
+        bucket.pop(0)
+    if len(bucket) >= limit:
+        return False
+    bucket.append(now)
+    return True
 
 
 def clamp(value: int | None, minimum: int, maximum: int) -> int:
@@ -246,7 +289,7 @@ def public_seat(room: dict, seat: dict, viewer_token: str = "") -> dict:
     }
 
 
-def public_room(room: dict, viewer_token: str = "") -> dict:
+def public_room(room: dict, viewer_token: str = "", host_token: str = "") -> dict:
     seats = [public_seat(room, seat, viewer_token) for seat in room["seats"]]
     current_player = next((seat for seat in seats if seat["isYou"]), None)
     return {
@@ -260,6 +303,7 @@ def public_room(room: dict, viewer_token: str = "") -> dict:
         "seats": seats,
         "messages": room["messages"],
         "currentPlayer": current_player,
+        "host": {"isHost": bool(host_token and host_token == room.get("hostToken"))},
         "game": GAMES[room["gameId"]],
         "board": find_board(room["gameId"], room.get("boardId"), len(room["seats"])),
         "aiSeats": len([seat for seat in room["seats"] if seat["type"] == "ai"]),
@@ -355,6 +399,7 @@ def create_room(payload: dict) -> dict:
     room = {
         "id": random_id("room"),
         "joinCode": random_code(),
+        "hostToken": random_id("host"),
         "gameId": game["id"],
         "boardId": board["id"] if board else "",
         "phase": game["phases"][0],
@@ -765,8 +810,18 @@ def collapse_repeated_sentences(text: str) -> str:
 
 
 class ApiHandler(BaseHTTPRequestHandler):
+    max_body_size = 64 * 1024
+
+    def client_id(self) -> str:
+        forwarded_for = self.headers.get("X-Forwarded-For", "")
+        if forwarded_for:
+            return forwarded_for.split(",")[0].strip()
+        return self.client_address[0]
+
     def end_headers(self) -> None:
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin", "")
+        allowed_origin = "*" if "*" in ALLOWED_ORIGINS else origin if origin in ALLOWED_ORIGINS else (ALLOWED_ORIGINS[0] if ALLOWED_ORIGINS else "*")
+        self.send_header("Access-Control-Allow-Origin", allowed_origin)
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         super().end_headers()
@@ -776,6 +831,9 @@ class ApiHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self) -> None:
+        if not allow_request(self.client_id()):
+            self.send_json({"detail": "Too many requests"}, HTTPStatus.TOO_MANY_REQUESTS)
+            return
         parsed = urlparse(self.path)
         path = parsed.path
         if path == "/api/games":
@@ -795,8 +853,10 @@ class ApiHandler(BaseHTTPRequestHandler):
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
             room = ROOMS.get(parts[2])
             if room:
-                viewer_token = parse_qs(parsed.query).get("playerToken", [""])[0]
-                self.send_json({"room": public_room(room, viewer_token)})
+                query = parse_qs(parsed.query)
+                viewer_token = query.get("playerToken", [""])[0]
+                host_token = query.get("hostToken", [""])[0]
+                self.send_json({"room": public_room(room, viewer_token, host_token)})
             else:
                 self.send_json({"detail": "Room not found"}, HTTPStatus.NOT_FOUND)
             return
@@ -804,12 +864,21 @@ class ApiHandler(BaseHTTPRequestHandler):
         self.send_json({"detail": "Not found"}, HTTPStatus.NOT_FOUND)
 
     def do_POST(self) -> None:
+        if not allow_request(self.client_id(), limit=180):
+            self.send_json({"detail": "Too many requests"}, HTTPStatus.TOO_MANY_REQUESTS)
+            return
         path = urlparse(self.path).path
-        payload = self.read_json()
+        try:
+            payload = self.read_json()
+        except (json.JSONDecodeError, ValueError) as exc:
+            self.send_json({"detail": str(exc)}, HTTPStatus.BAD_REQUEST)
+            return
 
         if path == "/api/rooms":
             room = create_room(payload)
-            self.send_json({"room": public_room(room)}, HTTPStatus.CREATED)
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, host_token=room["hostToken"]), "hostToken": room["hostToken"]}, HTTPStatus.CREATED)
             return
 
         parts = path.strip("/").split("/")
@@ -832,7 +901,9 @@ class ApiHandler(BaseHTTPRequestHandler):
             except ValueError as exc:
                 self.send_json({"detail": str(exc)}, HTTPStatus.BAD_REQUEST)
                 return
-            self.send_json({"room": public_room(room, player_token), "playerToken": player_token}, HTTPStatus.CREATED)
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, player_token, payload.get("hostToken", "")), "playerToken": player_token}, HTTPStatus.CREATED)
             return
 
         if action == "message":
@@ -845,25 +916,37 @@ class ApiHandler(BaseHTTPRequestHandler):
                 return
             speaker = seat["name"] if seat else payload.get("speaker", "玩家")
             message = append_message(room, speaker, payload.get("text", ""), seat_id=seat["id"] if seat else None)
-            self.send_json({"room": public_room(room, payload.get("playerToken", "")), "message": message}, HTTPStatus.CREATED)
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, payload.get("playerToken", ""), payload.get("hostToken", "")), "message": message}, HTTPStatus.CREATED)
             return
 
         if action == "phase":
+            if payload.get("hostToken") != room.get("hostToken"):
+                self.send_json({"detail": "Only the host can change phases"}, HTTPStatus.FORBIDDEN)
+                return
             phase = payload.get("phase")
             if phase not in GAMES[room["gameId"]]["phases"]:
                 self.send_json({"detail": "Unknown phase"}, HTTPStatus.BAD_REQUEST)
                 return
             room["phase"] = phase
             append_message(room, "系统", f"阶段切换到：{phase}", "system")
-            self.send_json({"room": public_room(room, payload.get("playerToken", ""))})
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, payload.get("playerToken", ""), payload.get("hostToken", ""))})
             return
 
         if action == "ai-turn":
+            if payload.get("hostToken") != room.get("hostToken"):
+                self.send_json({"detail": "Only the host can trigger AI turns"}, HTTPStatus.FORBIDDEN)
+                return
             ai_seats = [seat for seat in room["seats"] if seat["type"] == "ai" and seat["alive"]]
             if payload.get("seatId"):
                 ai_seats = [seat for seat in ai_seats if seat["id"] == payload["seatId"]]
             messages = [append_message(room, seat["name"], generate_ai_reply(room, seat), seat_id=seat["id"]) for seat in ai_seats]
-            self.send_json({"room": public_room(room, payload.get("playerToken", "")), "messages": messages}, HTTPStatus.CREATED)
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, payload.get("playerToken", ""), payload.get("hostToken", "")), "messages": messages}, HTTPStatus.CREATED)
             return
 
         self.send_json({"detail": "Not found"}, HTTPStatus.NOT_FOUND)
@@ -872,6 +955,8 @@ class ApiHandler(BaseHTTPRequestHandler):
         length = int(self.headers.get("content-length", "0"))
         if length == 0:
             return {}
+        if length > self.max_body_size:
+            raise ValueError("Request body too large")
         return json.loads(self.rfile.read(length).decode("utf-8"))
 
     def send_json(self, payload: dict, status: HTTPStatus = HTTPStatus.OK) -> None:
@@ -887,6 +972,8 @@ class ApiHandler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
+    with ROOMS_LOCK:
+        load_rooms()
     server = ThreadingHTTPServer(("0.0.0.0", PORT), ApiHandler)
     print(f"Python API server running at http://0.0.0.0:{PORT}")
     server.serve_forever()
