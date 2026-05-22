@@ -1,0 +1,29 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="chipGlow" cx="32" cy="22" r="70" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9F1FF"/>
+      <stop offset="0.36" stop-color="#89A9FF"/>
+      <stop offset="1" stop-color="#24324F"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="25" y1="24" x2="73" y2="77" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8E4A8"/>
+      <stop offset="0.52" stop-color="#D9A441"/>
+      <stop offset="1" stop-color="#7C5520"/>
+    </linearGradient>
+    <filter id="shadow" x="5" y="7" width="86" height="86" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#000000" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <circle cx="48" cy="45" r="34" fill="url(#chipGlow)" stroke="#F4E6BA" stroke-width="4"/>
+    <circle cx="48" cy="45" r="25" fill="#16253A" fill-opacity="0.8" stroke="#BFD0FF" stroke-opacity="0.6" stroke-width="2"/>
+    <path d="M48 20v-7" stroke="url(#metal)" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="48" cy="11" r="5" fill="#D9A441"/>
+    <rect x="30" y="34" width="36" height="25" rx="9" fill="#E7EDFF"/>
+    <rect x="35" y="30" width="26" height="7" rx="3.5" fill="url(#metal)"/>
+    <circle cx="41" cy="46" r="4" fill="#304B80"/>
+    <circle cx="55" cy="46" r="4" fill="#304B80"/>
+    <path d="M39 55c5 4 13 4 18 0" stroke="#304B80" stroke-width="3" stroke-linecap="round"/>
+    <path d="M25 45h-6M77 45h-6" stroke="#F8E4A8" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>
