@@ -3,12 +3,15 @@ import {
   Bot,
   BookOpen,
   CirclePlay,
+  Clipboard,
   Clock3,
   FileText,
   Home,
   Library,
+  LogIn,
   RefreshCw,
   Send,
+  ShieldCheck,
   Sparkles,
   Table2,
   UsersRound
@@ -34,6 +37,7 @@ function formatTime(iso) {
 }
 
 function roleCamp(gameId, role) {
+  if (!role) return "unknown";
   if (gameId === "werewolf") return role === "狼人" ? "evil" : "good";
   return ["刺客", "莫甘娜", "爪牙", "莫德雷德"].includes(role) ? "evil" : "good";
 }
@@ -57,6 +61,27 @@ function routeFromHash() {
 
 function navigateTo(path) {
   window.location.hash = `/${path}`;
+}
+
+function roomTokenKey(roomId) {
+  return `roundtable-player-token:${roomId}`;
+}
+
+function getRoomToken(roomId) {
+  return roomId ? window.localStorage.getItem(roomTokenKey(roomId)) || "" : "";
+}
+
+function saveRoomToken(roomId, token) {
+  if (roomId && token) window.localStorage.setItem(roomTokenKey(roomId), token);
+}
+
+function roomApiPath(roomId, playerToken = "") {
+  const suffix = playerToken ? `?playerToken=${encodeURIComponent(playerToken)}` : "";
+  return `/api/rooms/${roomId}${suffix}`;
+}
+
+function inviteUrl(roomId) {
+  return `${window.location.origin}${window.location.pathname}#/rooms/${roomId}`;
 }
 
 const reportCards = [
@@ -651,6 +676,7 @@ function KnowledgePanel({ personas, title = "人设知识库", compact = false }
         <Library size={20} />
       </div>
       <div className="persona-list">
+        {personas.length === 0 && <p className="empty-state">隐藏身份局中，只展示你本机可见的人设信息。</p>}
         {personas.map((persona) => (
           <article className="persona-card" key={persona.id}>
             <div className="persona-head">
@@ -689,6 +715,60 @@ function PhaseRail({ phases, current, onChange }) {
   );
 }
 
+function PlayerJoinPanel({ room, currentPlayer, playerName, onPlayerNameChange, onJoin, onCopyInvite }) {
+  const humanSeats = room.seats.filter((seat) => seat.type === "human");
+  const claimedCount = humanSeats.filter((seat) => seat.claimed).length;
+
+  return (
+    <section className="tool-panel join-panel">
+      <div className="panel-title">
+        <div>
+          <p className="eyebrow">JOIN TABLE</p>
+          <h2>{currentPlayer ? "我的席位" : "加入这一桌"}</h2>
+        </div>
+        <span className="pill">{claimedCount}/{humanSeats.length} 已入座</span>
+      </div>
+
+      <div className="invite-box">
+        <span>房间码</span>
+        <strong>{room.joinCode || room.id.slice(-6).toUpperCase()}</strong>
+        <button className="ghost-button" type="button" onClick={onCopyInvite}>
+          <Clipboard size={16} />
+          复制邀请链接
+        </button>
+      </div>
+
+      {currentPlayer ? (
+        <div className="identity-card">
+          <ShieldCheck size={20} />
+          <div>
+            <span>你正在使用</span>
+            <strong>{currentPlayer.name}</strong>
+            <p>
+              你的身份：<b>{currentPlayer.role || "未分配"}</b>
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="join-form">
+          <label>
+            <span>你的昵称</span>
+            <input value={playerName} placeholder="例如：阿川" onChange={(event) => onPlayerNameChange(event.target.value)} />
+          </label>
+          <div className="claim-seat-list">
+            {humanSeats.map((seat) => (
+              <button className={seat.claimed ? "claim-seat claimed" : "claim-seat"} disabled={seat.claimed} key={seat.id} type="button" onClick={() => onJoin(seat.id)}>
+                <LogIn size={16} />
+                <span>{seat.claimed ? seat.name : `${seat.name} · 可认领`}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function seatPositionStyle(index, total) {
   const angle = (360 / total) * index - 90;
   const radius = 36;
@@ -719,7 +799,7 @@ function RoundTable({ room }) {
           <div className="seat-avatar">{seat.type === "ai" ? <Bot size={18} /> : <UsersRound size={18} />}</div>
           <div>
             <strong>{seat.name}</strong>
-            <span>{seat.type === "ai" ? `${seat.style} AI` : "真人"}</span>
+            <span>{seat.type === "ai" ? `${seat.style} AI` : seat.claimed ? "真人玩家" : "等待入座"}</span>
           </div>
         </article>
       ))}
@@ -735,11 +815,11 @@ function SeatBoard({ room }) {
           <div className="seat-card-top">
             <div>
               <strong>{seat.name}</strong>
-              <small>{seat.type === "human" ? "真人玩家" : `${seat.style}型 AI`}</small>
+              <small>{seat.type === "human" ? (seat.claimed ? "真人玩家" : "等待入座") : `${seat.style}型 AI`}</small>
             </div>
             <div className="seat-tags">
               <span className={`tag ${seat.type === "ai" ? "ai" : "human"}`}>{seat.type === "ai" ? "AI" : "真人"}</span>
-              <span className={`tag ${roleCamp(room.gameId, seat.role)}`}>{seat.role}</span>
+              <span className={`tag ${roleCamp(room.gameId, seat.role)}`}>{seat.roleVisible ? seat.role : "身份隐藏"}</span>
             </div>
           </div>
           {seat.persona && (
@@ -774,28 +854,43 @@ function Messages({ room }) {
   );
 }
 
-function Room({ room, games, personaModes, onRoomChange, onReset }) {
+function Room({ room, games, personaModes, playerToken, onPlayerTokenChange, onRoomChange, onReset }) {
   const [text, setText] = useState("");
-  const [speakerId, setSpeakerId] = useState(room.seats.find((seat) => seat.type === "human")?.id || "");
+  const [playerName, setPlayerName] = useState("");
   const [thinking, setThinking] = useState(false);
   const game = useMemo(() => games.find((item) => item.id === room.gameId), [games, room.gameId]);
   const board = room.board || activeBoard(game, room.boardId, room.seats.length);
   const humans = room.seats.filter((seat) => seat.type === "human");
   const personas = room.seats.map((seat) => seat.persona).filter(Boolean);
+  const currentPlayer = room.currentPlayer || room.seats.find((seat) => seat.isYou);
   const currentPhaseIndex = game?.phases.indexOf(room.phase) ?? 0;
   const nextPhase = game?.phases[(currentPhaseIndex + 1) % game.phases.length];
 
   async function updatePhase(phase) {
-    const data = await api(`/api/rooms/${room.id}/phase`, { method: "POST", body: { phase } });
+    const data = await api(`/api/rooms/${room.id}/phase`, { method: "POST", body: { phase, playerToken } });
     onRoomChange(data.room);
+  }
+
+  async function joinSeat(seatId) {
+    const data = await api(`/api/rooms/${room.id}/join`, {
+      method: "POST",
+      body: { seatId, playerName: playerName.trim() || "玩家", playerToken }
+    });
+    saveRoomToken(room.id, data.playerToken);
+    onPlayerTokenChange(data.playerToken);
+    onRoomChange(data.room);
+  }
+
+  async function copyInvite() {
+    await navigator.clipboard?.writeText(inviteUrl(room.id));
   }
 
   async function sendMessage(event) {
     event.preventDefault();
-    if (!text.trim() || !speakerId) return;
+    if (!text.trim() || !currentPlayer) return;
     const data = await api(`/api/rooms/${room.id}/message`, {
       method: "POST",
-      body: { seatId: speakerId, text: text.trim() }
+      body: { seatId: currentPlayer.id, text: text.trim(), playerToken }
     });
     setText("");
     onRoomChange(data.room);
@@ -804,7 +899,7 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
   async function runAiTurn() {
     setThinking(true);
     try {
-      const data = await api(`/api/rooms/${room.id}/ai-turn`, { method: "POST", body: {} });
+      const data = await api(`/api/rooms/${room.id}/ai-turn`, { method: "POST", body: { playerToken } });
       onRoomChange(data.room);
     } finally {
       setThinking(false);
@@ -844,6 +939,15 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
 
       <div className="room-grid">
         <aside className="left-column">
+          <PlayerJoinPanel
+            room={room}
+            currentPlayer={currentPlayer}
+            playerName={playerName}
+            onPlayerNameChange={setPlayerName}
+            onJoin={joinSeat}
+            onCopyInvite={copyInvite}
+          />
+
           <section className="tool-panel">
             <div className="panel-title">
               <div>
@@ -878,26 +982,25 @@ function Room({ room, games, personaModes, onRoomChange, onReset }) {
           <RoundTable room={room} />
           <Messages room={room} />
 
-          {humans.length > 0 ? (
+          {currentPlayer ? (
             <form className="composer" onSubmit={sendMessage}>
-              <select value={speakerId} onChange={(event) => setSpeakerId(event.target.value)} aria-label="选择发言玩家">
-                {humans.map((seat) => (
-                  <option key={seat.id} value={seat.id}>
-                    {seat.name}
-                  </option>
-                ))}
-              </select>
+              <div className="composer-speaker">{currentPlayer.name}</div>
               <textarea
                 rows="3"
                 value={text}
                 onChange={(event) => setText(event.target.value)}
-                placeholder="输入真人玩家发言，例如：我觉得 3 号刚才在强行站边。"
+                placeholder="输入你这一轮想说的话"
               />
               <button type="submit">
                 <Send size={18} />
                 发送
               </button>
             </form>
+          ) : humans.length > 0 ? (
+            <div className="observer-bar">
+              <UsersRound size={18} />
+              先在左侧认领一个真人席位，认领后只会在本机显示你的隐藏身份。
+            </div>
           ) : (
             <div className="observer-bar">
               <Bot size={18} />
@@ -919,6 +1022,7 @@ function App() {
   const [error, setError] = useState("");
   const [route, setRoute] = useState(routeFromHash);
   const [roomLoading, setRoomLoading] = useState(false);
+  const [playerToken, setPlayerToken] = useState("");
 
   useEffect(() => {
     Promise.all([api("/api/games"), api("/api/personas")])
@@ -937,36 +1041,51 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (route.page !== "room" || !route.roomId || room?.id === route.roomId) {
+    if (route.page !== "room" || !route.roomId) {
       setRoomLoading(false);
+      setPlayerToken("");
       return;
     }
+    setPlayerToken(getRoomToken(route.roomId));
+  }, [route.page, route.roomId]);
+
+  useEffect(() => {
+    if (route.page !== "room" || !route.roomId) return undefined;
     let cancelled = false;
-    setError("");
-    setRoomLoading(true);
-    api(`/api/rooms/${route.roomId}`)
-      .then((data) => {
-        if (!cancelled) setRoom(data.room);
-      })
-      .catch((err) => {
+    let timer = 0;
+
+    async function loadRoom(showLoading = false) {
+      if (showLoading) setRoomLoading(true);
+      try {
+        const data = await api(roomApiPath(route.roomId, playerToken));
+        if (!cancelled) {
+          setRoom(data.room);
+          setError("");
+        }
+      } catch (err) {
         if (!cancelled) {
           setError(err.message);
           setRoom(null);
         }
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setRoomLoading(false);
-      });
+      }
+    }
+
+    loadRoom(true);
+    timer = window.setInterval(() => loadRoom(false), 2500);
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
     };
-  }, [route.page, route.roomId, room?.id]);
+  }, [route.page, route.roomId, playerToken]);
 
   async function createRoom(payload) {
     setError("");
     try {
       const data = await api("/api/rooms", { method: "POST", body: payload });
       setRoom(data.room);
+      setPlayerToken("");
       setRoute({ page: "room", roomId: data.room.id });
       navigateTo(`rooms/${data.room.id}`);
     } catch (err) {
@@ -981,9 +1100,12 @@ function App() {
           room={room}
           games={games}
           personaModes={personaModes}
+          playerToken={playerToken}
+          onPlayerTokenChange={setPlayerToken}
           onRoomChange={setRoom}
           onReset={() => {
             setRoom(null);
+            setPlayerToken("");
             setRoute({ page: "setup", roomId: "" });
             navigateTo("setup");
           }}

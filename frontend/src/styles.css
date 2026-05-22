@@ -1343,6 +1343,76 @@ label span {
   overflow: hidden;
 }
 
+.join-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.invite-box {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(217, 164, 65, 0.28);
+  background: rgba(217, 164, 65, 0.06);
+  padding: 12px;
+}
+
+.invite-box span,
+.identity-card span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.invite-box strong {
+  color: #fff3d5;
+  font-family: var(--font-number);
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+.identity-card {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid rgba(101, 193, 140, 0.34);
+  background: rgba(101, 193, 140, 0.08);
+  padding: 12px;
+}
+
+.identity-card svg {
+  color: var(--good);
+}
+
+.identity-card strong,
+.identity-card b {
+  color: #fff3d5;
+}
+
+.join-form {
+  display: grid;
+  gap: 12px;
+}
+
+.claim-seat-list {
+  display: grid;
+  gap: 8px;
+}
+
+.claim-seat {
+  min-height: 40px;
+  justify-content: flex-start;
+  border: 1px solid rgba(217, 164, 65, 0.28);
+  background: rgba(18, 16, 13, 0.58);
+  color: #f4f1ea;
+}
+
+.claim-seat.claimed {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+}
+
 .phase-rail {
   display: grid;
   gap: 8px;
@@ -1441,6 +1511,11 @@ label span {
 .tag.evil {
   background: rgba(232, 92, 106, 0.18);
   color: var(--evil);
+}
+
+.tag.unknown {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
 }
 
 .persona-inline {
@@ -1669,6 +1744,17 @@ label span {
   background: rgba(17, 19, 24, 0.65);
 }
 
+.composer-speaker {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(18, 16, 13, 0.76);
+  color: #fff3d5;
+  font-weight: 900;
+}
+
 .composer button {
   align-self: stretch;
 }
@@ -1682,6 +1768,14 @@ label span {
   color: var(--text-muted);
   background: rgba(17, 19, 24, 0.65);
   font-weight: 700;
+}
+
+.empty-state {
+  margin: 0;
+  border: 1px dashed rgba(217, 164, 65, 0.24);
+  padding: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
 }
 
 @media (max-width: 1180px) {

@@ -134,6 +134,10 @@ def random_id(prefix: str) -> str:
     return f"{prefix}_{token_hex(5)}"
 
 
+def random_code() -> str:
+    return token_hex(3).upper()
+
+
 def clamp(value: int | None, minimum: int, maximum: int) -> int:
     if value is None:
         return minimum
@@ -223,9 +227,39 @@ def pick_persona(game_id: str, role: str, mode: str) -> dict:
     return compact_persona(random.choice(candidates) if candidates else None)
 
 
-def public_room(room: dict) -> dict:
+def public_seat(room: dict, seat: dict, viewer_token: str = "") -> dict:
+    is_owner = bool(viewer_token and seat.get("playerToken") == viewer_token)
+    role_visible = is_owner
+    role = seat["role"] if role_visible else ""
     return {
-        **room,
+        "id": seat["id"],
+        "name": seat["name"],
+        "type": seat["type"],
+        "role": role,
+        "roleVisible": role_visible,
+        "camp": role_camp(room["gameId"], seat["role"]) if role_visible else "unknown",
+        "style": seat.get("style", ""),
+        "persona": seat.get("persona") if role_visible else None,
+        "alive": seat.get("alive", True),
+        "claimed": seat["type"] == "ai" or bool(seat.get("playerToken")),
+        "isYou": is_owner,
+    }
+
+
+def public_room(room: dict, viewer_token: str = "") -> dict:
+    seats = [public_seat(room, seat, viewer_token) for seat in room["seats"]]
+    current_player = next((seat for seat in seats if seat["isYou"]), None)
+    return {
+        "id": room["id"],
+        "joinCode": room.get("joinCode", ""),
+        "gameId": room["gameId"],
+        "boardId": room.get("boardId", ""),
+        "phase": room["phase"],
+        "personaMode": room["personaMode"],
+        "createdAt": room["createdAt"],
+        "seats": seats,
+        "messages": room["messages"],
+        "currentPlayer": current_player,
         "game": GAMES[room["gameId"]],
         "board": find_board(room["gameId"], room.get("boardId"), len(room["seats"])),
         "aiSeats": len([seat for seat in room["seats"] if seat["type"] == "ai"]),
@@ -313,11 +347,14 @@ def create_room(payload: dict) -> dict:
                 "style": "human" if is_human else ["稳健", "进攻", "观察", "保守"][index % 4],
                 "persona": None if is_human else pick_persona(game["id"], roles[index], persona_mode),
                 "alive": True,
+                "playerToken": None,
+                "claimedAt": None,
             }
         )
 
     room = {
         "id": random_id("room"),
+        "joinCode": random_code(),
         "gameId": game["id"],
         "boardId": board["id"] if board else "",
         "phase": game["phases"][0],
@@ -330,6 +367,35 @@ def create_room(payload: dict) -> dict:
     append_message(room, "系统", f"已创建 {game['name']}{board_name} {total} 人局，其中 {humans} 位真人，{total - humans} 位 AI 补位。", "system")
     ROOMS[room["id"]] = room
     return room
+
+
+def join_room(room: dict, payload: dict) -> tuple[dict, str]:
+    player_token = str(payload.get("playerToken") or "")
+    existing = next((seat for seat in room["seats"] if player_token and seat.get("playerToken") == player_token), None)
+    if existing:
+        player_name = str(payload.get("playerName") or "").strip()
+        if player_name:
+            existing["name"] = player_name[:20]
+        return room, player_token
+
+    seat_id = payload.get("seatId")
+    if seat_id:
+        seat = next((item for item in room["seats"] if item["id"] == seat_id and item["type"] == "human"), None)
+    else:
+        seat = next((item for item in room["seats"] if item["type"] == "human" and not item.get("playerToken")), None)
+
+    if seat is None:
+        raise ValueError("No available human seat")
+    if seat.get("playerToken"):
+        raise PermissionError("Seat already claimed")
+
+    player_name = str(payload.get("playerName") or seat["name"]).strip()[:20] or seat["name"]
+    player_token = random_id("player")
+    seat["name"] = player_name
+    seat["playerToken"] = player_token
+    seat["claimedAt"] = now_iso()
+    append_message(room, "系统", f"{player_name} 已入座。", "system")
+    return room, player_token
 
 
 def role_camp(game_id: str, role: str) -> str:
@@ -700,7 +766,7 @@ def collapse_repeated_sentences(text: str) -> str:
 
 class ApiHandler(BaseHTTPRequestHandler):
     def end_headers(self) -> None:
-        self.send_header("Access-Control-Allow-Origin", "http://localhost:5173")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         super().end_headers()
@@ -729,7 +795,8 @@ class ApiHandler(BaseHTTPRequestHandler):
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
             room = ROOMS.get(parts[2])
             if room:
-                self.send_json({"room": public_room(room)})
+                viewer_token = parse_qs(parsed.query).get("playerToken", [""])[0]
+                self.send_json({"room": public_room(room, viewer_token)})
             else:
                 self.send_json({"detail": "Room not found"}, HTTPStatus.NOT_FOUND)
             return
@@ -756,11 +823,29 @@ class ApiHandler(BaseHTTPRequestHandler):
             self.send_json({"detail": "Room not found"}, HTTPStatus.NOT_FOUND)
             return
 
+        if action == "join":
+            try:
+                room, player_token = join_room(room, payload)
+            except PermissionError as exc:
+                self.send_json({"detail": str(exc)}, HTTPStatus.CONFLICT)
+                return
+            except ValueError as exc:
+                self.send_json({"detail": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json({"room": public_room(room, player_token), "playerToken": player_token}, HTTPStatus.CREATED)
+            return
+
         if action == "message":
             seat = next((item for item in room["seats"] if item["id"] == payload.get("seatId")), None)
+            if seat is None:
+                self.send_json({"detail": "Seat not found"}, HTTPStatus.NOT_FOUND)
+                return
+            if seat["type"] == "human" and seat.get("playerToken") != payload.get("playerToken"):
+                self.send_json({"detail": "Claim this seat before speaking"}, HTTPStatus.FORBIDDEN)
+                return
             speaker = seat["name"] if seat else payload.get("speaker", "玩家")
             message = append_message(room, speaker, payload.get("text", ""), seat_id=seat["id"] if seat else None)
-            self.send_json({"room": public_room(room), "message": message}, HTTPStatus.CREATED)
+            self.send_json({"room": public_room(room, payload.get("playerToken", "")), "message": message}, HTTPStatus.CREATED)
             return
 
         if action == "phase":
@@ -770,7 +855,7 @@ class ApiHandler(BaseHTTPRequestHandler):
                 return
             room["phase"] = phase
             append_message(room, "系统", f"阶段切换到：{phase}", "system")
-            self.send_json({"room": public_room(room)})
+            self.send_json({"room": public_room(room, payload.get("playerToken", ""))})
             return
 
         if action == "ai-turn":
@@ -778,7 +863,7 @@ class ApiHandler(BaseHTTPRequestHandler):
             if payload.get("seatId"):
                 ai_seats = [seat for seat in ai_seats if seat["id"] == payload["seatId"]]
             messages = [append_message(room, seat["name"], generate_ai_reply(room, seat), seat_id=seat["id"]) for seat in ai_seats]
-            self.send_json({"room": public_room(room), "messages": messages}, HTTPStatus.CREATED)
+            self.send_json({"room": public_room(room, payload.get("playerToken", "")), "messages": messages}, HTTPStatus.CREATED)
             return
 
         self.send_json({"detail": "Not found"}, HTTPStatus.NOT_FOUND)
@@ -802,8 +887,8 @@ class ApiHandler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    server = ThreadingHTTPServer(("localhost", PORT), ApiHandler)
-    print(f"Python API server running at http://localhost:{PORT}")
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), ApiHandler)
+    print(f"Python API server running at http://0.0.0.0:{PORT}")
     server.serve_forever()
 
 
