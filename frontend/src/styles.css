@@ -1402,6 +1402,47 @@ label span {
   color: #fff3d5;
 }
 
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.name-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-button {
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: 1px solid rgba(255, 239, 196, 0.22);
+  background: rgba(255, 239, 196, 0.08);
+  color: #fff3d5;
+}
+
+.rename-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px 36px;
+  gap: 8px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.rename-form input {
+  min-height: 36px;
+}
+
+.rename-form button {
+  min-height: 36px;
+  padding: 0;
+}
+
 .join-form {
   display: grid;
   gap: 12px;

@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Bot,
   BookOpen,
+  Check,
   CirclePlay,
   Clipboard,
   Clock3,
+  Pencil,
   FileText,
   Home,
   Library,
@@ -14,6 +16,7 @@ import {
   ShieldCheck,
   Sparkles,
   Table2,
+  X,
   UsersRound
 } from "lucide-react";
 import { createRoot } from "react-dom/client";
@@ -730,7 +733,21 @@ function PhaseRail({ phases, current, onChange }) {
   );
 }
 
-function PlayerJoinPanel({ room, currentPlayer, playerName, onPlayerNameChange, onJoin, onCopyInvite }) {
+function PlayerJoinPanel({
+  room,
+  currentPlayer,
+  playerName,
+  renameName,
+  editingName,
+  renaming,
+  onPlayerNameChange,
+  onRenameNameChange,
+  onStartRename,
+  onCancelRename,
+  onRename,
+  onJoin,
+  onCopyInvite
+}) {
   const humanSeats = room.seats.filter((seat) => seat.type === "human");
   const claimedCount = humanSeats.filter((seat) => seat.claimed).length;
 
@@ -758,7 +775,24 @@ function PlayerJoinPanel({ room, currentPlayer, playerName, onPlayerNameChange, 
           <ShieldCheck size={20} />
           <div>
             <span>你正在使用</span>
-            <strong>{currentPlayer.name}</strong>
+            {editingName ? (
+              <form className="rename-form" onSubmit={onRename}>
+                <input value={renameName} maxLength={20} onChange={(event) => onRenameNameChange(event.target.value)} autoFocus />
+                <button type="submit" disabled={renaming || !renameName.trim()} title="保存昵称">
+                  <Check size={16} />
+                </button>
+                <button className="ghost-button" type="button" onClick={onCancelRename} title="取消">
+                  <X size={16} />
+                </button>
+              </form>
+            ) : (
+              <div className="name-row">
+                <strong>{currentPlayer.name}</strong>
+                <button className="icon-button" type="button" onClick={onStartRename} title="修改昵称">
+                  <Pencil size={15} />
+                </button>
+              </div>
+            )}
             <p>
               你的身份：<b>{currentPlayer.role || "未分配"}</b>
             </p>
@@ -872,6 +906,9 @@ function Messages({ room }) {
 function Room({ room, games, personaModes, playerToken, hostToken, onPlayerTokenChange, onRoomChange, onReset }) {
   const [text, setText] = useState("");
   const [playerName, setPlayerName] = useState("");
+  const [renameName, setRenameName] = useState("");
+  const [editingName, setEditingName] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const [thinking, setThinking] = useState(false);
   const game = useMemo(() => games.find((item) => item.id === room.gameId), [games, room.gameId]);
   const board = room.board || activeBoard(game, room.boardId, room.seats.length);
@@ -881,6 +918,15 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
   const currentPhaseIndex = game?.phases.indexOf(room.phase) ?? 0;
   const nextPhase = game?.phases[(currentPhaseIndex + 1) % game.phases.length];
   const isHost = Boolean(room.host?.isHost);
+
+  useEffect(() => {
+    if (!currentPlayer) {
+      setRenameName("");
+      setEditingName(false);
+      return;
+    }
+    if (!editingName) setRenameName(currentPlayer.name);
+  }, [currentPlayer?.id, currentPlayer?.name, editingName]);
 
   async function updatePhase(phase) {
     if (!isHost) return;
@@ -896,6 +942,32 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
     saveRoomToken(room.id, data.playerToken);
     onPlayerTokenChange(data.playerToken);
     onRoomChange(data.room);
+  }
+
+  function startRename() {
+    setRenameName(currentPlayer?.name || "");
+    setEditingName(true);
+  }
+
+  function cancelRename() {
+    setRenameName(currentPlayer?.name || "");
+    setEditingName(false);
+  }
+
+  async function renamePlayer(event) {
+    event.preventDefault();
+    if (!currentPlayer || !renameName.trim()) return;
+    setRenaming(true);
+    try {
+      const data = await api(`/api/rooms/${room.id}/name`, {
+        method: "POST",
+        body: { playerName: renameName.trim(), playerToken, hostToken }
+      });
+      setEditingName(false);
+      onRoomChange(data.room);
+    } finally {
+      setRenaming(false);
+    }
   }
 
   async function copyInvite() {
@@ -962,7 +1034,14 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
             room={room}
             currentPlayer={currentPlayer}
             playerName={playerName}
+            renameName={renameName}
+            editingName={editingName}
+            renaming={renaming}
             onPlayerNameChange={setPlayerName}
+            onRenameNameChange={setRenameName}
+            onStartRename={startRename}
+            onCancelRename={cancelRename}
+            onRename={renamePlayer}
             onJoin={joinSeat}
             onCopyInvite={copyInvite}
           />

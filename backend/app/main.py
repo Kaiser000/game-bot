@@ -443,6 +443,28 @@ def join_room(room: dict, payload: dict) -> tuple[dict, str]:
     return room, player_token
 
 
+def rename_player(room: dict, payload: dict) -> dict:
+    player_token = str(payload.get("playerToken") or "")
+    if not player_token:
+        raise PermissionError("Claim a seat before renaming")
+    seat = next((item for item in room["seats"] if item["type"] == "human" and item.get("playerToken") == player_token), None)
+    if seat is None:
+        raise PermissionError("Claim this seat before renaming")
+
+    old_name = seat["name"]
+    new_name = str(payload.get("playerName") or "").strip()
+    if not new_name:
+        raise ValueError("Name cannot be empty")
+    if len(new_name) > 20:
+        new_name = new_name[:20]
+    if new_name == old_name:
+        return seat
+
+    seat["name"] = new_name
+    append_message(room, "系统", f"{old_name} 改名为 {new_name}。", "system")
+    return seat
+
+
 def role_camp(game_id: str, role: str) -> str:
     if game_id == "werewolf":
         return "evil" if role == "狼人" else "good"
@@ -919,6 +941,20 @@ class ApiHandler(BaseHTTPRequestHandler):
             with ROOMS_LOCK:
                 persist_rooms()
             self.send_json({"room": public_room(room, payload.get("playerToken", ""), payload.get("hostToken", "")), "message": message}, HTTPStatus.CREATED)
+            return
+
+        if action == "name":
+            try:
+                rename_player(room, payload)
+            except PermissionError as exc:
+                self.send_json({"detail": str(exc)}, HTTPStatus.FORBIDDEN)
+                return
+            except ValueError as exc:
+                self.send_json({"detail": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            with ROOMS_LOCK:
+                persist_rooms()
+            self.send_json({"room": public_room(room, payload.get("playerToken", ""), payload.get("hostToken", ""))})
             return
 
         if action == "phase":
