@@ -23,15 +23,55 @@ import { createRoot } from "react-dom/client";
 import * as THREE from "three";
 import "./styles.css";
 
-const avatarUrls = [
-  new URL("./assets/avatars/avatar-1.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-2.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-3.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-4.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-5.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-6.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-7.png", import.meta.url).href,
-  new URL("./assets/avatars/avatar-8.png", import.meta.url).href
+const avatarSpriteUrls = [
+  {
+    front: new URL("./assets/animal-avatars/fox-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/fox-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/fox-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/fox-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/cat-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/cat-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/cat-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/cat-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/rabbit-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/rabbit-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/rabbit-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/rabbit-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/panda-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/panda-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/panda-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/panda-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/dog-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/dog-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/dog-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/dog-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/owl-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/owl-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/owl-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/owl-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/deer-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/deer-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/deer-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/deer-right.png", import.meta.url).href
+  },
+  {
+    front: new URL("./assets/animal-avatars/tiger-front.png", import.meta.url).href,
+    left: new URL("./assets/animal-avatars/tiger-left.png", import.meta.url).href,
+    back: new URL("./assets/animal-avatars/tiger-back.png", import.meta.url).href,
+    right: new URL("./assets/animal-avatars/tiger-right.png", import.meta.url).href
+  }
 ];
 
 async function api(path, options = {}) {
@@ -55,6 +95,11 @@ function roleCamp(gameId, role) {
   if (!role) return "unknown";
   if (gameId === "werewolf") return role === "狼人" ? "evil" : "good";
   return ["刺客", "莫甘娜", "爪牙", "莫德雷德"].includes(role) ? "evil" : "good";
+}
+
+function directionFromVector(dx, dz) {
+  if (Math.abs(dx) > Math.abs(dz)) return dx > 0 ? "right" : "left";
+  return dz > 0 ? "front" : "back";
 }
 
 function modeLabel(modes, id) {
@@ -1014,11 +1059,17 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     mount.appendChild(renderer.domElement);
 
     const textureLoader = new THREE.TextureLoader();
-    const avatarTextures = avatarUrls.map((url) => {
+    const loadAvatarTexture = (url) => {
       const texture = textureLoader.load(url);
       texture.colorSpace = THREE.SRGBColorSpace;
       return texture;
-    });
+    };
+    const avatarTextures = avatarSpriteUrls.map((sprite) => ({
+      front: loadAvatarTexture(sprite.front),
+      left: loadAvatarTexture(sprite.left),
+      back: loadAvatarTexture(sprite.back),
+      right: loadAvatarTexture(sprite.right)
+    }));
 
     const hemi = new THREE.HemisphereLight(0xffefd0, 0x22362c, 1.7);
     scene.add(hemi);
@@ -1092,6 +1143,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       group.position.set(x, 0, z);
       group.lookAt(0, 0, 0);
       group.userData = { seatId: seat.id, x, z };
+      const seatDirection = directionFromVector(-x, -z);
+      const animalIndex = index % avatarTextures.length;
 
       const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.52, 0.2, 36), seat.claimed ? occupiedMaterial : seatMaterial);
       stool.position.y = 0.18;
@@ -1102,7 +1155,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       if (seat.claimed || seat.type === "ai") {
         const avatar = new THREE.Sprite(
           new THREE.SpriteMaterial({
-            map: avatarTextures[index % avatarTextures.length],
+            map: avatarTextures[animalIndex][seatDirection],
             transparent: true,
             depthWrite: false
           })
@@ -1124,6 +1177,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     seatObjectsRef.current = seatObjects;
 
     const player = new THREE.Group();
+    let playerAvatar = null;
     if (!currentPlayerSeatId) {
       const playerShadow = new THREE.Mesh(
         new THREE.CircleGeometry(0.38, 32),
@@ -1132,13 +1186,13 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       playerShadow.rotation.x = -Math.PI / 2;
       playerShadow.position.y = 0.035;
       player.add(playerShadow);
-      const playerAvatar = new THREE.Sprite(
-        new THREE.SpriteMaterial({
-          map: avatarTextures[0],
-          transparent: true,
-          depthWrite: false
-        })
-      );
+      const playerMaterial = new THREE.SpriteMaterial({
+        map: avatarTextures[0].front,
+        transparent: true,
+        depthWrite: false
+      });
+      playerAvatar = new THREE.Sprite(playerMaterial);
+      playerAvatar.userData = { material: playerMaterial, direction: "front" };
       playerAvatar.position.y = 0.88;
       playerAvatar.scale.set(1.18, 1.18, 1.18);
       player.add(playerAvatar);
@@ -1210,6 +1264,12 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       if (keys.has("ArrowRight") || keys.has("KeyD")) dx += speed;
       if (dx || dz) {
         if (!currentPlayerSeatId) {
+          const nextDirection = directionFromVector(dx, dz);
+          if (playerAvatar?.userData.direction !== nextDirection) {
+            playerAvatar.userData.direction = nextDirection;
+            playerAvatar.material.map = avatarTextures[0][nextDirection];
+            playerAvatar.material.needsUpdate = true;
+          }
           player.position.x = THREE.MathUtils.clamp(player.position.x + dx, -5.4, 5.4);
           player.position.z = THREE.MathUtils.clamp(player.position.z + dz, -4.2, 5.2);
           player.rotation.y = Math.atan2(dx, dz);
