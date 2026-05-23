@@ -1204,15 +1204,6 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         this.player = this.add.image(startX, startY, "avatar-0-front");
         this.player.setDisplaySize(94, 94);
         this.player.setDepth(height - 80);
-        this.tweens.add({
-          targets: this.player,
-          scaleX: 1.04,
-          scaleY: 1.04,
-          duration: 900,
-          yoyo: true,
-          repeat: -1,
-          ease: "Sine.easeInOut"
-        });
       }
 
       highlightSeat(seatId) {
