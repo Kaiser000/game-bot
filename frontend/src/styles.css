@@ -1719,7 +1719,7 @@ label span {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(430px, 54vh) minmax(220px, 1fr) auto;
+  grid-template-rows: auto minmax(500px, 58vh) minmax(220px, 1fr) auto;
   overflow: hidden;
 }
 
@@ -1874,6 +1874,97 @@ label span {
   color: var(--text-muted);
   font-size: 12px;
   font-weight: 800;
+}
+
+.interactive-stage {
+  position: relative;
+  min-height: 500px;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(217, 164, 65, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(14, 17, 14, 0.96), rgba(9, 10, 9, 0.98));
+}
+
+.stage-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.stage-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.stage-hud {
+  position: absolute;
+  inset: 16px 16px auto;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.stage-hud h2 {
+  margin: 0 0 4px;
+  color: #fff3d5;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.stage-hud span,
+.stage-seat-hint span {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.stage-seat-hint {
+  min-width: 150px;
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(217, 164, 65, 0.26);
+  background: rgba(17, 15, 12, 0.72);
+  padding: 10px 12px;
+  backdrop-filter: blur(10px);
+}
+
+.stage-seat-hint strong {
+  color: #fff3d5;
+  font-weight: 900;
+}
+
+.stage-claim-panel {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+  border: 1px solid rgba(217, 164, 65, 0.24);
+  background: rgba(17, 15, 12, 0.78);
+  padding: 12px;
+  backdrop-filter: blur(12px);
+}
+
+.stage-claim-panel label span {
+  margin-bottom: 6px;
+}
+
+.stage-claim-panel input {
+  min-height: 42px;
+}
+
+.stage-claim-panel button {
+  min-width: 138px;
+  min-height: 42px;
 }
 
 .messages {
@@ -2068,6 +2159,22 @@ label span {
 
   .preview-table {
     min-height: 250px;
+  }
+
+  .interactive-stage {
+    min-height: 420px;
+  }
+
+  .stage-hud {
+    inset: 12px 12px auto;
+  }
+
+  .stage-hud h2 {
+    font-size: 21px;
+  }
+
+  .stage-claim-panel {
+    grid-template-columns: 1fr;
   }
 
   .join-hero-panel {

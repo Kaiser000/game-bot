@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bot,
   BookOpen,
@@ -20,6 +20,7 @@ import {
   UsersRound
 } from "lucide-react";
 import { createRoot } from "react-dom/client";
+import * as THREE from "three";
 import "./styles.css";
 
 async function api(path, options = {}) {
@@ -969,6 +970,286 @@ function RoundTable({ room }) {
   );
 }
 
+function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
+  const stageRef = useRef(null);
+  const seatObjectsRef = useRef([]);
+  const [nearSeatId, setNearSeatId] = useState("");
+  const [pickedSeatId, setPickedSeatId] = useState("");
+  const availableHumanSeats = useMemo(() => room.seats.filter((seat) => seat.type === "human" && !seat.claimed), [room.seats]);
+  const seatSignature = useMemo(
+    () => room.seats.map((seat) => `${seat.id}:${seat.name}:${seat.type}:${seat.claimed}:${seat.role}:${seat.style}`).join("|"),
+    [room.seats]
+  );
+  const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId) || room.seats.find((seat) => seat.id === nearSeatId);
+  const canClaimTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed;
+
+  useEffect(() => {
+    const mount = stageRef.current;
+    if (!mount) return undefined;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x10120f);
+    scene.fog = new THREE.Fog(0x10120f, 8, 18);
+
+    const camera = new THREE.PerspectiveCamera(42, mount.clientWidth / mount.clientHeight, 0.1, 80);
+    camera.position.set(0, 6.4, 8.8);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    renderer.shadowMap.enabled = true;
+    mount.appendChild(renderer.domElement);
+
+    const hemi = new THREE.HemisphereLight(0xffefd0, 0x22362c, 1.7);
+    scene.add(hemi);
+    const key = new THREE.DirectionalLight(0xffd27a, 2.3);
+    key.position.set(-3.8, 7, 4.2);
+    key.castShadow = true;
+    scene.add(key);
+    const rim = new THREE.PointLight(0x65c18c, 1.8, 10);
+    rim.position.set(3.4, 2.6, -2.8);
+    scene.add(rim);
+
+    const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(7.2, 96),
+      new THREE.MeshStandardMaterial({ color: 0x17231d, roughness: 0.9, metalness: 0.02 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const tableBase = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.55, 2.75, 0.46, 96),
+      new THREE.MeshStandardMaterial({ color: 0x6a4427, roughness: 0.72, metalness: 0.08 })
+    );
+    tableBase.scale.set(1.28, 1, 0.78);
+    tableBase.position.y = 0.45;
+    tableBase.castShadow = true;
+    tableBase.receiveShadow = true;
+    scene.add(tableBase);
+
+    const tableFelt = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.28, 2.34, 0.08, 96),
+      new THREE.MeshStandardMaterial({ color: 0x243a31, roughness: 0.82, metalness: 0.02 })
+    );
+    tableFelt.scale.set(1.25, 1, 0.76);
+    tableFelt.position.y = 0.72;
+    tableFelt.castShadow = true;
+    scene.add(tableFelt);
+
+    const centerGlow = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.92, 0.98, 0.1, 64),
+      new THREE.MeshStandardMaterial({ color: 0x13231c, emissive: 0x1a3a2d, emissiveIntensity: 0.32, roughness: 0.7 })
+    );
+    centerGlow.scale.set(1.35, 1, 0.78);
+    centerGlow.position.y = 0.82;
+    scene.add(centerGlow);
+
+    const seatMaterial = new THREE.MeshStandardMaterial({ color: 0xcaa55e, roughness: 0.62, metalness: 0.06 });
+    const humanMaterial = new THREE.MeshStandardMaterial({ color: 0x7ca7f2, roughness: 0.56, metalness: 0.02 });
+    const aiMaterial = new THREE.MeshStandardMaterial({ color: 0x65c18c, roughness: 0.56, metalness: 0.02 });
+    const occupiedMaterial = new THREE.MeshStandardMaterial({ color: 0xd9a441, roughness: 0.55, metalness: 0.06 });
+    const pickedMaterial = new THREE.MeshStandardMaterial({ color: 0xffd66f, emissive: 0x6b3b00, emissiveIntensity: 0.5, roughness: 0.45 });
+    const evilMaterial = new THREE.MeshStandardMaterial({ color: 0xe85c6a, roughness: 0.5 });
+    const goodMaterial = new THREE.MeshStandardMaterial({ color: 0x65c18c, roughness: 0.5 });
+
+    const seatObjects = [];
+    room.seats.forEach((seat, index) => {
+      const angle = (Math.PI * 2 * index) / room.seats.length - Math.PI / 2;
+      const x = Math.cos(angle) * 4.25;
+      const z = Math.sin(angle) * 2.95;
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.lookAt(0, 0, 0);
+      group.userData = { seatId: seat.id, x, z };
+
+      const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.42, 0.22, 32), seat.claimed ? occupiedMaterial : seatMaterial);
+      stool.position.y = 0.18;
+      stool.castShadow = true;
+      stool.receiveShadow = true;
+      group.add(stool);
+
+      const avatarColor = seat.type === "ai" ? aiMaterial : humanMaterial;
+      if (seat.claimed || seat.type === "ai") {
+        const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.36, 8, 16), avatarColor);
+        body.position.y = 0.68;
+        body.castShadow = true;
+        group.add(body);
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 24, 16), roleCamp(room.gameId, seat.role) === "evil" ? evilMaterial : goodMaterial);
+        head.position.y = 1.08;
+        head.castShadow = true;
+        group.add(head);
+      }
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.025, 8, 36), pickedSeatId === seat.id ? pickedMaterial : avatarColor);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.34;
+      ring.castShadow = true;
+      group.add(ring);
+
+      scene.add(group);
+      seatObjects.push({ group, seat, x, z, ring });
+    });
+    seatObjectsRef.current = seatObjects;
+
+    const player = new THREE.Group();
+    const playerBody = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.22, 0.48, 10, 20),
+      new THREE.MeshStandardMaterial({ color: 0xf1cc69, roughness: 0.48, metalness: 0.04 })
+    );
+    playerBody.position.y = 0.78;
+    playerBody.castShadow = true;
+    player.add(playerBody);
+    const playerHead = new THREE.Mesh(
+      new THREE.SphereGeometry(0.2, 24, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffe5b6, roughness: 0.5 })
+    );
+    playerHead.position.y = 1.23;
+    playerHead.castShadow = true;
+    player.add(playerHead);
+    player.position.set(0, 0, 4.75);
+    scene.add(player);
+
+    const keys = new Set();
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let animationFrame = 0;
+    let lastNearest = "";
+
+    const onKeyDown = (event) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyW", "KeyA", "KeyS", "KeyD"].includes(event.code)) {
+        keys.add(event.code);
+      }
+    };
+    const onKeyUp = (event) => keys.delete(event.code);
+    const onPointerDown = (event) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(seatObjects.map((item) => item.group), true);
+      const hit = hits.find((item) => {
+        let target = item.object;
+        while (target.parent && !target.userData.seatId) target = target.parent;
+        return target.userData.seatId;
+      });
+      if (hit) {
+        let target = hit.object;
+        while (target.parent && !target.userData.seatId) target = target.parent;
+        setPickedSeatId(target.userData.seatId);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    renderer.domElement.addEventListener("pointerdown", onPointerDown);
+
+    const resizeObserver = new ResizeObserver(() => {
+      const width = mount.clientWidth || 1;
+      const height = mount.clientHeight || 1;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+    resizeObserver.observe(mount);
+
+    const animate = () => {
+      const speed = 0.055;
+      let dx = 0;
+      let dz = 0;
+      if (keys.has("ArrowUp") || keys.has("KeyW")) dz -= speed;
+      if (keys.has("ArrowDown") || keys.has("KeyS")) dz += speed;
+      if (keys.has("ArrowLeft") || keys.has("KeyA")) dx -= speed;
+      if (keys.has("ArrowRight") || keys.has("KeyD")) dx += speed;
+      if (dx || dz) {
+        player.position.x = THREE.MathUtils.clamp(player.position.x + dx, -5.4, 5.4);
+        player.position.z = THREE.MathUtils.clamp(player.position.z + dz, -4.2, 5.2);
+        player.rotation.y = Math.atan2(dx, dz);
+      }
+
+      tableFelt.rotation.y += 0.0012;
+      centerGlow.rotation.y -= 0.0016;
+      player.position.y = Math.sin(performance.now() * 0.004) * 0.025;
+
+      let nearest = "";
+      let nearestDistance = 1.05;
+      seatObjects.forEach((item) => {
+        const distance = Math.hypot(player.position.x - item.x, player.position.z - item.z);
+        item.group.position.y = Math.sin(performance.now() * 0.0025 + item.x) * 0.025;
+        if (distance < nearestDistance && item.seat.type === "human" && !item.seat.claimed) {
+          nearest = item.seat.id;
+          nearestDistance = distance;
+        }
+      });
+      if (nearest !== lastNearest) {
+        lastNearest = nearest;
+        setNearSeatId(nearest);
+      }
+
+      renderer.render(scene, camera);
+      animationFrame = window.requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      resizeObserver.disconnect();
+      seatObjectsRef.current = [];
+      renderer.dispose();
+      mount.removeChild(renderer.domElement);
+    };
+  }, [room.gameId, seatSignature]);
+
+  useEffect(() => {
+    if (!targetSeat || targetSeat.claimed) setPickedSeatId("");
+  }, [targetSeat?.id, targetSeat?.claimed]);
+
+  return (
+    <section className="interactive-stage" aria-label="可操控圆桌房间">
+      <div className="stage-canvas" ref={stageRef} />
+      <div className="stage-hud">
+        <div>
+          <p className="eyebrow">LIVE ROOM</p>
+          <h2>走近圆桌并落座</h2>
+          <span>WASD / 方向键移动，点击座位可选中。</span>
+        </div>
+        <div className="stage-seat-hint">
+          {currentPlayer ? (
+            <strong>已入座：{currentPlayer.name}</strong>
+          ) : targetSeat ? (
+            <>
+              <strong>{targetSeat.name}</strong>
+              <span>{canClaimTarget ? "可落座" : targetSeat.claimed ? "已有人" : "AI 席位"}</span>
+            </>
+          ) : (
+            <>
+              <strong>{availableHumanSeats.length ? "寻找空座" : "真人席位已满"}</strong>
+              <span>靠近金色座位，或直接点击空座。</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {!currentPlayer && (
+        <div className="stage-claim-panel">
+          <label>
+            <span>昵称</span>
+            <input value={playerName} placeholder="落座前取个名字" onChange={(event) => onPlayerNameChange(event.target.value)} />
+          </label>
+          <button type="button" disabled={!canClaimTarget} onClick={() => canClaimTarget && onJoin(targetSeat.id)}>
+            <LogIn size={17} />
+            {canClaimTarget ? `落座 ${targetSeat.name}` : "选择空座"}
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function SeatBoard({ room }) {
   return (
     <div className="seat-board">
@@ -1190,7 +1471,13 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
             <span className="pill">{room.phase}</span>
           </div>
 
-          <RoundTable room={room} />
+          <InteractiveTableStage
+            room={room}
+            currentPlayer={currentPlayer}
+            playerName={playerName}
+            onPlayerNameChange={setPlayerName}
+            onJoin={joinSeat}
+          />
           <Messages room={room} />
 
           {currentPlayer ? (
