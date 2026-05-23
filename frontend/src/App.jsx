@@ -23,6 +23,8 @@ import { createRoot } from "react-dom/client";
 import Phaser from "phaser";
 import "./styles.css";
 
+const roomBackdropUrl = new URL("./assets/scene/gothic-roundtable-room.png", import.meta.url).href;
+
 const avatarSpriteUrls = [
   {
     front: new URL("./assets/animal-avatars/fox-front.png", import.meta.url).href,
@@ -1059,6 +1061,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       }
 
       preload() {
+        this.load.image("room-backdrop", roomBackdropUrl);
         avatarSpriteUrls.forEach((sprite, index) => {
           ["front", "left", "back", "right"].forEach((direction) => {
             this.load.image(`avatar-${index}-${direction}`, sprite[direction]);
@@ -1091,65 +1094,70 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         return {
           width,
           height,
-          centerX: width * 0.56,
-          centerY: height * 0.55,
-          tableRx: Math.min(width * 0.27, 265),
-          tableRy: Math.min(height * 0.18, 112),
-          seatRx: Math.min(width * 0.38, 390),
-          seatRy: Math.min(height * 0.29, 170)
+          centerX: width * 0.54,
+          centerY: height * 0.54,
+          seatRx: Math.min(width * 0.32, 330),
+          seatRy: Math.min(height * 0.24, 148)
         };
       }
 
       drawRoom() {
-        const { width, height, centerX, centerY, tableRx, tableRy } = this.layout();
-        const graphics = this.add.graphics();
+        const { width, height } = this.layout();
+        const graphics = this.add.graphics().setDepth(-2);
         graphics.fillStyle(0x0f120f, 1);
         graphics.fillRect(0, 0, width, height);
-        graphics.fillStyle(0x151e19, 1);
-        graphics.fillRect(0, 0, width, height * 0.34);
-        graphics.fillStyle(0x1d2d24, 0.94);
-        graphics.fillEllipse(centerX, centerY + 72, Math.min(width * 0.78, 900), Math.min(height * 0.48, 290));
-        graphics.lineStyle(2, 0x2f4a3b, 0.55);
-        graphics.strokeEllipse(centerX, centerY + 72, Math.min(width * 0.78, 900), Math.min(height * 0.48, 290));
 
-        const tableDepth = centerY + 4;
-        this.add.ellipse(centerX + 22, centerY + 100, tableRx * 2.32, tableRy * 1.72, 0x040504, 0.34).setDepth(tableDepth - 16);
-        this.add.rectangle(centerX, centerY + 102, tableRx * 0.58, tableRy * 0.9, 0x4b2a16, 1).setDepth(tableDepth - 12);
-        this.add.ellipse(centerX, centerY + 142, tableRx * 0.7, tableRy * 0.38, 0x2d170c, 0.92).setDepth(tableDepth - 11);
+        const backdrop = this.add.image(width / 2, height / 2, "room-backdrop").setDepth(0);
+        const source = this.textures.get("room-backdrop").getSourceImage();
+        const scale = Math.max(width / source.width, height / source.height);
+        backdrop.setScale(scale);
 
-        const tableSide = this.add.ellipse(centerX, centerY + 56, tableRx * 2.2, tableRy * 1.48, 0x6f3a18, 1);
-        tableSide.setStrokeStyle(3, 0x2e170b, 0.82);
-        tableSide.setDepth(tableDepth - 8);
-        this.add.ellipse(centerX, centerY + 70, tableRx * 2.04, tableRy * 1.18, 0x4b2410, 0.78).setDepth(tableDepth - 7);
+        const overlay = this.add.graphics().setDepth(1);
+        overlay.fillStyle(0x030605, 0.18);
+        overlay.fillRect(0, 0, width, height);
+        overlay.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, 0.5, 0.08, 0.28, 0.68);
+        overlay.fillRect(0, 0, width, height);
 
-        const tableRim = this.add.ellipse(centerX, centerY + 22, tableRx * 2.28, tableRy * 1.56, 0x8a4b21, 1);
-        tableRim.setStrokeStyle(4, 0x3a1c0d, 0.9);
-        tableRim.setDepth(tableDepth);
-        const rimHighlight = this.add.ellipse(centerX - tableRx * 0.1, centerY + 14, tableRx * 2.05, tableRy * 1.3, 0xb56f31, 0.28);
-        rimHighlight.setDepth(tableDepth + 1);
+        const addGlow = (xRatio, yRatio, radius, color, alpha, delay = 0) => {
+          const glow = this.add.ellipse(width * xRatio, height * yRatio, radius * 1.2, radius, color, alpha).setDepth(2);
+          glow.setBlendMode(Phaser.BlendModes.ADD);
+          this.tweens.add({
+            targets: glow,
+            alpha: alpha * 0.48,
+            scaleX: 1.18,
+            scaleY: 1.08,
+            duration: 1050 + delay,
+            yoyo: true,
+            repeat: -1,
+            ease: "Sine.easeInOut"
+          });
+        };
+        addGlow(0.17, 0.18, 56, 0xffb457, 0.14, 0);
+        addGlow(0.31, 0.16, 46, 0xffb457, 0.1, 180);
+        addGlow(0.82, 0.17, 58, 0xffb457, 0.14, 320);
+        addGlow(0.52, 0.12, 108, 0x5bc6ff, 0.08, 140);
+        addGlow(0.49, 0.52, 56, 0xffd66f, 0.13, 260);
 
-        const felt = this.add.ellipse(centerX, centerY + 18, tableRx * 1.7, tableRy * 1.08, 0x244432, 1);
-        felt.setStrokeStyle(3, 0x15241b, 0.92);
-        felt.setDepth(tableDepth + 2);
-        this.add.ellipse(centerX - tableRx * 0.12, centerY + 5, tableRx * 1.18, tableRy * 0.46, 0x315842, 0.28).setDepth(tableDepth + 3);
-        this.add.ellipse(centerX + tableRx * 0.2, centerY + 32, tableRx * 0.72, tableRy * 0.36, 0x12271d, 0.28).setDepth(tableDepth + 3);
-
-        const grain = this.add.graphics().setDepth(tableDepth + 4);
-        grain.lineStyle(2, 0x5c2e13, 0.34);
-        grain.strokeEllipse(centerX, centerY + 23, tableRx * 2.04, tableRy * 1.35);
-        grain.lineStyle(1, 0xc38648, 0.2);
-        grain.strokeEllipse(centerX - tableRx * 0.08, centerY + 14, tableRx * 1.92, tableRy * 1.18);
-        grain.strokeEllipse(centerX + tableRx * 0.06, centerY + 31, tableRx * 2.1, tableRy * 1.26);
-
-        const cards = this.add.graphics().setDepth(tableDepth + 5);
-        cards.fillStyle(0xf3e4c1, 0.88);
-        cards.fillRoundedRect(centerX - 46, centerY - 16, 34, 48, 4);
-        cards.fillRoundedRect(centerX - 5, centerY - 20, 34, 48, 4);
-        cards.lineStyle(1, 0x7e5d2a, 0.5);
-        cards.strokeRoundedRect(centerX - 46, centerY - 16, 34, 48, 4);
-        cards.strokeRoundedRect(centerX - 5, centerY - 20, 34, 48, 4);
-        this.add.ellipse(centerX + 62, centerY + 14, 26, 12, 0xd9a441, 0.86).setDepth(tableDepth + 5);
-        this.add.ellipse(centerX + 86, centerY + 20, 26, 12, 0x65c18c, 0.78).setDepth(tableDepth + 5);
+        Array.from({ length: 18 }).forEach((_, index) => {
+          const dust = this.add.circle(
+            width * (0.2 + Math.random() * 0.62),
+            height * (0.2 + Math.random() * 0.58),
+            1 + Math.random() * 1.4,
+            0xf3d99a,
+            0.08 + Math.random() * 0.08
+          ).setDepth(3);
+          dust.setBlendMode(Phaser.BlendModes.ADD);
+          this.tweens.add({
+            targets: dust,
+            y: dust.y - 18 - Math.random() * 18,
+            alpha: 0.02,
+            duration: 2600 + Math.random() * 1600,
+            delay: index * 130,
+            yoyo: true,
+            repeat: -1,
+            ease: "Sine.easeInOut"
+          });
+        });
       }
 
       drawSeats() {
@@ -1157,14 +1165,14 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         seats.forEach((seat, index) => {
           const angle = (Math.PI * 2 * index) / seats.length - Math.PI / 2;
           const x = centerX + Math.cos(angle) * seatRx;
-          const y = centerY + Math.sin(angle) * seatRy + 70;
+          const y = centerY + Math.sin(angle) * seatRy + 48;
           const seatDirection = directionFromVector(centerX - x, centerY - y);
           const animalIndex = index % avatarSpriteUrls.length;
-          const shadow = this.add.ellipse(x + 8, y + 22, 86, 30, 0x050604, 0.36).setDepth(y - 2);
-          const base = this.add.ellipse(x, y, 78, 34, seat.claimed ? 0xd9a441 : 0xdba13c, 1).setDepth(y);
-          base.setStrokeStyle(2, 0x654026, 0.82);
-          const ring = this.add.ellipse(x, y - 5, 84, 38, 0x000000, 0).setDepth(y + 1);
-          ring.setStrokeStyle(3, seat.type === "ai" ? 0x65c18c : 0x8aa6d8, 0.78);
+          const markerColor = seat.type === "ai" ? 0x65c18c : 0x8aa6d8;
+          const shadow = this.add.ellipse(x + 8, y + 20, 86, 28, 0x050604, 0.3).setDepth(y - 2);
+          const base = this.add.ellipse(x, y + 4, 76, 28, markerColor, 0.12).setDepth(y);
+          const ring = this.add.ellipse(x, y, 80, 32, 0x000000, 0).setDepth(y + 1);
+          ring.setStrokeStyle(3, markerColor, 0.72);
           ring.setInteractive({ useHandCursor: !currentPlayerSeatId });
           ring.on("pointerover", () => {
             if (!currentPlayerSeatId && seat.type === "human" && !seat.claimed) ring.setStrokeStyle(4, 0xffd66f, 0.82);
@@ -1178,8 +1186,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
           });
 
           if (seat.claimed || seat.type === "ai") {
-            const avatar = this.add.image(x, y - 54, `avatar-${animalIndex}-${seatDirection}`);
-            avatar.setDisplaySize(82, 82);
+            const avatar = this.add.image(x, y - 46, `avatar-${animalIndex}-${seatDirection}`);
+            avatar.setDisplaySize(74, 74);
             avatar.setDepth(y + 24);
             this.tweens.add({
               targets: avatar,
