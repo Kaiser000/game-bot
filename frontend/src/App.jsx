@@ -1093,8 +1093,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
           height,
           centerX: width * 0.56,
           centerY: height * 0.55,
-          tableRx: Math.min(width * 0.24, 230),
-          tableRy: Math.min(height * 0.15, 92),
+          tableRx: Math.min(width * 0.27, 265),
+          tableRy: Math.min(height * 0.18, 112),
           seatRx: Math.min(width * 0.38, 390),
           seatRy: Math.min(height * 0.29, 170)
         };
@@ -1112,16 +1112,44 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         graphics.lineStyle(2, 0x2f4a3b, 0.55);
         graphics.strokeEllipse(centerX, centerY + 72, Math.min(width * 0.78, 900), Math.min(height * 0.48, 290));
 
-        const tableShadow = this.add.ellipse(centerX + 18, centerY + 56, tableRx * 2.16, tableRy * 2.05, 0x050604, 0.42);
-        tableShadow.setDepth(centerY - 4);
-        const tableBase = this.add.ellipse(centerX, centerY + 36, tableRx * 2.25, tableRy * 1.95, 0x75431d, 1);
-        tableBase.setStrokeStyle(2, 0x3a2212, 0.72);
-        tableBase.setDepth(centerY);
-        const tableTop = this.add.ellipse(centerX, centerY + 12, tableRx * 1.86, tableRy * 1.58, 0x263b2f, 1);
-        tableTop.setStrokeStyle(2, 0x16251d, 0.84);
-        tableTop.setDepth(centerY + 1);
-        const tableGlow = this.add.ellipse(centerX, centerY + 6, tableRx * 0.82, tableRy * 0.55, 0x183126, 0.54);
-        tableGlow.setDepth(centerY + 2);
+        const tableDepth = centerY + 4;
+        this.add.ellipse(centerX + 22, centerY + 100, tableRx * 2.32, tableRy * 1.72, 0x040504, 0.34).setDepth(tableDepth - 16);
+        this.add.rectangle(centerX, centerY + 102, tableRx * 0.58, tableRy * 0.9, 0x4b2a16, 1).setDepth(tableDepth - 12);
+        this.add.ellipse(centerX, centerY + 142, tableRx * 0.7, tableRy * 0.38, 0x2d170c, 0.92).setDepth(tableDepth - 11);
+
+        const tableSide = this.add.ellipse(centerX, centerY + 56, tableRx * 2.2, tableRy * 1.48, 0x6f3a18, 1);
+        tableSide.setStrokeStyle(3, 0x2e170b, 0.82);
+        tableSide.setDepth(tableDepth - 8);
+        this.add.ellipse(centerX, centerY + 70, tableRx * 2.04, tableRy * 1.18, 0x4b2410, 0.78).setDepth(tableDepth - 7);
+
+        const tableRim = this.add.ellipse(centerX, centerY + 22, tableRx * 2.28, tableRy * 1.56, 0x8a4b21, 1);
+        tableRim.setStrokeStyle(4, 0x3a1c0d, 0.9);
+        tableRim.setDepth(tableDepth);
+        const rimHighlight = this.add.ellipse(centerX - tableRx * 0.1, centerY + 14, tableRx * 2.05, tableRy * 1.3, 0xb56f31, 0.28);
+        rimHighlight.setDepth(tableDepth + 1);
+
+        const felt = this.add.ellipse(centerX, centerY + 18, tableRx * 1.7, tableRy * 1.08, 0x244432, 1);
+        felt.setStrokeStyle(3, 0x15241b, 0.92);
+        felt.setDepth(tableDepth + 2);
+        this.add.ellipse(centerX - tableRx * 0.12, centerY + 5, tableRx * 1.18, tableRy * 0.46, 0x315842, 0.28).setDepth(tableDepth + 3);
+        this.add.ellipse(centerX + tableRx * 0.2, centerY + 32, tableRx * 0.72, tableRy * 0.36, 0x12271d, 0.28).setDepth(tableDepth + 3);
+
+        const grain = this.add.graphics().setDepth(tableDepth + 4);
+        grain.lineStyle(2, 0x5c2e13, 0.34);
+        grain.strokeEllipse(centerX, centerY + 23, tableRx * 2.04, tableRy * 1.35);
+        grain.lineStyle(1, 0xc38648, 0.2);
+        grain.strokeEllipse(centerX - tableRx * 0.08, centerY + 14, tableRx * 1.92, tableRy * 1.18);
+        grain.strokeEllipse(centerX + tableRx * 0.06, centerY + 31, tableRx * 2.1, tableRy * 1.26);
+
+        const cards = this.add.graphics().setDepth(tableDepth + 5);
+        cards.fillStyle(0xf3e4c1, 0.88);
+        cards.fillRoundedRect(centerX - 46, centerY - 16, 34, 48, 4);
+        cards.fillRoundedRect(centerX - 5, centerY - 20, 34, 48, 4);
+        cards.lineStyle(1, 0x7e5d2a, 0.5);
+        cards.strokeRoundedRect(centerX - 46, centerY - 16, 34, 48, 4);
+        cards.strokeRoundedRect(centerX - 5, centerY - 20, 34, 48, 4);
+        this.add.ellipse(centerX + 62, centerY + 14, 26, 12, 0xd9a441, 0.86).setDepth(tableDepth + 5);
+        this.add.ellipse(centerX + 86, centerY + 20, 26, 12, 0x65c18c, 0.78).setDepth(tableDepth + 5);
       }
 
       drawSeats() {
