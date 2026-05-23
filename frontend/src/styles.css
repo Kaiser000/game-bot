@@ -608,10 +608,135 @@ p {
   margin-top: 12px;
 }
 
+.lobby-primary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.lobby-primary-actions button {
+  min-height: 50px;
+}
+
 .lobby-action-strip .ghost-button {
   min-height: 40px;
   color: #ead7af;
   background: rgba(18, 16, 13, 0.42);
+}
+
+.join-page {
+  min-height: calc(100vh - 108px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(390px, 0.58fr);
+  gap: 18px;
+  align-items: stretch;
+  animation: pageIn 0.42s ease both;
+}
+
+.join-hero-panel,
+.join-card {
+  border: 1px solid var(--line);
+  background: rgba(28, 25, 21, 0.96);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  animation: panelIn 0.46s ease both;
+}
+
+.join-hero-panel {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 420px;
+  padding: 34px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 28% 30%, rgba(217, 164, 65, 0.16), transparent 24%),
+    linear-gradient(135deg, rgba(38, 56, 47, 0.82), rgba(18, 16, 13, 0.96));
+}
+
+.join-hero-panel::before {
+  content: "";
+  position: absolute;
+  right: -110px;
+  bottom: -130px;
+  width: 520px;
+  aspect-ratio: 1.35;
+  border: 28px solid rgba(101, 68, 38, 0.62);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    rgba(38, 56, 47, 0.56);
+  background-size: 36px 36px;
+  transform: rotate(-10deg);
+  pointer-events: none;
+}
+
+.join-hero-panel::after {
+  content: "";
+  position: absolute;
+  right: 158px;
+  bottom: 84px;
+  width: 42px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: url("./assets/human-token.svg") center / contain no-repeat;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.44));
+  animation: tokenFloat 4.8s ease-in-out infinite;
+}
+
+.join-hero-panel > * {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+
+.join-hero-panel h1 {
+  margin-bottom: 10px;
+  color: #fff3d5;
+  font-family: var(--font-display);
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: 0.98;
+}
+
+.join-hero-panel p {
+  color: #e2d5bd;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.join-card {
+  align-self: center;
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  background:
+    linear-gradient(90deg, rgba(101, 193, 140, 0.08), transparent 46%),
+    linear-gradient(180deg, rgba(37, 32, 24, 0.98), rgba(18, 16, 13, 0.96));
+}
+
+.join-help-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.join-help-grid > div {
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(65, 55, 43, 0.82);
+  background: rgba(18, 16, 13, 0.55);
+  padding: 11px 12px;
+}
+
+.join-help-grid strong {
+  color: #fff3d5;
+  font-size: 14px;
+}
+
+.join-help-grid span {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .dashboard-stats {
@@ -946,6 +1071,7 @@ label span {
 }
 
 .button-row button[type="submit"],
+.primary-command,
 .room-actions button:first-child,
 .composer button,
 .page-hero > button {
@@ -960,10 +1086,12 @@ label span {
 }
 
 .button-row button[type="submit"]::after,
+.primary-command::after,
 .room-actions button:first-child::after,
 .composer button::after,
 .page-hero > button::after,
 .secondary-button::after,
+.secondary-command::after,
 .ghost-button::after,
 .board-choice::after,
 .nav-link::after {
@@ -978,10 +1106,12 @@ label span {
 }
 
 .button-row button[type="submit"]:hover::after,
+.primary-command:hover::after,
 .room-actions button:first-child:hover::after,
 .composer button:hover::after,
 .page-hero > button:hover::after,
 .secondary-button:hover::after,
+.secondary-command:hover::after,
 .ghost-button:hover::after,
 .board-choice:hover::after,
 .nav-link:hover::after {
@@ -989,7 +1119,8 @@ label span {
   animation: buttonSheen 0.75s ease;
 }
 
-.secondary-button {
+.secondary-button,
+.secondary-command {
   border: 1px solid rgba(101, 193, 140, 0.44);
   background:
     linear-gradient(135deg, rgba(101, 193, 140, 0.28), rgba(36, 52, 44, 0.95)),
@@ -1834,6 +1965,7 @@ label span {
 
 @media (max-width: 1180px) {
   .home-layout,
+  .join-page,
   .room-grid,
   .persona-page-grid,
   .rules-page-grid,
@@ -1849,6 +1981,10 @@ label span {
 
   .lobby-preview {
     grid-template-columns: 1fr;
+  }
+
+  .join-card {
+    align-self: stretch;
   }
 
   .setup-summary-panel {
@@ -1907,6 +2043,7 @@ label span {
   .dashboard-stats,
   .number-row,
   .rules-selects,
+  .lobby-primary-actions,
   .composer {
     grid-template-columns: 1fr;
   }
@@ -1931,6 +2068,11 @@ label span {
 
   .preview-table {
     min-height: 250px;
+  }
+
+  .join-hero-panel {
+    min-height: 300px;
+    padding: 24px;
   }
 
   .rules-selects {

@@ -872,6 +872,23 @@ class ApiHandler(BaseHTTPRequestHandler):
             return
 
         parts = path.strip("/").split("/")
+        if len(parts) == 3 and parts[:2] == ["api", "rooms"] and parts[2] == "lookup":
+            code = parse_qs(parsed.query).get("code", [""])[0].strip()
+            normalized_code = code.upper()
+            room = next(
+                (
+                    item
+                    for item in ROOMS.values()
+                    if item.get("id") == code or item.get("joinCode", "").upper() == normalized_code
+                ),
+                None,
+            )
+            if room:
+                self.send_json({"room": public_room(room)})
+            else:
+                self.send_json({"detail": "Room not found"}, HTTPStatus.NOT_FOUND)
+            return
+
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
             room = ROOMS.get(parts[2])
             if room:

@@ -58,7 +58,7 @@ function routeFromHash() {
   const value = window.location.hash.replace(/^#\/?/, "");
   const [page, roomId] = value.split("/");
   if (page === "rooms" && roomId) return { page: "room", roomId };
-  if (["setup", "rules", "personas", "reports"].includes(page)) return { page, roomId: "" };
+  if (["setup", "join", "rules", "personas", "reports"].includes(page)) return { page, roomId: "" };
   return { page: "setup", roomId: "" };
 }
 
@@ -100,6 +100,16 @@ function roomApiPath(roomId, playerToken = "", hostToken = "") {
 
 function inviteUrl(roomId) {
   return `${window.location.origin}${window.location.pathname}#/rooms/${roomId}`;
+}
+
+function roomIdFromJoinInput(value) {
+  const input = value.trim();
+  if (!input) return "";
+  const hashRoom = input.match(/#\/rooms\/([^/?#]+)/i);
+  if (hashRoom?.[1]) return hashRoom[1];
+  const plainRoom = input.match(/(?:^|\/)(room_[a-z0-9]+)(?:$|[/?#])/i);
+  if (plainRoom?.[1]) return plainRoom[1];
+  return "";
 }
 
 const reportCards = [
@@ -297,6 +307,7 @@ function RulebookHeroPanel({ game, board }) {
 function AppNav({ page, room, onNavigate }) {
   const items = [
     { id: "setup", label: "开局", icon: <Home size={17} />, path: "setup" },
+    { id: "join", label: "加入", icon: <LogIn size={17} />, path: "join" },
     { id: "room", label: "圆桌", icon: <Table2 size={17} />, disabled: !room, path: room ? `rooms/${room.id}` : "setup" },
     { id: "rules", label: "规则", icon: <BookOpen size={17} />, path: "rules" },
     { id: "personas", label: "人设库", icon: <Library size={17} />, path: "personas" },
@@ -372,6 +383,16 @@ function Setup({ games, personaModes, onCreate }) {
         </div>
 
         <LobbyTablePreview gameId={game?.id || "werewolf"} board={selectedBoard} humanPlayers={humanPlayers} aiSeats={aiSeats} />
+        <div className="lobby-primary-actions">
+          <button className="primary-command" type="submit" form="room-setup-form">
+            <CirclePlay size={18} />
+            创建一局
+          </button>
+          <button className="secondary-command" type="button" onClick={() => navigateTo("join")}>
+            <LogIn size={18} />
+            加入游戏
+          </button>
+        </div>
         <div className="lobby-action-strip">
           <button className="ghost-button" type="button" onClick={() => navigateTo("rules")}>
             <BookOpen size={17} />
@@ -394,6 +415,7 @@ function Setup({ games, personaModes, onCreate }) {
         </div>
 
         <form
+          id="room-setup-form"
           className="setup-form"
           onSubmit={(event) => {
             event.preventDefault();
@@ -509,6 +531,97 @@ function Setup({ games, personaModes, onCreate }) {
 
         <BoardSetupSummary game={game} board={selectedBoard} aiSeats={aiSeats} selectedMode={selectedMode} />
       </div>
+    </section>
+  );
+}
+
+function JoinPage({ onRoomFound }) {
+  const [joinInput, setJoinInput] = useState("");
+  const [joining, setJoining] = useState(false);
+  const [error, setError] = useState("");
+
+  async function joinGame(event) {
+    event.preventDefault();
+    const value = joinInput.trim();
+    if (!value) {
+      setError("请输入房间码或邀请链接。");
+      return;
+    }
+
+    setJoining(true);
+    setError("");
+    try {
+      const directRoomId = roomIdFromJoinInput(value);
+      if (directRoomId) {
+        navigateTo(`rooms/${directRoomId}`);
+        return;
+      }
+
+      const data = await api(`/api/rooms/lookup?code=${encodeURIComponent(value)}`);
+      onRoomFound(data.room);
+      navigateTo(`rooms/${data.room.id}`);
+    } catch (err) {
+      setError(err.message || "没有找到这个房间，请确认房间码是否正确。");
+    } finally {
+      setJoining(false);
+    }
+  }
+
+  return (
+    <section className="join-page">
+      <div className="join-hero-panel">
+        <p className="eyebrow">JOIN TABLE</p>
+        <h1>加入游戏</h1>
+        <p>拿到主持人给的房间码或邀请链接后，从这里进入同一张圆桌，再选择自己的真人席位入座。</p>
+      </div>
+
+      <form className="join-card" onSubmit={joinGame}>
+        <div className="panel-title">
+          <div>
+            <p className="eyebrow">ROOM ACCESS</p>
+            <h2>输入房间信息</h2>
+          </div>
+          <span className="pill">同桌入座</span>
+        </div>
+
+        {error && <div className="error-banner">{error}</div>}
+
+        <label>
+          <span>房间码或邀请链接</span>
+          <input
+            autoFocus
+            value={joinInput}
+            placeholder="例如 A1B2C3，或粘贴邀请链接"
+            onChange={(event) => setJoinInput(event.target.value)}
+          />
+        </label>
+
+        <div className="join-help-grid">
+          <div>
+            <strong>房间码</strong>
+            <span>创建者在圆桌页面顶部可以看到 6 位码。</span>
+          </div>
+          <div>
+            <strong>邀请链接</strong>
+            <span>朋友发来的链接可直接粘贴，不需要手动截取。</span>
+          </div>
+          <div>
+            <strong>入座</strong>
+            <span>进入房间后再选择一个空的真人座位。</span>
+          </div>
+        </div>
+
+        <div className="button-row">
+          <button type="submit" disabled={joining}>
+            {joining ? <RefreshCw size={18} /> : <LogIn size={18} />}
+            {joining ? "正在进入" : "进入圆桌"}
+          </button>
+          <button className="secondary-button" type="button" onClick={() => navigateTo("setup")}>
+            <CirclePlay size={18} />
+            创建新局
+          </button>
+        </div>
+      </form>
     </section>
   );
 }
@@ -1144,6 +1257,7 @@ function App() {
       setRoomLoading(false);
       setPlayerToken("");
       setHostToken("");
+      setError("");
       return;
     }
     setPlayerToken(getRoomToken(route.roomId));
@@ -1227,6 +1341,7 @@ function App() {
         />
       );
     }
+    if (route.page === "join") return <JoinPage onRoomFound={setRoom} />;
     if (route.page === "rules") return <RulesPage games={games} />;
     if (route.page === "personas") return <PersonasPage games={games} personaModes={personaModes} />;
     if (route.page === "reports") return <ReportsPage />;
