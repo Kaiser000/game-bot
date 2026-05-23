@@ -993,6 +993,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
   );
   const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId) || room.seats.find((seat) => seat.id === nearSeatId);
   const canClaimTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed;
+  const currentPlayerSeatId = currentPlayer?.id || "";
 
   useEffect(() => {
     const mount = stageRef.current;
@@ -1123,25 +1124,27 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     seatObjectsRef.current = seatObjects;
 
     const player = new THREE.Group();
-    const playerShadow = new THREE.Mesh(
-      new THREE.CircleGeometry(0.38, 32),
-      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })
-    );
-    playerShadow.rotation.x = -Math.PI / 2;
-    playerShadow.position.y = 0.035;
-    player.add(playerShadow);
-    const playerAvatar = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: avatarTextures[0],
-        transparent: true,
-        depthWrite: false
-      })
-    );
-    playerAvatar.position.y = 0.88;
-    playerAvatar.scale.set(1.18, 1.18, 1.18);
-    player.add(playerAvatar);
-    player.position.set(0, 0, 4.55);
-    scene.add(player);
+    if (!currentPlayerSeatId) {
+      const playerShadow = new THREE.Mesh(
+        new THREE.CircleGeometry(0.38, 32),
+        new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })
+      );
+      playerShadow.rotation.x = -Math.PI / 2;
+      playerShadow.position.y = 0.035;
+      player.add(playerShadow);
+      const playerAvatar = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: avatarTextures[0],
+          transparent: true,
+          depthWrite: false
+        })
+      );
+      playerAvatar.position.y = 0.88;
+      playerAvatar.scale.set(1.18, 1.18, 1.18);
+      player.add(playerAvatar);
+      player.position.set(0, 0, 4.55);
+      scene.add(player);
+    }
 
     const keys = new Set();
     const raycaster = new THREE.Raycaster();
@@ -1153,14 +1156,17 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         item.ring.material = item.seat.id === seatId ? pickedMaterial : item.seat.type === "ai" ? aiMaterial : humanMaterial;
       });
     };
+    if (currentPlayerSeatId) highlightSeat(currentPlayerSeatId);
 
     const onKeyDown = (event) => {
+      if (currentPlayerSeatId) return;
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyW", "KeyA", "KeyS", "KeyD"].includes(event.code)) {
         keys.add(event.code);
       }
     };
     const onKeyUp = (event) => keys.delete(event.code);
     const onPointerDown = (event) => {
+      if (currentPlayerSeatId) return;
       const rect = renderer.domElement.getBoundingClientRect();
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1179,9 +1185,11 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       }
     };
 
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onKeyUp);
-    renderer.domElement.addEventListener("pointerdown", onPointerDown);
+    if (!currentPlayerSeatId) {
+      window.addEventListener("keydown", onKeyDown);
+      window.addEventListener("keyup", onKeyUp);
+      renderer.domElement.addEventListener("pointerdown", onPointerDown);
+    }
 
     const resizeObserver = new ResizeObserver(() => {
       const width = mount.clientWidth || 1;
@@ -1201,26 +1209,30 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       if (keys.has("ArrowLeft") || keys.has("KeyA")) dx -= speed;
       if (keys.has("ArrowRight") || keys.has("KeyD")) dx += speed;
       if (dx || dz) {
-        player.position.x = THREE.MathUtils.clamp(player.position.x + dx, -5.4, 5.4);
-        player.position.z = THREE.MathUtils.clamp(player.position.z + dz, -4.2, 5.2);
-        player.rotation.y = Math.atan2(dx, dz);
+        if (!currentPlayerSeatId) {
+          player.position.x = THREE.MathUtils.clamp(player.position.x + dx, -5.4, 5.4);
+          player.position.z = THREE.MathUtils.clamp(player.position.z + dz, -4.2, 5.2);
+          player.rotation.y = Math.atan2(dx, dz);
+        }
       }
 
       tableFelt.rotation.y += 0.0012;
       centerGlow.rotation.y -= 0.0016;
-      player.position.y = Math.sin(performance.now() * 0.004) * 0.025;
+      if (!currentPlayerSeatId) player.position.y = Math.sin(performance.now() * 0.004) * 0.025;
 
       let nearest = "";
       let nearestDistance = 1.05;
       seatObjects.forEach((item) => {
-        const distance = Math.hypot(player.position.x - item.x, player.position.z - item.z);
         item.group.position.y = Math.sin(performance.now() * 0.0025 + item.x) * 0.025;
-        if (distance < nearestDistance && item.seat.type === "human" && !item.seat.claimed) {
-          nearest = item.seat.id;
-          nearestDistance = distance;
+        if (!currentPlayerSeatId) {
+          const distance = Math.hypot(player.position.x - item.x, player.position.z - item.z);
+          if (distance < nearestDistance && item.seat.type === "human" && !item.seat.claimed) {
+            nearest = item.seat.id;
+            nearestDistance = distance;
+          }
         }
       });
-      if (nearest !== lastNearest) {
+      if (!currentPlayerSeatId && nearest !== lastNearest) {
         lastNearest = nearest;
         setNearSeatId(nearest);
         if (!pickedSeatId) highlightSeat(nearest);
@@ -1233,15 +1245,17 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onKeyUp);
-      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      if (!currentPlayerSeatId) {
+        window.removeEventListener("keydown", onKeyDown);
+        window.removeEventListener("keyup", onKeyUp);
+        renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+      }
       resizeObserver.disconnect();
       seatObjectsRef.current = [];
       renderer.dispose();
       mount.removeChild(renderer.domElement);
     };
-  }, [room.gameId, seatSignature]);
+  }, [room.gameId, seatSignature, currentPlayerSeatId]);
 
   useEffect(() => {
     if (!targetSeat || targetSeat.claimed) setPickedSeatId("");
@@ -1253,8 +1267,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       <div className="stage-hud">
         <div>
           <p className="eyebrow">LIVE ROOM</p>
-          <h2>走近圆桌并落座</h2>
-          <span>WASD / 方向键移动，点击座位可选中。</span>
+          <h2>{currentPlayer ? "已落座，等待发言" : "走近圆桌并落座"}</h2>
+          <span>{currentPlayer ? "你的角色已经坐在席位上，下面可以直接参与圆桌发言。" : "WASD / 方向键移动，点击座位可选中。"}</span>
         </div>
         <div className="stage-seat-hint">
           {currentPlayer ? (
