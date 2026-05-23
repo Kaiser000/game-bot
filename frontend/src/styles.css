@@ -1133,7 +1133,7 @@ label span {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  margin-top: 10px;
+  margin-top: 8px;
   padding: 6px 10px;
   border: 1px solid rgba(255, 239, 196, 0.22);
   border-radius: 999px;
@@ -1464,14 +1464,32 @@ label span {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  padding: 20px 22px;
+  padding: 14px 18px;
+}
+
+.room-header h1 {
+  font-size: clamp(24px, 2.8vw, 36px);
+  line-height: 1;
+}
+
+.room-header p {
+  margin-top: 5px;
+  line-height: 1.35;
+}
+
+.room-header .eyebrow {
+  margin-bottom: 4px;
 }
 
 .room-grid {
   min-height: 0;
   display: grid;
-  grid-template-columns: 330px minmax(560px, 1fr) 310px;
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: 14px;
+}
+
+.room-grid > .knowledge-panel {
+  grid-column: 1 / -1;
 }
 
 .left-column {
@@ -1719,7 +1737,7 @@ label span {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(500px, 58vh) minmax(220px, 1fr) auto;
+  grid-template-rows: auto minmax(500px, 60vh) minmax(220px, 1fr) auto;
   overflow: hidden;
 }
 
@@ -1728,7 +1746,7 @@ label span {
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  padding: 18px 20px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1899,20 +1917,28 @@ label span {
 
 .stage-hud {
   position: absolute;
-  inset: 16px 16px auto;
+  inset: 14px auto auto 14px;
   z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  align-items: flex-start;
+  display: grid;
+  gap: 8px;
+  max-width: min(340px, calc(100% - 28px));
   pointer-events: none;
 }
 
+.stage-hud > div:first-child {
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgba(217, 164, 65, 0.22);
+  background: rgba(12, 13, 11, 0.58);
+  padding: 10px 12px;
+  backdrop-filter: blur(10px);
+}
+
 .stage-hud h2 {
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   color: #fff3d5;
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 800;
 }
 
@@ -1924,7 +1950,8 @@ label span {
 }
 
 .stage-seat-hint {
-  min-width: 150px;
+  width: fit-content;
+  min-width: 138px;
   display: grid;
   gap: 4px;
   border: 1px solid rgba(217, 164, 65, 0.26);
@@ -1940,12 +1967,12 @@ label span {
 
 .stage-claim-panel {
   position: absolute;
-  left: 16px;
   right: 16px;
   bottom: 16px;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto;
+  width: min(420px, calc(100% - 32px));
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: end;
   border: 1px solid rgba(217, 164, 65, 0.24);

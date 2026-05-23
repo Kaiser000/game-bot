@@ -23,6 +23,17 @@ import { createRoot } from "react-dom/client";
 import * as THREE from "three";
 import "./styles.css";
 
+const avatarUrls = [
+  new URL("./assets/avatars/avatar-1.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-2.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-3.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-4.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-5.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-6.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-7.png", import.meta.url).href,
+  new URL("./assets/avatars/avatar-8.png", import.meta.url).href
+];
+
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: { "content-type": "application/json" },
@@ -991,8 +1002,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     scene.background = new THREE.Color(0x10120f);
     scene.fog = new THREE.Fog(0x10120f, 8, 18);
 
-    const camera = new THREE.PerspectiveCamera(42, mount.clientWidth / mount.clientHeight, 0.1, 80);
-    camera.position.set(0, 6.4, 8.8);
+    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth / mount.clientHeight, 0.1, 80);
+    camera.position.set(0, 6.2, 9.6);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -1000,6 +1011,13 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.shadowMap.enabled = true;
     mount.appendChild(renderer.domElement);
+
+    const textureLoader = new THREE.TextureLoader();
+    const avatarTextures = avatarUrls.map((url) => {
+      const texture = textureLoader.load(url);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    });
 
     const hemi = new THREE.HemisphereLight(0xffefd0, 0x22362c, 1.7);
     scene.add(hemi);
@@ -1011,29 +1029,39 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     rim.position.set(3.4, 2.6, -2.8);
     scene.add(rim);
 
-    const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(7.2, 96),
-      new THREE.MeshStandardMaterial({ color: 0x17231d, roughness: 0.9, metalness: 0.02 })
-    );
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(13.4, 10.4), new THREE.MeshStandardMaterial({ color: 0x17231d, roughness: 0.9, metalness: 0.02 }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     scene.add(floor);
 
+    const rug = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.9, 4.1, 0.025, 96),
+      new THREE.MeshStandardMaterial({ color: 0x25362d, roughness: 0.88, metalness: 0.01 })
+    );
+    rug.scale.set(1.35, 1, 0.82);
+    rug.position.y = 0.015;
+    rug.receiveShadow = true;
+    scene.add(rug);
+
+    const backWall = new THREE.Mesh(new THREE.PlaneGeometry(13.4, 4.8), new THREE.MeshStandardMaterial({ color: 0x111813, roughness: 0.95 }));
+    backWall.position.set(0, 2.25, -4.9);
+    scene.add(backWall);
+
     const tableBase = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.55, 2.75, 0.46, 96),
+      new THREE.CylinderGeometry(2.02, 2.18, 0.44, 96),
       new THREE.MeshStandardMaterial({ color: 0x6a4427, roughness: 0.72, metalness: 0.08 })
     );
-    tableBase.scale.set(1.28, 1, 0.78);
+    tableBase.scale.set(1.18, 1, 0.72);
     tableBase.position.y = 0.45;
     tableBase.castShadow = true;
     tableBase.receiveShadow = true;
     scene.add(tableBase);
 
     const tableFelt = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.28, 2.34, 0.08, 96),
+      new THREE.CylinderGeometry(1.78, 1.84, 0.08, 96),
       new THREE.MeshStandardMaterial({ color: 0x243a31, roughness: 0.82, metalness: 0.02 })
     );
-    tableFelt.scale.set(1.25, 1, 0.76);
+    tableFelt.scale.set(1.18, 1, 0.72);
     tableFelt.position.y = 0.72;
     tableFelt.castShadow = true;
     scene.add(tableFelt);
@@ -1057,32 +1085,33 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     const seatObjects = [];
     room.seats.forEach((seat, index) => {
       const angle = (Math.PI * 2 * index) / room.seats.length - Math.PI / 2;
-      const x = Math.cos(angle) * 4.25;
-      const z = Math.sin(angle) * 2.95;
+      const x = Math.cos(angle) * 4.55;
+      const z = Math.sin(angle) * 3.38;
       const group = new THREE.Group();
       group.position.set(x, 0, z);
       group.lookAt(0, 0, 0);
       group.userData = { seatId: seat.id, x, z };
 
-      const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.42, 0.22, 32), seat.claimed ? occupiedMaterial : seatMaterial);
+      const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.52, 0.2, 36), seat.claimed ? occupiedMaterial : seatMaterial);
       stool.position.y = 0.18;
       stool.castShadow = true;
       stool.receiveShadow = true;
       group.add(stool);
 
-      const avatarColor = seat.type === "ai" ? aiMaterial : humanMaterial;
       if (seat.claimed || seat.type === "ai") {
-        const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.36, 8, 16), avatarColor);
-        body.position.y = 0.68;
-        body.castShadow = true;
-        group.add(body);
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 24, 16), roleCamp(room.gameId, seat.role) === "evil" ? evilMaterial : goodMaterial);
-        head.position.y = 1.08;
-        head.castShadow = true;
-        group.add(head);
+        const avatar = new THREE.Sprite(
+          new THREE.SpriteMaterial({
+            map: avatarTextures[index % avatarTextures.length],
+            transparent: true,
+            depthWrite: false
+          })
+        );
+        avatar.position.y = 0.9;
+        avatar.scale.set(1.02, 1.02, 1.02);
+        group.add(avatar);
       }
 
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.025, 8, 36), pickedSeatId === seat.id ? pickedMaterial : avatarColor);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.026, 8, 44), seat.type === "ai" ? aiMaterial : humanMaterial);
       ring.rotation.x = Math.PI / 2;
       ring.position.y = 0.34;
       ring.castShadow = true;
@@ -1094,21 +1123,24 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     seatObjectsRef.current = seatObjects;
 
     const player = new THREE.Group();
-    const playerBody = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.22, 0.48, 10, 20),
-      new THREE.MeshStandardMaterial({ color: 0xf1cc69, roughness: 0.48, metalness: 0.04 })
+    const playerShadow = new THREE.Mesh(
+      new THREE.CircleGeometry(0.38, 32),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })
     );
-    playerBody.position.y = 0.78;
-    playerBody.castShadow = true;
-    player.add(playerBody);
-    const playerHead = new THREE.Mesh(
-      new THREE.SphereGeometry(0.2, 24, 16),
-      new THREE.MeshStandardMaterial({ color: 0xffe5b6, roughness: 0.5 })
+    playerShadow.rotation.x = -Math.PI / 2;
+    playerShadow.position.y = 0.035;
+    player.add(playerShadow);
+    const playerAvatar = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: avatarTextures[0],
+        transparent: true,
+        depthWrite: false
+      })
     );
-    playerHead.position.y = 1.23;
-    playerHead.castShadow = true;
-    player.add(playerHead);
-    player.position.set(0, 0, 4.75);
+    playerAvatar.position.y = 0.88;
+    playerAvatar.scale.set(1.18, 1.18, 1.18);
+    player.add(playerAvatar);
+    player.position.set(0, 0, 4.55);
     scene.add(player);
 
     const keys = new Set();
@@ -1116,6 +1148,11 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     const pointer = new THREE.Vector2();
     let animationFrame = 0;
     let lastNearest = "";
+    const highlightSeat = (seatId) => {
+      seatObjects.forEach((item) => {
+        item.ring.material = item.seat.id === seatId ? pickedMaterial : item.seat.type === "ai" ? aiMaterial : humanMaterial;
+      });
+    };
 
     const onKeyDown = (event) => {
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyW", "KeyA", "KeyS", "KeyD"].includes(event.code)) {
@@ -1138,6 +1175,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         let target = hit.object;
         while (target.parent && !target.userData.seatId) target = target.parent;
         setPickedSeatId(target.userData.seatId);
+        highlightSeat(target.userData.seatId);
       }
     };
 
@@ -1185,6 +1223,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       if (nearest !== lastNearest) {
         lastNearest = nearest;
         setNearSeatId(nearest);
+        if (!pickedSeatId) highlightSeat(nearest);
       }
 
       renderer.render(scene, camera);
