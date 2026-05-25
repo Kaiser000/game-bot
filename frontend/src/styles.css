@@ -2010,37 +2010,34 @@ label span {
 .simple-seat {
   position: absolute;
   z-index: 4;
-  width: 136px;
-  min-height: 58px;
+  width: 104px;
+  min-height: 106px;
   display: grid;
-  grid-template-columns: 40px 1fr;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border: 1px solid rgba(217, 164, 65, 0.2);
-  border-radius: 8px;
-  background: rgba(19, 17, 14, 0.92);
+  justify-items: center;
+  align-content: start;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #f7f0df;
-  text-align: left;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+  text-align: center;
+  box-shadow: none;
   transform: translate(-50%, -50%);
   opacity: 0;
   animation: markerIn 0.34s ease forwards;
   animation-delay: var(--seat-delay);
-  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease, opacity 0.16s ease;
+  transition: transform 0.16s ease, opacity 0.16s ease, filter 0.16s ease;
 }
 
 .simple-seat.open.human {
   cursor: pointer;
-  border-color: rgba(217, 164, 65, 0.42);
 }
 
 .simple-seat.open.human:hover,
 .simple-seat.picked {
-  border-color: rgba(255, 220, 128, 0.82);
-  background: rgba(39, 31, 18, 0.96);
-  box-shadow: 0 0 0 4px rgba(217, 164, 65, 0.08), 0 16px 30px rgba(0, 0, 0, 0.34);
   transform: translate(-50%, calc(-50% - 4px));
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.34));
 }
 
 .simple-seat:disabled {
@@ -2053,50 +2050,85 @@ label span {
   animation: seatJoin 0.42s ease forwards;
 }
 
-.simple-seat-token {
-  width: 38px;
+.simple-seat-avatar {
+  width: 58px;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
+  border: 2px solid rgba(79, 194, 139, 0.52);
   border-radius: 999px;
-  background: rgba(79, 194, 139, 0.14);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.2), transparent 26%),
+    linear-gradient(145deg, rgba(79, 194, 139, 0.32), rgba(18, 37, 29, 0.96));
   color: var(--good);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease, background 0.16s ease;
 }
 
-.simple-seat.ai .simple-seat-token {
-  background: rgba(128, 167, 255, 0.16);
+.simple-seat.ai .simple-seat-avatar {
+  border-color: rgba(128, 167, 255, 0.56);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.18), transparent 26%),
+    linear-gradient(145deg, rgba(128, 167, 255, 0.34), rgba(20, 29, 59, 0.96));
   color: var(--ai);
 }
 
-.simple-seat.you .simple-seat-token,
-.simple-seat.picked .simple-seat-token {
-  background: rgba(217, 164, 65, 0.2);
+.simple-seat.open.human:hover .simple-seat-avatar,
+.simple-seat.you .simple-seat-avatar,
+.simple-seat.picked .simple-seat-avatar {
+  border-color: rgba(255, 220, 128, 0.92);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.22), transparent 26%),
+    linear-gradient(145deg, rgba(217, 164, 65, 0.38), rgba(55, 37, 18, 0.96));
   color: var(--accent);
+  box-shadow: 0 0 0 5px rgba(217, 164, 65, 0.12), 0 14px 24px rgba(0, 0, 0, 0.38);
+  transform: scale(1.06);
 }
 
-.simple-seat-text {
-  min-width: 0;
-  display: grid;
-  gap: 3px;
-}
-
-.simple-seat-text strong,
-.simple-seat-text small {
+.simple-seat-name,
+.simple-seat-status {
+  max-width: 104px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.simple-seat-text strong {
+.simple-seat-name {
+  display: block;
+  min-width: 64px;
+  max-width: 104px;
+  border: 1px solid rgba(217, 164, 65, 0.22);
+  border-radius: 999px;
+  background: rgba(18, 16, 13, 0.86);
+  padding: 4px 8px;
   color: #fff4d7;
   font-size: 14px;
-  line-height: 1.1;
+  line-height: 1;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
 }
 
-.simple-seat-text small {
+.simple-seat-status {
+  display: block;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
+}
+
+.simple-seat.ai .simple-seat-status {
+  color: var(--ai);
+}
+
+.simple-seat.you .simple-seat-status,
+.simple-seat.picked .simple-seat-status {
+  color: var(--accent);
+}
+
+.simple-seat:disabled:not(.open) .simple-seat-avatar {
+  opacity: 0.86;
+}
+
+.simple-seat.open.human:not(.picked):not(:hover) .simple-seat-status {
+  color: var(--text-muted);
 }
 
 .simple-join-strip {

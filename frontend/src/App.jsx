@@ -1061,11 +1061,9 @@ function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayer
               style={{ ...seatPositionStyle(index, room.seats.length), "--seat-delay": `${index * 28}ms` }}
               type="button"
             >
-              <span className="simple-seat-token">{seat.type === "ai" ? <Bot size={18} /> : <UsersRound size={18} />}</span>
-              <span className="simple-seat-text">
-                <strong>{isCurrent ? currentPlayer.name : seat.name}</strong>
-                <small>{seat.type === "ai" ? `${seat.style} AI` : seat.claimed || isCurrent ? "已入座" : "空座"}</small>
-              </span>
+              <span className="simple-seat-avatar">{seat.type === "ai" ? <Bot size={22} /> : <UsersRound size={22} />}</span>
+              <strong className="simple-seat-name">{isCurrent ? currentPlayer.name : seat.name}</strong>
+              <small className="simple-seat-status">{seat.type === "ai" ? `${seat.style} AI` : seat.claimed || isCurrent ? "已入座" : "空座"}</small>
             </button>
           );
         })}
