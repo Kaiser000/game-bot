@@ -24,57 +24,127 @@ import Phaser from "phaser";
 import "./styles.css";
 
 const roomBackdropUrl = new URL("./assets/scene/gothic-roundtable-room.png", import.meta.url).href;
+const playerDirections = ["front", "left", "back", "right"];
 
 const avatarSpriteUrls = [
   {
-    front: new URL("./assets/animal-avatars/fox-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/fox-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/fox-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/fox-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/detective-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/detective-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/detective-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/detective-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/cat-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/cat-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/cat-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/cat-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/noble-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/noble-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/noble-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/noble-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/rabbit-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/rabbit-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/rabbit-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/rabbit-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/impostor-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/impostor-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/impostor-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/impostor-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/panda-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/panda-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/panda-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/panda-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/medium-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/medium-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/medium-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/medium-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/dog-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/dog-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/dog-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/dog-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/assassin-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/assassin-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/assassin-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/assassin-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/owl-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/owl-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/owl-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/owl-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/herbalist-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/herbalist-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/herbalist-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/herbalist-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/deer-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/deer-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/deer-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/deer-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/villager-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/villager-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/villager-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/villager-right.png", import.meta.url).href
   },
   {
-    front: new URL("./assets/animal-avatars/tiger-front.png", import.meta.url).href,
-    left: new URL("./assets/animal-avatars/tiger-left.png", import.meta.url).href,
-    back: new URL("./assets/animal-avatars/tiger-back.png", import.meta.url).href,
-    right: new URL("./assets/animal-avatars/tiger-right.png", import.meta.url).href
+    front: new URL("./assets/character-avatars/spy-front.png", import.meta.url).href,
+    left: new URL("./assets/character-avatars/spy-left.png", import.meta.url).href,
+    back: new URL("./assets/character-avatars/spy-back.png", import.meta.url).href,
+    right: new URL("./assets/character-avatars/spy-right.png", import.meta.url).href
   }
 ];
+
+const walkCycleSpriteUrls = [
+  {
+    front: [
+      new URL("./assets/walk-cycles/detective/front-1.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-2.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-3.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-4.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-5.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-6.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-7.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/front-8.png", import.meta.url).href
+    ],
+    left: [
+      new URL("./assets/walk-cycles/detective/left-1.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-2.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-3.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-4.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-5.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-6.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-7.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/left-8.png", import.meta.url).href
+    ],
+    back: [
+      new URL("./assets/walk-cycles/detective/back-1.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-2.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-3.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-4.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-5.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-6.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-7.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/back-8.png", import.meta.url).href
+    ],
+    right: [
+      new URL("./assets/walk-cycles/detective/right-1.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-2.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-3.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-4.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-5.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-6.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-7.png", import.meta.url).href,
+      new URL("./assets/walk-cycles/detective/right-8.png", import.meta.url).href
+    ]
+  }
+];
+
+function avatarTextureKey(index, direction) {
+  return `avatar-${index}-${direction}`;
+}
+
+function walkFrameTextureKey(index, direction, frameIndex) {
+  return `avatar-${index}-${direction}-walk-${frameIndex}`;
+}
+
+function walkAnimationKey(index, direction) {
+  return `avatar-${index}-${direction}-walk`;
+}
+
+function walkCycleFrames(index, direction) {
+  return walkCycleSpriteUrls[index]?.[direction] || [];
+}
+
+function hasWalkCycle(index, direction) {
+  return walkCycleFrames(index, direction).length > 0;
+}
+
+function idleTextureKey(index, direction) {
+  return hasWalkCycle(index, direction) ? walkFrameTextureKey(index, direction, 0) : avatarTextureKey(index, direction);
+}
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -1057,14 +1127,20 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         this.selectedSeatId = "";
         this.nearestSeatId = "";
         this.player = null;
+        this.playerPosition = null;
         this.playerDirection = "front";
+        this.playerScale = 1;
+        this.turnTween = null;
       }
 
       preload() {
         this.load.image("room-backdrop", roomBackdropUrl);
         avatarSpriteUrls.forEach((sprite, index) => {
-          ["front", "left", "back", "right"].forEach((direction) => {
-            this.load.image(`avatar-${index}-${direction}`, sprite[direction]);
+          playerDirections.forEach((direction) => {
+            this.load.image(avatarTextureKey(index, direction), sprite[direction]);
+            walkCycleFrames(index, direction).forEach((url, frameIndex) => {
+              this.load.image(walkFrameTextureKey(index, direction, frameIndex), url);
+            });
           });
         });
       }
@@ -1072,11 +1148,29 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       create() {
         this.cameras.main.setBackgroundColor("#0f120f");
         this.keys = this.input.keyboard.addKeys("W,A,S,D,UP,DOWN,LEFT,RIGHT");
+        this.createPlayerAnimations();
         this.drawRoom();
         this.drawSeats();
         if (!currentPlayerSeatId) this.createPlayer();
         if (currentPlayerSeatId) this.highlightSeat(currentPlayerSeatId);
         this.scale.on("resize", () => this.rebuild());
+      }
+
+      createPlayerAnimations() {
+        avatarSpriteUrls.forEach((_, index) => {
+          playerDirections.forEach((direction) => {
+            const frameCount = walkCycleFrames(index, direction).length;
+            if (!frameCount || this.anims.exists(walkAnimationKey(index, direction))) return;
+            this.anims.create({
+              key: walkAnimationKey(index, direction),
+              frames: Array.from({ length: frameCount }, (__, frameIndex) => ({
+                key: walkFrameTextureKey(index, direction, frameIndex)
+              })),
+              frameRate: frameCount >= 8 ? 12 : 8,
+              repeat: -1
+            });
+          });
+        });
       }
 
       rebuild() {
@@ -1186,8 +1280,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
           });
 
           if (seat.claimed || seat.type === "ai") {
-            const avatar = this.add.image(x, y - 46, `avatar-${animalIndex}-${seatDirection}`);
-            avatar.setDisplaySize(74, 74);
+            const avatar = this.add.image(x, y - 46, avatarTextureKey(animalIndex, seatDirection));
+            avatar.setScale(82 / avatar.height);
             avatar.setDepth(y + 24);
             this.tweens.add({
               targets: avatar,
@@ -1209,9 +1303,75 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         const startY = height - 132;
         this.playerShadow = this.add.ellipse(startX, startY + 40, 70, 24, 0x050604, 0.36);
         this.playerShadow.setDepth(height - 86);
-        this.player = this.add.image(startX, startY, "avatar-0-front");
-        this.player.setDisplaySize(94, 94);
+        this.player = this.add.sprite(startX, startY, idleTextureKey(0, "front"));
+        this.playerScale = 92 / this.player.height;
+        this.player.setScale(this.playerScale);
         this.player.setDepth(height - 80);
+        this.playerPosition = new Phaser.Math.Vector2(startX, startY);
+      }
+
+      turnPlayer(direction) {
+        if (!this.player || direction === this.playerDirection) return;
+        const oldTexture = this.player.texture.key;
+        const ghost = this.add.image(this.player.x, this.player.y, oldTexture);
+        ghost.setScale(this.player.scaleX, this.player.scaleY);
+        ghost.setAngle(this.player.angle);
+        ghost.setAlpha(0.92);
+        ghost.setDepth(this.player.depth + 1);
+
+        this.playerDirection = direction;
+        this.player.stop();
+        this.player.setTexture(idleTextureKey(0, direction));
+        this.playerScale = 92 / this.player.height;
+        this.player.setScale(this.playerScale);
+        this.player.setAlpha(0.18);
+
+        this.turnTween?.stop();
+        this.turnTween = this.tweens.add({
+          targets: this.player,
+          alpha: 1,
+          duration: 130,
+          ease: "Sine.easeOut"
+        });
+        this.tweens.add({
+          targets: ghost,
+          alpha: 0,
+          x: ghost.x + (direction === "right" ? -6 : direction === "left" ? 6 : 0),
+          duration: 130,
+          ease: "Sine.easeOut",
+          onComplete: () => ghost.destroy()
+        });
+      }
+
+      updatePlayerAnimation(moving) {
+        if (!this.player) return;
+        const animationKey = walkAnimationKey(0, this.playerDirection);
+        if (moving && this.anims.exists(animationKey)) {
+          if (this.player.anims.currentAnim?.key !== animationKey || !this.player.anims.isPlaying) this.player.play(animationKey);
+          return;
+        }
+
+        this.player.stop();
+        this.player.setTexture(idleTextureKey(0, this.playerDirection));
+      }
+
+      updatePlayerVisual(time, moving) {
+        if (!this.player || !this.playerPosition) return;
+        this.updatePlayerAnimation(moving);
+        const bob = moving ? Math.sin(time / 82) * 3 : 0;
+        const sway = moving ? Math.sin(time / 130) * 2 : 0;
+        const lean = moving ? Math.sin(time / 96) * 2.4 : 0;
+        const shadowPulse = moving ? 1 + Math.sin(time / 82) * 0.08 : 1;
+
+        this.player.x = this.playerPosition.x + sway;
+        this.player.y = this.playerPosition.y + bob;
+        this.player.angle = lean;
+        this.playerShadow.x = this.playerPosition.x;
+        this.playerShadow.y = this.playerPosition.y + 40;
+        this.playerShadow.scaleX = shadowPulse;
+        this.playerShadow.scaleY = 1 / shadowPulse;
+        this.player.setDepth(this.playerPosition.y + 28);
+        this.playerShadow.setDepth(this.playerPosition.y + 26);
       }
 
       highlightSeat(seatId) {
@@ -1233,24 +1393,18 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
 
         if (dx || dy) {
           const direction = directionFromVector(dx, dy);
-          if (direction !== this.playerDirection) {
-            this.playerDirection = direction;
-            this.player.setTexture(`avatar-0-${direction}`);
-          }
+          this.turnPlayer(direction);
           const { width, height } = this.layout();
-          this.player.x = Phaser.Math.Clamp(this.player.x + dx, 64, width - 64);
-          this.player.y = Phaser.Math.Clamp(this.player.y + dy, 170, height - 78);
-          this.playerShadow.x = this.player.x;
-          this.playerShadow.y = this.player.y + 40;
-          this.player.setDepth(this.player.y + 28);
-          this.playerShadow.setDepth(this.player.y + 26);
+          this.playerPosition.x = Phaser.Math.Clamp(this.playerPosition.x + dx, 64, width - 64);
+          this.playerPosition.y = Phaser.Math.Clamp(this.playerPosition.y + dy, 170, height - 78);
         }
+        this.updatePlayerVisual(time, Boolean(dx || dy));
 
         let nearest = "";
         let nearestDistance = 82;
         this.seatObjects.forEach(({ seat, x, y }) => {
           if (seat.type !== "human" || seat.claimed) return;
-          const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y + 42, x, y);
+          const distance = Phaser.Math.Distance.Between(this.playerPosition.x, this.playerPosition.y + 42, x, y);
           if (distance < nearestDistance) {
             nearest = seat.id;
             nearestDistance = distance;
