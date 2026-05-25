@@ -2024,6 +2024,307 @@ label span {
   min-height: 42px;
 }
 
+.interactive-stage {
+  min-height: clamp(520px, 62vh, 680px);
+  border-bottom: 1px solid rgba(217, 164, 65, 0.22);
+  isolation: isolate;
+  background: #070807;
+}
+
+.stage-backdrop,
+.stage-vignette,
+.stage-sheen,
+.stage-seat-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.stage-backdrop {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 47%;
+  filter: saturate(1.05) contrast(1.06) brightness(0.9);
+  transform: scale(1.01);
+}
+
+.stage-vignette {
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 47%, transparent 0 33%, rgba(0, 0, 0, 0.22) 56%, rgba(0, 0, 0, 0.76) 100%),
+    linear-gradient(180deg, rgba(4, 5, 4, 0.28), transparent 28%, rgba(4, 5, 4, 0.44));
+}
+
+.stage-sheen {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(245, 204, 115, 0.18), transparent 13%),
+    radial-gradient(circle at 18% 18%, rgba(255, 180, 88, 0.12), transparent 15%),
+    radial-gradient(circle at 82% 18%, rgba(255, 180, 88, 0.13), transparent 15%);
+  mix-blend-mode: screen;
+  animation: roomBreath 5.8s ease-in-out infinite;
+}
+
+.stage-room-label {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  z-index: 900;
+  width: min(300px, calc(100% - 36px));
+  padding: 12px 14px;
+  border: 1px solid rgba(217, 164, 65, 0.26);
+  background: linear-gradient(180deg, rgba(18, 16, 12, 0.76), rgba(12, 11, 9, 0.54));
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+
+.stage-room-label h2 {
+  margin: 2px 0 3px;
+  color: #fff4d7;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.stage-room-label span {
+  color: rgba(239, 226, 196, 0.78);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.stage-seat-layer {
+  z-index: 10;
+}
+
+.stage-seat-button {
+  position: absolute;
+  width: 86px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.stage-seat-button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.seat-plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(138, 166, 216, 0.5);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(248, 192, 86, 0.18), rgba(14, 15, 12, 0.1) 62%, transparent 70%);
+  box-shadow: 0 14px 18px rgba(0, 0, 0, 0.28);
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.stage-seat-button.open.human .seat-plate {
+  border-color: rgba(244, 198, 91, 0.82);
+  background:
+    radial-gradient(ellipse at center, rgba(244, 184, 67, 0.72), rgba(125, 82, 27, 0.38) 58%, transparent 70%);
+  box-shadow: 0 0 0 1px rgba(255, 231, 151, 0.12), 0 14px 20px rgba(0, 0, 0, 0.34);
+  animation: seatPulse 1.9s ease-in-out infinite;
+}
+
+.stage-seat-button.open.human:hover .seat-plate,
+.stage-seat-button.picked .seat-plate {
+  transform: translate(-50%, -50%) scale(1.08);
+  border-color: rgba(255, 231, 151, 0.96);
+  box-shadow: 0 0 0 4px rgba(244, 198, 91, 0.15), 0 18px 24px rgba(0, 0, 0, 0.42);
+}
+
+.stage-seat-button.ai .seat-plate,
+.stage-seat-button.claimed .seat-plate {
+  opacity: 0.5;
+}
+
+.stage-seat-button.you .seat-plate {
+  opacity: 0.92;
+  border-color: rgba(255, 231, 151, 0.96);
+  box-shadow: 0 0 0 5px rgba(244, 198, 91, 0.14), 0 16px 24px rgba(0, 0, 0, 0.42);
+}
+
+.seat-label {
+  position: absolute;
+  left: 50%;
+  top: 52px;
+  display: grid;
+  min-width: 82px;
+  transform: translateX(-50%) translateY(4px);
+  gap: 1px;
+  padding: 6px 8px;
+  border: 1px solid rgba(217, 164, 65, 0.22);
+  background: rgba(11, 10, 8, 0.72);
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.stage-seat-button:hover .seat-label,
+.stage-seat-button.picked .seat-label,
+.stage-seat-button.you .seat-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.seat-label strong {
+  color: #fff3d5;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.seat-label small {
+  color: rgba(239, 226, 196, 0.72);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.stage-seated-avatar,
+.stage-traveler {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -100%) scale(var(--avatar-scale, 1));
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+.stage-seated-avatar {
+  top: 44%;
+  width: 56px;
+  height: auto;
+  filter: drop-shadow(0 15px 10px rgba(0, 0, 0, 0.42));
+  animation: seatedIdle 2.4s ease-in-out infinite;
+}
+
+.stage-seat-button.you .stage-seated-avatar {
+  width: 64px;
+  filter: drop-shadow(0 0 12px rgba(255, 220, 124, 0.45)) drop-shadow(0 15px 10px rgba(0, 0, 0, 0.42));
+}
+
+.stage-traveler {
+  z-index: 850;
+  width: 78px;
+  transition:
+    left var(--walk-duration, 980ms) cubic-bezier(0.24, 0.78, 0.28, 1),
+    top var(--walk-duration, 980ms) cubic-bezier(0.24, 0.78, 0.28, 1),
+    transform 0.2s ease;
+}
+
+.stage-traveler img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 18px 12px rgba(0, 0, 0, 0.44));
+}
+
+.stage-traveler.walking img {
+  animation: travelerWalk 0.36s ease-in-out infinite;
+}
+
+.stage-traveler.sitting {
+  transform: translate(-50%, -100%) scale(0.86);
+}
+
+.traveler-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 58px;
+  height: 18px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.38);
+  filter: blur(1px);
+}
+
+.stage-join-strip {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 900;
+  display: grid;
+  width: min(390px, calc(100% - 36px));
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(217, 164, 65, 0.28);
+  background: linear-gradient(180deg, rgba(18, 16, 12, 0.82), rgba(10, 9, 7, 0.68));
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.36);
+}
+
+.stage-join-strip label span {
+  margin-bottom: 6px;
+}
+
+.stage-join-strip input {
+  min-height: 42px;
+  background: rgba(8, 8, 7, 0.76);
+}
+
+.stage-join-strip button {
+  min-width: 126px;
+  min-height: 42px;
+}
+
+@keyframes roomBreath {
+  0%,
+  100% {
+    opacity: 0.86;
+  }
+  50% {
+    opacity: 0.58;
+  }
+}
+
+@keyframes seatPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(255, 231, 151, 0.12), 0 14px 20px rgba(0, 0, 0, 0.34);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(244, 198, 91, 0.1), 0 14px 20px rgba(0, 0, 0, 0.34);
+  }
+}
+
+@keyframes seatedIdle {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -3px;
+  }
+}
+
+@keyframes travelerWalk {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -4px;
+  }
+}
+
 .messages {
   padding: 16px 20px;
   overflow: auto;

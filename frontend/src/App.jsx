@@ -20,11 +20,9 @@ import {
   UsersRound
 } from "lucide-react";
 import { createRoot } from "react-dom/client";
-import Phaser from "phaser";
 import "./styles.css";
 
 const roomBackdropUrl = new URL("./assets/scene/gothic-roundtable-room.png", import.meta.url).href;
-const playerDirections = ["front", "left", "back", "right"];
 const stageSeatAnchors = [
   { x: 0.31, y: 0.44, dir: "right" },
   { x: 0.45, y: 0.38, dir: "front" },
@@ -136,28 +134,8 @@ const walkCycleSpriteUrls = [
   }
 ];
 
-function avatarTextureKey(index, direction) {
-  return `avatar-${index}-${direction}`;
-}
-
-function walkFrameTextureKey(index, direction, frameIndex) {
-  return `avatar-${index}-${direction}-walk-${frameIndex}`;
-}
-
-function walkAnimationKey(index, direction) {
-  return `avatar-${index}-${direction}-walk`;
-}
-
 function walkCycleFrames(index, direction) {
   return walkCycleSpriteUrls[index]?.[direction] || [];
-}
-
-function hasWalkCycle(index, direction) {
-  return walkCycleFrames(index, direction).length > 0;
-}
-
-function idleTextureKey(index, direction) {
-  return hasWalkCycle(index, direction) ? walkFrameTextureKey(index, direction, 0) : avatarTextureKey(index, direction);
 }
 
 async function api(path, options = {}) {
@@ -1060,20 +1038,15 @@ function PlayerJoinPanel({
             <span>你的昵称</span>
             <input value={playerName} placeholder="例如：阿川" onChange={(event) => onPlayerNameChange(event.target.value)} />
           </label>
-          <div className="claim-seat-list">
-            {humanSeats.map((seat) => (
-              <button
-                className={seat.claimed ? "claim-seat claimed" : "claim-seat"}
-                disabled={seat.claimed}
-                key={seat.id}
-                type="button"
-                onClick={() => document.querySelector(".interactive-stage")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-              >
-                <LogIn size={16} />
-                <span>{seat.claimed ? seat.name : `${seat.name} · 去圆桌选择`}</span>
-              </button>
-            ))}
-          </div>
+          <button
+            className="claim-seat choose-seat"
+            disabled={claimedCount >= humanSeats.length}
+            type="button"
+            onClick={() => document.querySelector(".interactive-stage")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+          >
+            <LogIn size={16} />
+            <span>{claimedCount >= humanSeats.length ? "真人席位已满" : "去圆桌选择座位"}</span>
+          </button>
         </div>
       )}
     </section>
@@ -1118,462 +1091,184 @@ function RoundTable({ room }) {
   );
 }
 
-function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
-  const stageRef = useRef(null);
-  const seatActionRef = useRef(null);
-  const onJoinRef = useRef(onJoin);
+function InteractiveTableStageV2({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
+  const timersRef = useRef([]);
   const [isWalkingToSeat, setIsWalkingToSeat] = useState(false);
-  const [nearSeatId, setNearSeatId] = useState("");
   const [pickedSeatId, setPickedSeatId] = useState("");
+  const [walkFrame, setWalkFrame] = useState(0);
+  const [travelMs, setTravelMs] = useState(980);
+  const [actor, setActor] = useState({ x: 18, y: 78, direction: "front", moving: false, sitting: false });
   const availableHumanSeats = useMemo(() => room.seats.filter((seat) => seat.type === "human" && !seat.claimed), [room.seats]);
-  const seatSignature = useMemo(
-    () => room.seats.map((seat) => `${seat.id}:${seat.name}:${seat.type}:${seat.claimed}:${seat.role}:${seat.style}`).join("|"),
+  const seatVisuals = useMemo(
+    () =>
+      room.seats.map((seat, index) => {
+        const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
+        return {
+          seat,
+          index,
+          x: anchor.x * 100,
+          y: anchor.y * 100,
+          sitX: anchor.x * 100,
+          sitY: (anchor.y + 0.018) * 100,
+          direction: anchor.dir,
+          scale: Math.max(0.78, Math.min(1.08, anchor.y + 0.24)),
+          depth: Math.round(anchor.y * 1000)
+        };
+      }),
     [room.seats]
   );
-  const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId) || room.seats.find((seat) => seat.id === nearSeatId);
+  const targetVisual = seatVisuals.find(({ seat }) => seat.id === pickedSeatId);
+  const targetSeat = targetVisual?.seat;
   const canClaimTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed;
-  const currentPlayerSeatId = currentPlayer?.id || "";
-  const animateJoinSeat = (seatId) => {
-    const action = seatActionRef.current;
-    if (action) return action(seatId);
-    return onJoin(seatId);
+  const actorFrames = walkCycleFrames(0, actor.direction);
+  const actorImage = actor.moving && actorFrames.length ? actorFrames[walkFrame % actorFrames.length] : avatarSpriteUrls[0][actor.direction];
+
+  const clearStageTimers = () => {
+    timersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    timersRef.current = [];
+  };
+
+  const schedule = (callback, delay) => {
+    const timerId = window.setTimeout(callback, delay);
+    timersRef.current.push(timerId);
+    return timerId;
   };
 
   useEffect(() => {
-    onJoinRef.current = onJoin;
-  }, [onJoin]);
+    if (!isWalkingToSeat) return undefined;
+    const intervalId = window.setInterval(() => setWalkFrame((frame) => (frame + 1) % 8), 92);
+    return () => window.clearInterval(intervalId);
+  }, [isWalkingToSeat]);
 
-  useEffect(() => {
-    const mount = stageRef.current;
-    if (!mount) return undefined;
-
-    let phaserGame = null;
-    const seats = room.seats.map((seat) => ({ ...seat }));
-    const setPicked = (seatId) => setPickedSeatId(seatId);
-    const setWalking = (value) => setIsWalkingToSeat(value);
-
-    class RoundRoomScene extends Phaser.Scene {
-      constructor() {
-        super("round-room");
-        this.seatObjects = [];
-        this.selectedSeatId = "";
-        this.nearestSeatId = "";
-        this.player = null;
-        this.playerPosition = null;
-        this.playerDirection = "front";
-        this.playerScale = 1;
-        this.turnTween = null;
-        this.isWalkingToSeat = false;
-      }
-
-      preload() {
-        this.load.image("room-backdrop", roomBackdropUrl);
-        avatarSpriteUrls.forEach((sprite, index) => {
-          playerDirections.forEach((direction) => {
-            this.load.image(avatarTextureKey(index, direction), sprite[direction]);
-            walkCycleFrames(index, direction).forEach((url, frameIndex) => {
-              this.load.image(walkFrameTextureKey(index, direction, frameIndex), url);
-            });
-          });
-        });
-      }
-
-      create() {
-        this.cameras.main.setBackgroundColor("#0f120f");
-        this.createPlayerAnimations();
-        this.drawRoom();
-        this.drawSeats();
-        if (!currentPlayerSeatId) this.createPlayer();
-        if (currentPlayerSeatId) this.highlightSeat(currentPlayerSeatId);
-        seatActionRef.current = (seatId) => this.walkToSeatAndJoin(seatId);
-        this.scale.on("resize", () => this.rebuild());
-      }
-
-      createPlayerAnimations() {
-        avatarSpriteUrls.forEach((_, index) => {
-          playerDirections.forEach((direction) => {
-            const frameCount = walkCycleFrames(index, direction).length;
-            if (!frameCount || this.anims.exists(walkAnimationKey(index, direction))) return;
-            this.anims.create({
-              key: walkAnimationKey(index, direction),
-              frames: Array.from({ length: frameCount }, (__, frameIndex) => ({
-                key: walkFrameTextureKey(index, direction, frameIndex)
-              })),
-              frameRate: frameCount >= 8 ? 12 : 8,
-              repeat: -1
-            });
-          });
-        });
-      }
-
-      rebuild() {
-        this.children.removeAll();
-        this.seatObjects = [];
-        this.drawRoom();
-        this.drawSeats();
-        if (!currentPlayerSeatId) this.createPlayer();
-        this.highlightSeat(currentPlayerSeatId || this.selectedSeatId || this.nearestSeatId);
-      }
-
-      layout() {
-        const width = this.scale.width;
-        const height = this.scale.height;
-        return {
-          width,
-          height,
-          centerX: width * 0.54,
-          centerY: height * 0.54,
-          seatRx: Math.min(width * 0.32, 330),
-          seatRy: Math.min(height * 0.24, 148)
-        };
-      }
-
-      seatAnchor(index, total) {
-        const { width, height } = this.layout();
-        const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
-        const scale = Math.max(0.72, Math.min(1.04, anchor.y + 0.2));
-        return {
-          x: width * anchor.x,
-          y: height * anchor.y,
-          sitX: width * anchor.x,
-          sitY: height * (anchor.y - 0.035),
-          direction: anchor.dir,
-          scale
-        };
-      }
-
-      drawRoom() {
-        const { width, height } = this.layout();
-        const graphics = this.add.graphics().setDepth(-2);
-        graphics.fillStyle(0x0f120f, 1);
-        graphics.fillRect(0, 0, width, height);
-
-        const backdrop = this.add.image(width / 2, height / 2, "room-backdrop").setDepth(0);
-        const source = this.textures.get("room-backdrop").getSourceImage();
-        const scale = Math.max(width / source.width, height / source.height);
-        backdrop.setScale(scale);
-
-        const overlay = this.add.graphics().setDepth(1);
-        overlay.fillStyle(0x030605, 0.18);
-        overlay.fillRect(0, 0, width, height);
-        overlay.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, 0.5, 0.08, 0.28, 0.68);
-        overlay.fillRect(0, 0, width, height);
-
-        const addGlow = (xRatio, yRatio, radius, color, alpha, delay = 0) => {
-          const glow = this.add.ellipse(width * xRatio, height * yRatio, radius * 1.2, radius, color, alpha).setDepth(2);
-          glow.setBlendMode(Phaser.BlendModes.ADD);
-          this.tweens.add({
-            targets: glow,
-            alpha: alpha * 0.48,
-            scaleX: 1.18,
-            scaleY: 1.08,
-            duration: 1050 + delay,
-            yoyo: true,
-            repeat: -1,
-            ease: "Sine.easeInOut"
-          });
-        };
-        addGlow(0.17, 0.18, 56, 0xffb457, 0.14, 0);
-        addGlow(0.31, 0.16, 46, 0xffb457, 0.1, 180);
-        addGlow(0.82, 0.17, 58, 0xffb457, 0.14, 320);
-        addGlow(0.52, 0.12, 108, 0x5bc6ff, 0.08, 140);
-        addGlow(0.49, 0.52, 56, 0xffd66f, 0.13, 260);
-
-        Array.from({ length: 18 }).forEach((_, index) => {
-          const dust = this.add.circle(
-            width * (0.2 + Math.random() * 0.62),
-            height * (0.2 + Math.random() * 0.58),
-            1 + Math.random() * 1.4,
-            0xf3d99a,
-            0.08 + Math.random() * 0.08
-          ).setDepth(3);
-          dust.setBlendMode(Phaser.BlendModes.ADD);
-          this.tweens.add({
-            targets: dust,
-            y: dust.y - 18 - Math.random() * 18,
-            alpha: 0.02,
-            duration: 2600 + Math.random() * 1600,
-            delay: index * 130,
-            yoyo: true,
-            repeat: -1,
-            ease: "Sine.easeInOut"
-          });
-        });
-      }
-
-      drawSeats() {
-        seats.forEach((seat, index) => {
-          const anchor = this.seatAnchor(index, seats.length);
-          const { x, y } = anchor;
-          const seatDirection = anchor.direction;
-          const animalIndex = index % avatarSpriteUrls.length;
-          const markerColor = seat.type === "ai" ? 0x65c18c : 0x8aa6d8;
-          const shadow = this.add.ellipse(x, y + 6, 64, 18, 0x050604, 0.26).setDepth(y - 2);
-          const base = this.add.ellipse(x, y, 62, 20, markerColor, 0.06).setDepth(y);
-          const ring = this.add.ellipse(x, y, 66, 22, 0x000000, 0).setDepth(y + 1);
-          ring.setStrokeStyle(2, markerColor, 0.54);
-          const hit = this.add.zone(x, y, 100, 70).setDepth(y + 3);
-          hit.setInteractive({ useHandCursor: !currentPlayerSeatId });
-          hit.on("pointerover", () => {
-            if (!currentPlayerSeatId && !this.isWalkingToSeat && seat.type === "human" && !seat.claimed) ring.setStrokeStyle(3, 0xffd66f, 0.86);
-          });
-          hit.on("pointerout", () => this.highlightSeat(currentPlayerSeatId || this.selectedSeatId || this.nearestSeatId));
-          hit.on("pointerdown", () => {
-            if (currentPlayerSeatId || this.isWalkingToSeat) return;
-            if (seat.type === "human" && !seat.claimed) this.walkToSeatAndJoin(seat.id);
-            this.selectedSeatId = seat.id;
-            setPicked(seat.id);
-            this.highlightSeat(seat.id);
-          });
-
-          if (seat.claimed || seat.type === "ai") {
-            const avatar = this.add.image(anchor.sitX, anchor.sitY, avatarTextureKey(animalIndex, seatDirection));
-            avatar.setOrigin(0.5, 1);
-            avatar.setScale((70 * anchor.scale) / avatar.height);
-            avatar.setDepth(anchor.sitY + 24);
-            this.tweens.add({
-              targets: avatar,
-              y: avatar.y - 4,
-              duration: 1500 + index * 110,
-              yoyo: true,
-              repeat: -1,
-              ease: "Sine.easeInOut"
-            });
-          }
-
-          this.seatObjects.push({ seat, x, y, anchor, base, ring, hit, shadow });
-        });
-      }
-
-      createPlayer() {
-        const { width, height } = this.layout();
-        const startX = Math.max(92, width * 0.22);
-        const startY = height - 132;
-        this.playerShadow = this.add.ellipse(startX, startY + 2, 46, 15, 0x050604, 0.36);
-        this.playerShadow.setDepth(height - 86);
-        this.player = this.add.sprite(startX, startY, idleTextureKey(0, "front"));
-        this.player.setOrigin(0.5, 1);
-        this.playerScale = 92 / this.player.height;
-        this.player.setScale(this.playerScale);
-        this.player.setDepth(height - 80);
-        this.playerPosition = new Phaser.Math.Vector2(startX, startY);
-      }
-
-      turnPlayer(direction) {
-        if (!this.player || direction === this.playerDirection) return;
-        const oldTexture = this.player.texture.key;
-        const ghost = this.add.image(this.player.x, this.player.y, oldTexture);
-        ghost.setOrigin(0.5, 1);
-        ghost.setScale(this.player.scaleX, this.player.scaleY);
-        ghost.setAngle(this.player.angle);
-        ghost.setAlpha(0.92);
-        ghost.setDepth(this.player.depth + 1);
-
-        this.playerDirection = direction;
-        this.player.stop();
-        this.player.setTexture(idleTextureKey(0, direction));
-        this.playerScale = 92 / this.player.height;
-        this.player.setScale(this.playerScale);
-        this.player.setAlpha(0.18);
-
-        this.turnTween?.stop();
-        this.turnTween = this.tweens.add({
-          targets: this.player,
-          alpha: 1,
-          duration: 130,
-          ease: "Sine.easeOut"
-        });
-        this.tweens.add({
-          targets: ghost,
-          alpha: 0,
-          x: ghost.x + (direction === "right" ? -6 : direction === "left" ? 6 : 0),
-          duration: 130,
-          ease: "Sine.easeOut",
-          onComplete: () => ghost.destroy()
-        });
-      }
-
-      updatePlayerAnimation(moving) {
-        if (!this.player) return;
-        const animationKey = walkAnimationKey(0, this.playerDirection);
-        if (moving && this.anims.exists(animationKey)) {
-          if (this.player.anims.currentAnim?.key !== animationKey || !this.player.anims.isPlaying) this.player.play(animationKey);
-          return;
-        }
-
-        this.player.stop();
-        this.player.setTexture(idleTextureKey(0, this.playerDirection));
-      }
-
-      updatePlayerVisual(time, moving) {
-        if (!this.player || !this.playerPosition) return;
-        this.updatePlayerAnimation(moving);
-        const bob = moving ? Math.sin(time / 82) * 2 : 0;
-        const sway = moving ? Math.sin(time / 130) * 2 : 0;
-        const lean = moving ? Math.sin(time / 96) * 1.6 : 0;
-        const shadowPulse = moving ? 1 + Math.sin(time / 82) * 0.08 : 1;
-
-        this.player.x = this.playerPosition.x + sway;
-        this.player.y = this.playerPosition.y + bob;
-        this.player.angle = lean;
-        this.playerShadow.x = this.playerPosition.x;
-        this.playerShadow.y = this.playerPosition.y + 2;
-        this.playerShadow.scaleX = shadowPulse;
-        this.playerShadow.scaleY = 1 / shadowPulse;
-        this.player.setDepth(this.playerPosition.y + 28);
-        this.playerShadow.setDepth(this.playerPosition.y + 26);
-      }
-
-      highlightSeat(seatId) {
-        this.seatObjects.forEach(({ seat, ring }) => {
-          if (seat.id === seatId) ring.setStrokeStyle(3, 0xffd66f, 0.9);
-          else ring.setStrokeStyle(2, seat.type === "ai" ? 0x65c18c : 0x8aa6d8, 0.54);
-        });
-      }
-
-      walkToSeatAndJoin(seatId) {
-        if (!this.player || !this.playerPosition || this.isWalkingToSeat || currentPlayerSeatId) return Promise.resolve();
-        const item = this.seatObjects.find(({ seat }) => seat.id === seatId);
-        if (!item || item.seat.type !== "human" || item.seat.claimed) return Promise.resolve();
-
-        this.isWalkingToSeat = true;
-        setWalking(true);
-        setPicked(seatId);
-        this.selectedSeatId = seatId;
-        this.highlightSeat(seatId);
-
-        const target = item.anchor;
-        this.turnPlayer(directionFromVector(target.sitX - this.playerPosition.x, target.sitY - this.playerPosition.y));
-        return new Promise((resolve) => {
-          this.tweens.add({
-            targets: this.playerPosition,
-            x: target.sitX,
-            y: target.sitY,
-            duration: Phaser.Math.Clamp(Phaser.Math.Distance.Between(this.playerPosition.x, this.playerPosition.y, target.sitX, target.sitY) * 3.2, 520, 1200),
-            ease: "Sine.easeInOut",
-            onUpdate: () => this.updatePlayerVisual(this.time.now, true),
-            onComplete: async () => {
-              this.turnPlayer(target.direction);
-              this.updatePlayerVisual(this.time.now, false);
-              this.tweens.add({
-                targets: this.player,
-                y: target.sitY + 10,
-                scaleX: (62 * target.scale) / this.player.height,
-                scaleY: (62 * target.scale) / this.player.height,
-                duration: 220,
-                ease: "Sine.easeOut"
-              });
-              this.tweens.add({
-                targets: this.playerShadow,
-                alpha: 0.2,
-                scaleX: 0.72,
-                duration: 220,
-                ease: "Sine.easeOut"
-              });
-              try {
-                await onJoinRef.current(seatId);
-              } finally {
-                this.isWalkingToSeat = false;
-                setWalking(false);
-                resolve();
-              }
-            }
-          });
-        });
-      }
-
-      update(time) {
-        if (!this.player || currentPlayerSeatId || this.isWalkingToSeat) return;
-        this.updatePlayerVisual(time, false);
-      }
-    }
-
-    phaserGame = new Phaser.Game({
-      type: Phaser.AUTO,
-      parent: mount,
-      backgroundColor: "#0f120f",
-      scale: {
-        mode: Phaser.Scale.RESIZE,
-        parent: mount,
-        width: mount.clientWidth || 900,
-        height: mount.clientHeight || 540
-      },
-      render: {
-        antialias: true,
-        transparent: false
-      },
-      scene: RoundRoomScene
-    });
-
-    return () => {
-      if (seatActionRef.current) seatActionRef.current = null;
-      phaserGame?.destroy(true);
-    };
-  }, [room.gameId, seatSignature, currentPlayerSeatId]);
+  useEffect(() => () => clearStageTimers(), []);
 
   useEffect(() => {
     if (!targetSeat || targetSeat.claimed) setPickedSeatId("");
   }, [targetSeat?.id, targetSeat?.claimed]);
 
+  const walkToSeat = (visual) => {
+    if (currentPlayer || isWalkingToSeat || visual.seat.type !== "human" || visual.seat.claimed) return;
+
+    clearStageTimers();
+    setPickedSeatId(visual.seat.id);
+    setIsWalkingToSeat(true);
+    setWalkFrame(0);
+
+    const targetX = visual.sitX;
+    const targetY = visual.sitY;
+    const distance = Math.hypot(targetX - actor.x, targetY - actor.y);
+    const duration = Math.max(760, Math.min(1280, distance * 18));
+    const moveDirection = directionFromVector(targetX - actor.x, targetY - actor.y);
+    setTravelMs(duration);
+    setActor((previous) => ({ ...previous, direction: moveDirection, moving: false, sitting: false }));
+
+    schedule(() => {
+      setActor({ x: targetX, y: targetY, direction: moveDirection, moving: true, sitting: false });
+    }, 30);
+
+    schedule(() => {
+      setActor({ x: targetX, y: targetY + 1.4, direction: visual.direction, moving: false, sitting: true });
+      schedule(async () => {
+        try {
+          await onJoin(visual.seat.id);
+        } finally {
+          setIsWalkingToSeat(false);
+        }
+      }, 240);
+    }, duration + 80);
+  };
+
+  const statusTitle = currentPlayer ? "已入座" : isWalkingToSeat ? "正在走向座位" : "选择一个空座";
+  const statusCopy = currentPlayer
+    ? "你已经在圆桌中，可以直接参与本轮发言。"
+    : isWalkingToSeat
+      ? "角色会先走到椅前，再自动完成入座。"
+      : "点击场景里的金色空座即可入座。";
+
   return (
     <section className="interactive-stage" aria-label="可操控圆桌房间">
-      <div className="stage-canvas" ref={stageRef} />
-      {!currentPlayer && (
-        <div className="stage-seat-hotspots" aria-label="座位点击区域">
-          {room.seats.map((seat, index) => {
-            const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
-            const disabled = isWalkingToSeat || seat.claimed || seat.type !== "human";
-            return (
-              <button
-                aria-label={`${seat.name}${disabled ? "" : "，点击入座"}`}
-                className="stage-seat-hotspot"
-                disabled={disabled}
-                key={seat.id}
-                onClick={() => {
-                  if (disabled) return;
-                  setPickedSeatId(seat.id);
-                  animateJoinSeat(seat.id);
-                }}
-                style={{ left: `${anchor.x * 100}%`, top: `${anchor.y * 100}%` }}
-                title={disabled ? seat.name : `入座 ${seat.name}`}
-                type="button"
-              />
-            );
-          })}
-        </div>
-      )}
-      <div className="stage-hud">
-        <div>
-          <p className="eyebrow">LIVE ROOM</p>
-          <h2>{currentPlayer ? "已落座，等待发言" : isWalkingToSeat ? "正在入座" : "选择座位并入座"}</h2>
-          <span>{currentPlayer ? "你的角色已经坐在席位上，下面可以直接参与圆桌发言。" : isWalkingToSeat ? "角色正在走向座位，抵达后自动入座。" : "点击空座，角色会走过去并坐下。"}</span>
-        </div>
-        <div className="stage-seat-hint">
-          {currentPlayer ? (
-            <strong>已入座：{currentPlayer.name}</strong>
-          ) : targetSeat ? (
-            <>
-              <strong>{targetSeat.name}</strong>
-              <span>{canClaimTarget ? "可落座" : targetSeat.claimed ? "已有人" : "AI 席位"}</span>
-            </>
-          ) : (
-            <>
-              <strong>{availableHumanSeats.length ? "寻找空座" : "真人席位已满"}</strong>
-              <span>点击高亮空座，或在下方确认入座。</span>
-            </>
-          )}
-        </div>
+      <img className="stage-backdrop" src={roomBackdropUrl} alt="" />
+      <div className="stage-vignette" />
+      <div className="stage-sheen" />
+
+      <div className="stage-room-label">
+        <p className="eyebrow">LIVE ROOM</p>
+        <h2>{statusTitle}</h2>
+        <span>{statusCopy}</span>
+      </div>
+
+      <div className="stage-seat-layer" aria-label="圆桌座位">
+        {seatVisuals.map((visual) => {
+          const { seat } = visual;
+          const isAvailable = !currentPlayer && !isWalkingToSeat && seat.type === "human" && !seat.claimed;
+          const isPicked = seat.id === pickedSeatId;
+          const isCurrent = currentPlayer?.id === seat.id;
+          const avatarIndex = visual.index % avatarSpriteUrls.length;
+          const avatarSrc = avatarSpriteUrls[avatarIndex][visual.direction];
+          const seatClass = [
+            "stage-seat-button",
+            seat.type,
+            seat.claimed ? "claimed" : "open",
+            isPicked ? "picked" : "",
+            isCurrent ? "you" : ""
+          ]
+            .filter(Boolean)
+            .join(" ");
+
+          return (
+            <button
+              aria-label={isAvailable ? `入座 ${seat.name}` : seat.name}
+              className={seatClass}
+              disabled={!isAvailable}
+              key={seat.id}
+              onClick={() => walkToSeat(visual)}
+              onMouseEnter={() => !currentPlayer && !isWalkingToSeat && setPickedSeatId(seat.id)}
+              style={{ left: `${visual.x}%`, top: `${visual.y}%`, zIndex: visual.depth }}
+              title={isAvailable ? `入座 ${seat.name}` : seat.name}
+              type="button"
+            >
+              <span className="seat-plate" />
+              <span className="seat-label">
+                <strong>{seat.name}</strong>
+                <small>{seat.type === "ai" ? "AI" : seat.claimed ? "已入座" : "空座"}</small>
+              </span>
+              {(seat.claimed || seat.type === "ai") && (
+                <img
+                  className="stage-seated-avatar"
+                  src={avatarSrc}
+                  alt=""
+                  style={{ "--avatar-scale": visual.scale, zIndex: visual.depth + 1 }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {!currentPlayer && (
-        <div className="stage-claim-panel">
+        <div
+          className={`stage-traveler ${actor.moving ? "walking" : ""} ${actor.sitting ? "sitting" : ""}`}
+          style={{
+            "--walk-duration": `${travelMs}ms`,
+            left: `${actor.x}%`,
+            top: `${actor.y}%`,
+            zIndex: Math.round(actor.y * 10) + 2
+          }}
+        >
+          <span className="traveler-shadow" />
+          <img src={actorImage} alt="" />
+        </div>
+      )}
+
+      {!currentPlayer && (
+        <div className="stage-join-strip">
           <label>
             <span>昵称</span>
             <input value={playerName} placeholder="落座前取个名字" onChange={(event) => onPlayerNameChange(event.target.value)} />
           </label>
-          <button type="button" disabled={!canClaimTarget || isWalkingToSeat} onClick={() => canClaimTarget && animateJoinSeat(targetSeat.id)}>
+          <button type="button" disabled={!canClaimTarget || isWalkingToSeat} onClick={() => targetVisual && walkToSeat(targetVisual)}>
             <LogIn size={17} />
-            {isWalkingToSeat ? "入座中" : canClaimTarget ? `落座 ${targetSeat.name}` : "选择空座"}
+            {isWalkingToSeat ? "入座中" : canClaimTarget ? `入座 ${targetSeat.name}` : availableHumanSeats.length ? "先选空座" : "席位已满"}
           </button>
         </div>
       )}
@@ -1802,7 +1497,7 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
             <span className="pill">{room.phase}</span>
           </div>
 
-          <InteractiveTableStage
+          <InteractiveTableStageV2
             room={room}
             currentPlayer={currentPlayer}
             playerName={playerName}
