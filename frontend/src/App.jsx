@@ -25,6 +25,20 @@ import "./styles.css";
 
 const roomBackdropUrl = new URL("./assets/scene/gothic-roundtable-room.png", import.meta.url).href;
 const playerDirections = ["front", "left", "back", "right"];
+const stageSeatAnchors = [
+  { x: 0.31, y: 0.44, dir: "right" },
+  { x: 0.45, y: 0.38, dir: "front" },
+  { x: 0.61, y: 0.38, dir: "front" },
+  { x: 0.78, y: 0.45, dir: "left" },
+  { x: 0.88, y: 0.56, dir: "left" },
+  { x: 0.85, y: 0.72, dir: "back" },
+  { x: 0.68, y: 0.78, dir: "back" },
+  { x: 0.52, y: 0.78, dir: "back" },
+  { x: 0.38, y: 0.72, dir: "back" },
+  { x: 0.26, y: 0.59, dir: "right" },
+  { x: 0.30, y: 0.5, dir: "right" },
+  { x: 0.36, y: 0.39, dir: "right" }
+];
 
 const avatarSpriteUrls = [
   {
@@ -1048,9 +1062,15 @@ function PlayerJoinPanel({
           </label>
           <div className="claim-seat-list">
             {humanSeats.map((seat) => (
-              <button className={seat.claimed ? "claim-seat claimed" : "claim-seat"} disabled={seat.claimed} key={seat.id} type="button" onClick={() => onJoin(seat.id)}>
+              <button
+                className={seat.claimed ? "claim-seat claimed" : "claim-seat"}
+                disabled={seat.claimed}
+                key={seat.id}
+                type="button"
+                onClick={() => document.querySelector(".interactive-stage")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+              >
                 <LogIn size={16} />
-                <span>{seat.claimed ? seat.name : `${seat.name} · 可认领`}</span>
+                <span>{seat.claimed ? seat.name : `${seat.name} · 去圆桌选择`}</span>
               </button>
             ))}
           </div>
@@ -1100,6 +1120,9 @@ function RoundTable({ room }) {
 
 function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
   const stageRef = useRef(null);
+  const seatActionRef = useRef(null);
+  const onJoinRef = useRef(onJoin);
+  const [isWalkingToSeat, setIsWalkingToSeat] = useState(false);
   const [nearSeatId, setNearSeatId] = useState("");
   const [pickedSeatId, setPickedSeatId] = useState("");
   const availableHumanSeats = useMemo(() => room.seats.filter((seat) => seat.type === "human" && !seat.claimed), [room.seats]);
@@ -1110,6 +1133,15 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
   const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId) || room.seats.find((seat) => seat.id === nearSeatId);
   const canClaimTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed;
   const currentPlayerSeatId = currentPlayer?.id || "";
+  const animateJoinSeat = (seatId) => {
+    const action = seatActionRef.current;
+    if (action) return action(seatId);
+    return onJoin(seatId);
+  };
+
+  useEffect(() => {
+    onJoinRef.current = onJoin;
+  }, [onJoin]);
 
   useEffect(() => {
     const mount = stageRef.current;
@@ -1117,8 +1149,8 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
 
     let phaserGame = null;
     const seats = room.seats.map((seat) => ({ ...seat }));
-    const setNear = (seatId) => setNearSeatId((value) => (value === seatId ? value : seatId));
     const setPicked = (seatId) => setPickedSeatId(seatId);
+    const setWalking = (value) => setIsWalkingToSeat(value);
 
     class RoundRoomScene extends Phaser.Scene {
       constructor() {
@@ -1131,6 +1163,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         this.playerDirection = "front";
         this.playerScale = 1;
         this.turnTween = null;
+        this.isWalkingToSeat = false;
       }
 
       preload() {
@@ -1147,12 +1180,12 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
 
       create() {
         this.cameras.main.setBackgroundColor("#0f120f");
-        this.keys = this.input.keyboard.addKeys("W,A,S,D,UP,DOWN,LEFT,RIGHT");
         this.createPlayerAnimations();
         this.drawRoom();
         this.drawSeats();
         if (!currentPlayerSeatId) this.createPlayer();
         if (currentPlayerSeatId) this.highlightSeat(currentPlayerSeatId);
+        seatActionRef.current = (seatId) => this.walkToSeatAndJoin(seatId);
         this.scale.on("resize", () => this.rebuild());
       }
 
@@ -1192,6 +1225,20 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
           centerY: height * 0.54,
           seatRx: Math.min(width * 0.32, 330),
           seatRy: Math.min(height * 0.24, 148)
+        };
+      }
+
+      seatAnchor(index, total) {
+        const { width, height } = this.layout();
+        const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
+        const scale = Math.max(0.72, Math.min(1.04, anchor.y + 0.2));
+        return {
+          x: width * anchor.x,
+          y: height * anchor.y,
+          sitX: width * anchor.x,
+          sitY: height * (anchor.y - 0.035),
+          direction: anchor.dir,
+          scale
         };
       }
 
@@ -1255,34 +1302,35 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       }
 
       drawSeats() {
-        const { centerX, centerY, seatRx, seatRy } = this.layout();
         seats.forEach((seat, index) => {
-          const angle = (Math.PI * 2 * index) / seats.length - Math.PI / 2;
-          const x = centerX + Math.cos(angle) * seatRx;
-          const y = centerY + Math.sin(angle) * seatRy + 48;
-          const seatDirection = directionFromVector(centerX - x, centerY - y);
+          const anchor = this.seatAnchor(index, seats.length);
+          const { x, y } = anchor;
+          const seatDirection = anchor.direction;
           const animalIndex = index % avatarSpriteUrls.length;
           const markerColor = seat.type === "ai" ? 0x65c18c : 0x8aa6d8;
-          const shadow = this.add.ellipse(x + 8, y + 20, 86, 28, 0x050604, 0.3).setDepth(y - 2);
-          const base = this.add.ellipse(x, y + 4, 76, 28, markerColor, 0.12).setDepth(y);
-          const ring = this.add.ellipse(x, y, 80, 32, 0x000000, 0).setDepth(y + 1);
-          ring.setStrokeStyle(3, markerColor, 0.72);
-          ring.setInteractive({ useHandCursor: !currentPlayerSeatId });
-          ring.on("pointerover", () => {
-            if (!currentPlayerSeatId && seat.type === "human" && !seat.claimed) ring.setStrokeStyle(4, 0xffd66f, 0.82);
+          const shadow = this.add.ellipse(x, y + 6, 64, 18, 0x050604, 0.26).setDepth(y - 2);
+          const base = this.add.ellipse(x, y, 62, 20, markerColor, 0.06).setDepth(y);
+          const ring = this.add.ellipse(x, y, 66, 22, 0x000000, 0).setDepth(y + 1);
+          ring.setStrokeStyle(2, markerColor, 0.54);
+          const hit = this.add.zone(x, y, 100, 70).setDepth(y + 3);
+          hit.setInteractive({ useHandCursor: !currentPlayerSeatId });
+          hit.on("pointerover", () => {
+            if (!currentPlayerSeatId && !this.isWalkingToSeat && seat.type === "human" && !seat.claimed) ring.setStrokeStyle(3, 0xffd66f, 0.86);
           });
-          ring.on("pointerout", () => this.highlightSeat(currentPlayerSeatId || this.selectedSeatId || this.nearestSeatId));
-          ring.on("pointerdown", () => {
-            if (currentPlayerSeatId) return;
+          hit.on("pointerout", () => this.highlightSeat(currentPlayerSeatId || this.selectedSeatId || this.nearestSeatId));
+          hit.on("pointerdown", () => {
+            if (currentPlayerSeatId || this.isWalkingToSeat) return;
+            if (seat.type === "human" && !seat.claimed) this.walkToSeatAndJoin(seat.id);
             this.selectedSeatId = seat.id;
             setPicked(seat.id);
             this.highlightSeat(seat.id);
           });
 
           if (seat.claimed || seat.type === "ai") {
-            const avatar = this.add.image(x, y - 46, avatarTextureKey(animalIndex, seatDirection));
-            avatar.setScale(82 / avatar.height);
-            avatar.setDepth(y + 24);
+            const avatar = this.add.image(anchor.sitX, anchor.sitY, avatarTextureKey(animalIndex, seatDirection));
+            avatar.setOrigin(0.5, 1);
+            avatar.setScale((70 * anchor.scale) / avatar.height);
+            avatar.setDepth(anchor.sitY + 24);
             this.tweens.add({
               targets: avatar,
               y: avatar.y - 4,
@@ -1293,7 +1341,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
             });
           }
 
-          this.seatObjects.push({ seat, x, y, base, ring, shadow });
+          this.seatObjects.push({ seat, x, y, anchor, base, ring, hit, shadow });
         });
       }
 
@@ -1301,9 +1349,10 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         const { width, height } = this.layout();
         const startX = Math.max(92, width * 0.22);
         const startY = height - 132;
-        this.playerShadow = this.add.ellipse(startX, startY + 40, 70, 24, 0x050604, 0.36);
+        this.playerShadow = this.add.ellipse(startX, startY + 2, 46, 15, 0x050604, 0.36);
         this.playerShadow.setDepth(height - 86);
         this.player = this.add.sprite(startX, startY, idleTextureKey(0, "front"));
+        this.player.setOrigin(0.5, 1);
         this.playerScale = 92 / this.player.height;
         this.player.setScale(this.playerScale);
         this.player.setDepth(height - 80);
@@ -1314,6 +1363,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
         if (!this.player || direction === this.playerDirection) return;
         const oldTexture = this.player.texture.key;
         const ghost = this.add.image(this.player.x, this.player.y, oldTexture);
+        ghost.setOrigin(0.5, 1);
         ghost.setScale(this.player.scaleX, this.player.scaleY);
         ghost.setAngle(this.player.angle);
         ghost.setAlpha(0.92);
@@ -1358,16 +1408,16 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
       updatePlayerVisual(time, moving) {
         if (!this.player || !this.playerPosition) return;
         this.updatePlayerAnimation(moving);
-        const bob = moving ? Math.sin(time / 82) * 3 : 0;
+        const bob = moving ? Math.sin(time / 82) * 2 : 0;
         const sway = moving ? Math.sin(time / 130) * 2 : 0;
-        const lean = moving ? Math.sin(time / 96) * 2.4 : 0;
+        const lean = moving ? Math.sin(time / 96) * 1.6 : 0;
         const shadowPulse = moving ? 1 + Math.sin(time / 82) * 0.08 : 1;
 
         this.player.x = this.playerPosition.x + sway;
         this.player.y = this.playerPosition.y + bob;
         this.player.angle = lean;
         this.playerShadow.x = this.playerPosition.x;
-        this.playerShadow.y = this.playerPosition.y + 40;
+        this.playerShadow.y = this.playerPosition.y + 2;
         this.playerShadow.scaleX = shadowPulse;
         this.playerShadow.scaleY = 1 / shadowPulse;
         this.player.setDepth(this.playerPosition.y + 28);
@@ -1376,45 +1426,65 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
 
       highlightSeat(seatId) {
         this.seatObjects.forEach(({ seat, ring }) => {
-          if (seat.id === seatId) ring.setStrokeStyle(5, 0xffd66f, 1);
-          else ring.setStrokeStyle(3, seat.type === "ai" ? 0x65c18c : 0x8aa6d8, 0.78);
+          if (seat.id === seatId) ring.setStrokeStyle(3, 0xffd66f, 0.9);
+          else ring.setStrokeStyle(2, seat.type === "ai" ? 0x65c18c : 0x8aa6d8, 0.54);
         });
       }
 
-      update(time, delta) {
-        if (!this.player || currentPlayerSeatId) return;
-        const speed = 220 * (delta / 1000);
-        let dx = 0;
-        let dy = 0;
-        if (this.keys.W.isDown || this.keys.UP.isDown) dy -= speed;
-        if (this.keys.S.isDown || this.keys.DOWN.isDown) dy += speed;
-        if (this.keys.A.isDown || this.keys.LEFT.isDown) dx -= speed;
-        if (this.keys.D.isDown || this.keys.RIGHT.isDown) dx += speed;
+      walkToSeatAndJoin(seatId) {
+        if (!this.player || !this.playerPosition || this.isWalkingToSeat || currentPlayerSeatId) return Promise.resolve();
+        const item = this.seatObjects.find(({ seat }) => seat.id === seatId);
+        if (!item || item.seat.type !== "human" || item.seat.claimed) return Promise.resolve();
 
-        if (dx || dy) {
-          const direction = directionFromVector(dx, dy);
-          this.turnPlayer(direction);
-          const { width, height } = this.layout();
-          this.playerPosition.x = Phaser.Math.Clamp(this.playerPosition.x + dx, 64, width - 64);
-          this.playerPosition.y = Phaser.Math.Clamp(this.playerPosition.y + dy, 170, height - 78);
-        }
-        this.updatePlayerVisual(time, Boolean(dx || dy));
+        this.isWalkingToSeat = true;
+        setWalking(true);
+        setPicked(seatId);
+        this.selectedSeatId = seatId;
+        this.highlightSeat(seatId);
 
-        let nearest = "";
-        let nearestDistance = 82;
-        this.seatObjects.forEach(({ seat, x, y }) => {
-          if (seat.type !== "human" || seat.claimed) return;
-          const distance = Phaser.Math.Distance.Between(this.playerPosition.x, this.playerPosition.y + 42, x, y);
-          if (distance < nearestDistance) {
-            nearest = seat.id;
-            nearestDistance = distance;
-          }
+        const target = item.anchor;
+        this.turnPlayer(directionFromVector(target.sitX - this.playerPosition.x, target.sitY - this.playerPosition.y));
+        return new Promise((resolve) => {
+          this.tweens.add({
+            targets: this.playerPosition,
+            x: target.sitX,
+            y: target.sitY,
+            duration: Phaser.Math.Clamp(Phaser.Math.Distance.Between(this.playerPosition.x, this.playerPosition.y, target.sitX, target.sitY) * 3.2, 520, 1200),
+            ease: "Sine.easeInOut",
+            onUpdate: () => this.updatePlayerVisual(this.time.now, true),
+            onComplete: async () => {
+              this.turnPlayer(target.direction);
+              this.updatePlayerVisual(this.time.now, false);
+              this.tweens.add({
+                targets: this.player,
+                y: target.sitY + 10,
+                scaleX: (62 * target.scale) / this.player.height,
+                scaleY: (62 * target.scale) / this.player.height,
+                duration: 220,
+                ease: "Sine.easeOut"
+              });
+              this.tweens.add({
+                targets: this.playerShadow,
+                alpha: 0.2,
+                scaleX: 0.72,
+                duration: 220,
+                ease: "Sine.easeOut"
+              });
+              try {
+                await onJoinRef.current(seatId);
+              } finally {
+                this.isWalkingToSeat = false;
+                setWalking(false);
+                resolve();
+              }
+            }
+          });
         });
-        if (nearest !== this.nearestSeatId) {
-          this.nearestSeatId = nearest;
-          setNear(nearest);
-          if (!this.selectedSeatId) this.highlightSeat(nearest);
-        }
+      }
+
+      update(time) {
+        if (!this.player || currentPlayerSeatId || this.isWalkingToSeat) return;
+        this.updatePlayerVisual(time, false);
       }
     }
 
@@ -1436,6 +1506,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
     });
 
     return () => {
+      if (seatActionRef.current) seatActionRef.current = null;
       phaserGame?.destroy(true);
     };
   }, [room.gameId, seatSignature, currentPlayerSeatId]);
@@ -1447,11 +1518,35 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
   return (
     <section className="interactive-stage" aria-label="可操控圆桌房间">
       <div className="stage-canvas" ref={stageRef} />
+      {!currentPlayer && (
+        <div className="stage-seat-hotspots" aria-label="座位点击区域">
+          {room.seats.map((seat, index) => {
+            const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
+            const disabled = isWalkingToSeat || seat.claimed || seat.type !== "human";
+            return (
+              <button
+                aria-label={`${seat.name}${disabled ? "" : "，点击入座"}`}
+                className="stage-seat-hotspot"
+                disabled={disabled}
+                key={seat.id}
+                onClick={() => {
+                  if (disabled) return;
+                  setPickedSeatId(seat.id);
+                  animateJoinSeat(seat.id);
+                }}
+                style={{ left: `${anchor.x * 100}%`, top: `${anchor.y * 100}%` }}
+                title={disabled ? seat.name : `入座 ${seat.name}`}
+                type="button"
+              />
+            );
+          })}
+        </div>
+      )}
       <div className="stage-hud">
         <div>
           <p className="eyebrow">LIVE ROOM</p>
-          <h2>{currentPlayer ? "已落座，等待发言" : "走近圆桌并落座"}</h2>
-          <span>{currentPlayer ? "你的角色已经坐在席位上，下面可以直接参与圆桌发言。" : "WASD / 方向键移动，点击座位可选中。"}</span>
+          <h2>{currentPlayer ? "已落座，等待发言" : isWalkingToSeat ? "正在入座" : "选择座位并入座"}</h2>
+          <span>{currentPlayer ? "你的角色已经坐在席位上，下面可以直接参与圆桌发言。" : isWalkingToSeat ? "角色正在走向座位，抵达后自动入座。" : "点击空座，角色会走过去并坐下。"}</span>
         </div>
         <div className="stage-seat-hint">
           {currentPlayer ? (
@@ -1464,7 +1559,7 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
           ) : (
             <>
               <strong>{availableHumanSeats.length ? "寻找空座" : "真人席位已满"}</strong>
-              <span>靠近金色座位，或直接点击空座。</span>
+              <span>点击高亮空座，或在下方确认入座。</span>
             </>
           )}
         </div>
@@ -1476,9 +1571,9 @@ function InteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameCh
             <span>昵称</span>
             <input value={playerName} placeholder="落座前取个名字" onChange={(event) => onPlayerNameChange(event.target.value)} />
           </label>
-          <button type="button" disabled={!canClaimTarget} onClick={() => canClaimTarget && onJoin(targetSeat.id)}>
+          <button type="button" disabled={!canClaimTarget || isWalkingToSeat} onClick={() => canClaimTarget && animateJoinSeat(targetSeat.id)}>
             <LogIn size={17} />
-            {canClaimTarget ? `落座 ${targetSeat.name}` : "选择空座"}
+            {isWalkingToSeat ? "入座中" : canClaimTarget ? `落座 ${targetSeat.name}` : "选择空座"}
           </button>
         </div>
       )}

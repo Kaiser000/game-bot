@@ -1915,10 +1915,40 @@ label span {
   height: 100%;
 }
 
+.stage-seat-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.stage-seat-hotspot {
+  position: absolute;
+  width: 96px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.stage-seat-hotspot:focus-visible {
+  outline: 2px solid rgba(255, 214, 111, 0.95);
+  outline-offset: 2px;
+}
+
+.stage-seat-hotspot:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
 .stage-hud {
   position: absolute;
   inset: 14px auto auto 14px;
-  z-index: 2;
+  z-index: 5;
   display: grid;
   gap: 8px;
   max-width: min(340px, calc(100% - 28px));
@@ -1969,7 +1999,7 @@ label span {
   position: absolute;
   right: 16px;
   bottom: 16px;
-  z-index: 2;
+  z-index: 5;
   display: grid;
   width: min(420px, calc(100% - 32px));
   grid-template-columns: minmax(0, 1fr) auto;
