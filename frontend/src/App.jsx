@@ -22,122 +22,6 @@ import {
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const roomBackdropUrl = new URL("./assets/scene/gothic-roundtable-room.png", import.meta.url).href;
-const stageSeatAnchors = [
-  { x: 0.31, y: 0.44, dir: "right" },
-  { x: 0.45, y: 0.38, dir: "front" },
-  { x: 0.61, y: 0.38, dir: "front" },
-  { x: 0.78, y: 0.45, dir: "left" },
-  { x: 0.88, y: 0.56, dir: "left" },
-  { x: 0.85, y: 0.72, dir: "back" },
-  { x: 0.68, y: 0.78, dir: "back" },
-  { x: 0.52, y: 0.78, dir: "back" },
-  { x: 0.38, y: 0.72, dir: "back" },
-  { x: 0.26, y: 0.59, dir: "right" },
-  { x: 0.30, y: 0.5, dir: "right" },
-  { x: 0.36, y: 0.39, dir: "right" }
-];
-
-const avatarSpriteUrls = [
-  {
-    front: new URL("./assets/character-avatars/detective-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/detective-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/detective-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/detective-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/noble-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/noble-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/noble-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/noble-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/impostor-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/impostor-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/impostor-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/impostor-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/medium-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/medium-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/medium-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/medium-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/assassin-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/assassin-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/assassin-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/assassin-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/herbalist-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/herbalist-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/herbalist-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/herbalist-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/villager-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/villager-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/villager-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/villager-right.png", import.meta.url).href
-  },
-  {
-    front: new URL("./assets/character-avatars/spy-front.png", import.meta.url).href,
-    left: new URL("./assets/character-avatars/spy-left.png", import.meta.url).href,
-    back: new URL("./assets/character-avatars/spy-back.png", import.meta.url).href,
-    right: new URL("./assets/character-avatars/spy-right.png", import.meta.url).href
-  }
-];
-
-const walkCycleSpriteUrls = [
-  {
-    front: [
-      new URL("./assets/walk-cycles/detective/front-1.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-2.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-3.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-4.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-5.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-6.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-7.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/front-8.png", import.meta.url).href
-    ],
-    left: [
-      new URL("./assets/walk-cycles/detective/left-1.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-2.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-3.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-4.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-5.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-6.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-7.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/left-8.png", import.meta.url).href
-    ],
-    back: [
-      new URL("./assets/walk-cycles/detective/back-1.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-2.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-3.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-4.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-5.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-6.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-7.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/back-8.png", import.meta.url).href
-    ],
-    right: [
-      new URL("./assets/walk-cycles/detective/right-1.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-2.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-3.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-4.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-5.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-6.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-7.png", import.meta.url).href,
-      new URL("./assets/walk-cycles/detective/right-8.png", import.meta.url).href
-    ]
-  }
-];
-
-function walkCycleFrames(index, direction) {
-  return walkCycleSpriteUrls[index]?.[direction] || [];
-}
-
 async function api(path, options = {}) {
   const response = await fetch(path, {
     headers: { "content-type": "application/json" },
@@ -159,11 +43,6 @@ function roleCamp(gameId, role) {
   if (!role) return "unknown";
   if (gameId === "werewolf") return role === "狼人" ? "evil" : "good";
   return ["刺客", "莫甘娜", "爪牙", "莫德雷德"].includes(role) ? "evil" : "good";
-}
-
-function directionFromVector(dx, dz) {
-  if (Math.abs(dx) > Math.abs(dz)) return dx > 0 ? "right" : "left";
-  return dz > 0 ? "front" : "back";
 }
 
 function modeLabel(modes, id) {
@@ -1091,126 +970,82 @@ function RoundTable({ room }) {
   );
 }
 
-function InteractiveTableStageV2({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
+function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
   const timersRef = useRef([]);
-  const [isWalkingToSeat, setIsWalkingToSeat] = useState(false);
   const [pickedSeatId, setPickedSeatId] = useState("");
-  const [walkFrame, setWalkFrame] = useState(0);
-  const [travelMs, setTravelMs] = useState(980);
-  const [actor, setActor] = useState({ x: 18, y: 78, direction: "front", moving: false, sitting: false });
-  const availableHumanSeats = useMemo(() => room.seats.filter((seat) => seat.type === "human" && !seat.claimed), [room.seats]);
-  const seatVisuals = useMemo(
-    () =>
-      room.seats.map((seat, index) => {
-        const anchor = stageSeatAnchors[index % stageSeatAnchors.length];
-        return {
-          seat,
-          index,
-          x: anchor.x * 100,
-          y: anchor.y * 100,
-          sitX: anchor.x * 100,
-          sitY: (anchor.y + 0.018) * 100,
-          direction: anchor.dir,
-          scale: Math.max(0.78, Math.min(1.08, anchor.y + 0.24)),
-          depth: Math.round(anchor.y * 1000)
-        };
-      }),
-    [room.seats]
-  );
-  const targetVisual = seatVisuals.find(({ seat }) => seat.id === pickedSeatId);
-  const targetSeat = targetVisual?.seat;
-  const canClaimTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed;
-  const actorFrames = walkCycleFrames(0, actor.direction);
-  const actorImage = actor.moving && actorFrames.length ? actorFrames[walkFrame % actorFrames.length] : avatarSpriteUrls[0][actor.direction];
+  const [joiningSeatId, setJoiningSeatId] = useState("");
+  const humanSeats = room.seats.filter((seat) => seat.type === "human");
+  const claimedHumans = humanSeats.filter((seat) => seat.claimed).length;
+  const availableHumanSeats = humanSeats.filter((seat) => !seat.claimed);
+  const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId);
+  const canJoinTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed && !joiningSeatId;
 
-  const clearStageTimers = () => {
+  const clearTimers = () => {
     timersRef.current.forEach((timerId) => window.clearTimeout(timerId));
     timersRef.current = [];
   };
 
-  const schedule = (callback, delay) => {
-    const timerId = window.setTimeout(callback, delay);
-    timersRef.current.push(timerId);
-    return timerId;
-  };
-
-  useEffect(() => {
-    if (!isWalkingToSeat) return undefined;
-    const intervalId = window.setInterval(() => setWalkFrame((frame) => (frame + 1) % 8), 92);
-    return () => window.clearInterval(intervalId);
-  }, [isWalkingToSeat]);
-
-  useEffect(() => () => clearStageTimers(), []);
+  useEffect(() => () => clearTimers(), []);
 
   useEffect(() => {
     if (!targetSeat || targetSeat.claimed) setPickedSeatId("");
   }, [targetSeat?.id, targetSeat?.claimed]);
 
-  const walkToSeat = (visual) => {
-    if (currentPlayer || isWalkingToSeat || visual.seat.type !== "human" || visual.seat.claimed) return;
-
-    clearStageTimers();
-    setPickedSeatId(visual.seat.id);
-    setIsWalkingToSeat(true);
-    setWalkFrame(0);
-
-    const targetX = visual.sitX;
-    const targetY = visual.sitY;
-    const distance = Math.hypot(targetX - actor.x, targetY - actor.y);
-    const duration = Math.max(760, Math.min(1280, distance * 18));
-    const moveDirection = directionFromVector(targetX - actor.x, targetY - actor.y);
-    setTravelMs(duration);
-    setActor((previous) => ({ ...previous, direction: moveDirection, moving: false, sitting: false }));
-
-    schedule(() => {
-      setActor({ x: targetX, y: targetY, direction: moveDirection, moving: true, sitting: false });
-    }, 30);
-
-    schedule(() => {
-      setActor({ x: targetX, y: targetY + 1.4, direction: visual.direction, moving: false, sitting: true });
-      schedule(async () => {
-        try {
-          await onJoin(visual.seat.id);
-        } finally {
-          setIsWalkingToSeat(false);
-        }
-      }, 240);
-    }, duration + 80);
+  const joinSeatWithMotion = (seat) => {
+    if (currentPlayer || joiningSeatId || seat.type !== "human" || seat.claimed) return;
+    clearTimers();
+    setPickedSeatId(seat.id);
+    setJoiningSeatId(seat.id);
+    const timerId = window.setTimeout(async () => {
+      try {
+        await onJoin(seat.id);
+      } finally {
+        setJoiningSeatId("");
+      }
+    }, 360);
+    timersRef.current.push(timerId);
   };
 
-  const statusTitle = currentPlayer ? "已入座" : isWalkingToSeat ? "正在走向座位" : "选择一个空座";
+  const statusTitle = currentPlayer ? "已入座" : joiningSeatId ? "正在入座" : "选择座位";
   const statusCopy = currentPlayer
-    ? "你已经在圆桌中，可以直接参与本轮发言。"
-    : isWalkingToSeat
-      ? "角色会先走到椅前，再自动完成入座。"
-      : "点击场景里的金色空座即可入座。";
+    ? "你已经加入圆桌，可以开始发言。"
+    : joiningSeatId
+      ? "正在确认席位，马上进入对局。"
+      : "点击一个空的真人席位即可加入。";
 
   return (
-    <section className="interactive-stage" aria-label="可操控圆桌房间">
-      <img className="stage-backdrop" src={roomBackdropUrl} alt="" />
-      <div className="stage-vignette" />
-      <div className="stage-sheen" />
-
-      <div className="stage-room-label">
-        <p className="eyebrow">LIVE ROOM</p>
-        <h2>{statusTitle}</h2>
-        <span>{statusCopy}</span>
+    <section className="interactive-stage simple-stage" aria-label="圆桌座位">
+      <div className="simple-stage-top">
+        <div>
+          <p className="eyebrow">LIVE ROOM</p>
+          <h2>{statusTitle}</h2>
+          <span>{statusCopy}</span>
+        </div>
+        <div className="simple-stage-count">
+          <strong>{claimedHumans}/{humanSeats.length}</strong>
+          <span>真人已入座</span>
+        </div>
       </div>
 
-      <div className="stage-seat-layer" aria-label="圆桌座位">
-        {seatVisuals.map((visual) => {
-          const { seat } = visual;
-          const isAvailable = !currentPlayer && !isWalkingToSeat && seat.type === "human" && !seat.claimed;
+      <div className="simple-table" aria-label="座位选择区">
+        <div className="simple-table-core">
+          <p>ROUND</p>
+          <strong>{room.seats.length}</strong>
+          <span>{room.phase}</span>
+        </div>
+
+        {room.seats.map((seat, index) => {
+          const isAvailable = !currentPlayer && !joiningSeatId && seat.type === "human" && !seat.claimed;
           const isPicked = seat.id === pickedSeatId;
           const isCurrent = currentPlayer?.id === seat.id;
-          const avatarIndex = visual.index % avatarSpriteUrls.length;
-          const avatarSrc = avatarSpriteUrls[avatarIndex][visual.direction];
-          const seatClass = [
-            "stage-seat-button",
+          const isJoining = seat.id === joiningSeatId;
+          const className = [
+            "simple-seat",
             seat.type,
             seat.claimed ? "claimed" : "open",
             isPicked ? "picked" : "",
-            isCurrent ? "you" : ""
+            isCurrent ? "you" : "",
+            isJoining ? "joining" : ""
           ]
             .filter(Boolean)
             .join(" ");
@@ -1218,57 +1053,33 @@ function InteractiveTableStageV2({ room, currentPlayer, playerName, onPlayerName
           return (
             <button
               aria-label={isAvailable ? `入座 ${seat.name}` : seat.name}
-              className={seatClass}
+              className={className}
               disabled={!isAvailable}
               key={seat.id}
-              onClick={() => walkToSeat(visual)}
-              onMouseEnter={() => !currentPlayer && !isWalkingToSeat && setPickedSeatId(seat.id)}
-              style={{ left: `${visual.x}%`, top: `${visual.y}%`, zIndex: visual.depth }}
-              title={isAvailable ? `入座 ${seat.name}` : seat.name}
+              onClick={() => joinSeatWithMotion(seat)}
+              onMouseEnter={() => isAvailable && setPickedSeatId(seat.id)}
+              style={{ ...seatPositionStyle(index, room.seats.length), "--seat-delay": `${index * 28}ms` }}
               type="button"
             >
-              <span className="seat-plate" />
-              <span className="seat-label">
-                <strong>{seat.name}</strong>
-                <small>{seat.type === "ai" ? "AI" : seat.claimed ? "已入座" : "空座"}</small>
+              <span className="simple-seat-token">{seat.type === "ai" ? <Bot size={18} /> : <UsersRound size={18} />}</span>
+              <span className="simple-seat-text">
+                <strong>{isCurrent ? currentPlayer.name : seat.name}</strong>
+                <small>{seat.type === "ai" ? `${seat.style} AI` : seat.claimed || isCurrent ? "已入座" : "空座"}</small>
               </span>
-              {(seat.claimed || seat.type === "ai") && (
-                <img
-                  className="stage-seated-avatar"
-                  src={avatarSrc}
-                  alt=""
-                  style={{ "--avatar-scale": visual.scale, zIndex: visual.depth + 1 }}
-                />
-              )}
             </button>
           );
         })}
       </div>
 
       {!currentPlayer && (
-        <div
-          className={`stage-traveler ${actor.moving ? "walking" : ""} ${actor.sitting ? "sitting" : ""}`}
-          style={{
-            "--walk-duration": `${travelMs}ms`,
-            left: `${actor.x}%`,
-            top: `${actor.y}%`,
-            zIndex: Math.round(actor.y * 10) + 2
-          }}
-        >
-          <span className="traveler-shadow" />
-          <img src={actorImage} alt="" />
-        </div>
-      )}
-
-      {!currentPlayer && (
-        <div className="stage-join-strip">
+        <div className="simple-join-strip">
           <label>
             <span>昵称</span>
             <input value={playerName} placeholder="落座前取个名字" onChange={(event) => onPlayerNameChange(event.target.value)} />
           </label>
-          <button type="button" disabled={!canClaimTarget || isWalkingToSeat} onClick={() => targetVisual && walkToSeat(targetVisual)}>
+          <button type="button" disabled={!canJoinTarget} onClick={() => targetSeat && joinSeatWithMotion(targetSeat)}>
             <LogIn size={17} />
-            {isWalkingToSeat ? "入座中" : canClaimTarget ? `入座 ${targetSeat.name}` : availableHumanSeats.length ? "先选空座" : "席位已满"}
+            {joiningSeatId ? "入座中" : canJoinTarget ? `入座 ${targetSeat.name}` : availableHumanSeats.length ? "先选空座" : "席位已满"}
           </button>
         </div>
       )}
@@ -1497,7 +1308,7 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
             <span className="pill">{room.phase}</span>
           </div>
 
-          <InteractiveTableStageV2
+          <SimpleInteractiveTableStage
             room={room}
             currentPlayer={currentPlayer}
             playerName={playerName}
