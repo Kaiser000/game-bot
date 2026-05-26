@@ -22,6 +22,10 @@
 - 私人推理标记：点击已入座玩家或 AI，可把对方标为狼人、好人、可疑等，仅本机可见。
 - 全 AI 观察模式：0 真人时隐藏输入框，仅保留阶段推进和 AI 发言。
 
+## 游戏版规划
+
+Steam/游戏版客户端确定使用 Unity，当前 Web Demo 继续作为规则、AI 和房间流程验证场。Unity 客户端方案见 [`docs/unity-client-plan.md`](docs/unity-client-plan.md)，Steam 化体验愿景见 [`docs/steam-game-vision.md`](docs/steam-game-vision.md)。
+
 ## 本地运行
 
 后端：
