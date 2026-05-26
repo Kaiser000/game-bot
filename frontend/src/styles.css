@@ -1073,7 +1073,7 @@ label span {
 .button-row button[type="submit"],
 .primary-command,
 .room-actions button:first-child,
-.composer button,
+.composer .send-button,
 .page-hero > button {
   border: 1px solid rgba(255, 239, 196, 0.46);
   background:
@@ -1088,7 +1088,7 @@ label span {
 .button-row button[type="submit"]::after,
 .primary-command::after,
 .room-actions button:first-child::after,
-.composer button::after,
+.composer .send-button::after,
 .page-hero > button::after,
 .secondary-button::after,
 .secondary-command::after,
@@ -1108,7 +1108,7 @@ label span {
 .button-row button[type="submit"]:hover::after,
 .primary-command:hover::after,
 .room-actions button:first-child:hover::after,
-.composer button:hover::after,
+.composer .send-button:hover::after,
 .page-hero > button:hover::after,
 .secondary-button:hover::after,
 .secondary-command:hover::after,
@@ -2118,6 +2118,25 @@ label span {
   color: var(--ai);
 }
 
+.simple-seat.marked .simple-seat-avatar {
+  box-shadow:
+    0 0 0 5px rgba(217, 164, 65, 0.12),
+    0 14px 24px rgba(0, 0, 0, 0.36),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.simple-seat.mark-evil .simple-seat-avatar {
+  border-color: rgba(255, 103, 103, 0.82);
+}
+
+.simple-seat.mark-good .simple-seat-avatar {
+  border-color: rgba(79, 194, 139, 0.86);
+}
+
+.simple-seat.mark-suspect .simple-seat-avatar {
+  border-color: rgba(255, 209, 102, 0.86);
+}
+
 .simple-seat.you .simple-seat-status,
 .simple-seat.picked .simple-seat-status {
   color: var(--accent);
@@ -2129,6 +2148,102 @@ label span {
 
 .simple-seat.open.human:not(.picked):not(:hover) .simple-seat-status {
   color: var(--text-muted);
+}
+
+.simple-seat-mark {
+  display: inline-grid;
+  max-width: 96px;
+  min-height: 20px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #fff8de;
+  font-size: 11px;
+  font-weight: 950;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.28);
+}
+
+.simple-seat-mark.mark-evil,
+.mark-option.mark-evil.active {
+  border-color: rgba(255, 103, 103, 0.62);
+  background: rgba(132, 42, 42, 0.78);
+  color: #ffe2dc;
+}
+
+.simple-seat-mark.mark-good,
+.mark-option.mark-good.active {
+  border-color: rgba(79, 194, 139, 0.6);
+  background: rgba(36, 102, 70, 0.78);
+  color: #dcffe9;
+}
+
+.simple-seat-mark.mark-suspect,
+.mark-option.mark-suspect.active {
+  border-color: rgba(255, 209, 102, 0.62);
+  background: rgba(132, 91, 26, 0.78);
+  color: #fff1c4;
+}
+
+.simple-seat-mark.mark-unknown,
+.mark-option.mark-unknown.active {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.seat-mark-popover {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 8;
+  display: grid;
+  width: min(390px, calc(100% - 36px));
+  gap: 12px;
+  border: 1px solid rgba(217, 164, 65, 0.28);
+  background: rgba(16, 14, 12, 0.9);
+  padding: 14px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
+  animation: panelLift 0.18s ease both;
+}
+
+.seat-mark-popover h3 {
+  margin: 1px 0 3px;
+  color: #fff4d7;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.seat-mark-popover span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.seat-mark-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mark-option {
+  min-height: 34px;
+  border-color: rgba(217, 164, 65, 0.22);
+  background: rgba(8, 8, 7, 0.7);
+  color: #fff4d7;
+  padding: 7px 11px;
+  font-size: 13px;
+}
+
+.mark-option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(217, 164, 65, 0.5);
+  background: rgba(217, 164, 65, 0.12);
 }
 
 .simple-join-strip {
@@ -2185,6 +2300,17 @@ label span {
   }
 }
 
+@keyframes panelLift {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .messages {
   padding: 16px 20px;
   overflow: auto;
@@ -2231,7 +2357,7 @@ label span {
 
 .composer {
   display: grid;
-  grid-template-columns: 150px 1fr 96px;
+  grid-template-columns: 150px minmax(0, 1fr) 92px 96px;
   gap: 12px;
   padding: 16px 20px 20px;
   border-top: 1px solid var(--line);
@@ -2249,8 +2375,60 @@ label span {
   font-weight: 900;
 }
 
+.composer-input {
+  display: grid;
+  gap: 8px;
+}
+
+.voice-status {
+  min-height: 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.voice-status.live {
+  color: #ffe29a;
+}
+
+.voice-status.error {
+  color: #ffc6c3;
+}
+
 .composer button {
   align-self: stretch;
+}
+
+.voice-button {
+  min-height: 42px;
+  border: 1px solid rgba(101, 193, 140, 0.44);
+  background:
+    linear-gradient(135deg, rgba(101, 193, 140, 0.2), rgba(20, 40, 34, 0.94)),
+    #182820;
+  color: #ddf5e6;
+  font-weight: 950;
+}
+
+.voice-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(101, 193, 140, 0.68);
+  box-shadow: 0 10px 24px rgba(101, 193, 140, 0.14);
+}
+
+.voice-button.listening {
+  border-color: rgba(255, 209, 102, 0.72);
+  background:
+    linear-gradient(135deg, rgba(255, 209, 102, 0.26), rgba(72, 41, 21, 0.94)),
+    #2f2215;
+  color: #fff1c4;
+  box-shadow: 0 0 0 5px rgba(255, 209, 102, 0.1), 0 12px 26px rgba(217, 164, 65, 0.14);
+}
+
+.voice-button:disabled {
+  opacity: 0.55;
 }
 
 .observer-bar {

@@ -11,6 +11,8 @@ import {
   Home,
   Library,
   LogIn,
+  Mic,
+  MicOff,
   RefreshCw,
   Send,
   ShieldCheck,
@@ -940,6 +942,47 @@ function seatPositionStyle(index, total) {
   return { left: `${x}%`, top: `${y}%` };
 }
 
+function seatMarkStorageKey(roomId) {
+  return `roundtable-seat-marks:${roomId}`;
+}
+
+function seatMarkOptions(gameId, board) {
+  const base = [
+    { id: "", label: "清除", tone: "unknown" },
+    { id: "suspicious", label: "可疑", tone: "suspect" },
+    { id: "good", label: "好人", tone: "good" },
+    { id: "evil", label: "坏人", tone: "evil" }
+  ];
+  if (gameId === "werewolf") {
+    const boardRoles = Array.from(new Set(board?.roles || []));
+    const preferred = ["狼人", "预言家", "女巫", "猎人", "守卫", "白痴", "村民"];
+    const roles = preferred.filter((role) => boardRoles.includes(role));
+    return [
+      { id: "", label: "清除", tone: "unknown" },
+      { id: "suspicious", label: "可疑", tone: "suspect" },
+      ...roles.map((role) => ({ id: role, label: role, tone: role === "狼人" ? "evil" : "good" }))
+    ];
+  }
+  if (gameId === "avalon") {
+    return [
+      { id: "", label: "清除", tone: "unknown" },
+      { id: "suspicious", label: "可疑", tone: "suspect" },
+      { id: "good", label: "好人方", tone: "good" },
+      { id: "evil", label: "坏人方", tone: "evil" },
+      { id: "梅林", label: "梅林", tone: "good" },
+      { id: "派西维尔", label: "派西维尔", tone: "good" },
+      { id: "莫甘娜", label: "莫甘娜", tone: "evil" },
+      { id: "刺客", label: "刺客", tone: "evil" },
+      { id: "莫德雷德", label: "莫德雷德", tone: "evil" }
+    ];
+  }
+  return base;
+}
+
+function seatMarkTone(markId, options) {
+  return options.find((option) => option.id === markId)?.tone || "unknown";
+}
+
 function RoundTable({ room }) {
   const aiCount = room.seats.filter((seat) => seat.type === "ai").length;
   const humanCount = room.seats.length - aiCount;
@@ -970,14 +1013,18 @@ function RoundTable({ room }) {
   );
 }
 
-function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
+function SimpleInteractiveTableStage({ room, board, currentPlayer, playerName, onPlayerNameChange, onJoin }) {
   const timersRef = useRef([]);
   const [pickedSeatId, setPickedSeatId] = useState("");
   const [joiningSeatId, setJoiningSeatId] = useState("");
+  const [activeMarkSeatId, setActiveMarkSeatId] = useState("");
+  const [seatMarks, setSeatMarks] = useState({});
   const humanSeats = room.seats.filter((seat) => seat.type === "human");
   const claimedHumans = humanSeats.filter((seat) => seat.claimed).length;
   const availableHumanSeats = humanSeats.filter((seat) => !seat.claimed);
   const targetSeat = room.seats.find((seat) => seat.id === pickedSeatId);
+  const activeMarkSeat = room.seats.find((seat) => seat.id === activeMarkSeatId);
+  const markOptions = useMemo(() => seatMarkOptions(room.gameId, board), [room.gameId, board?.id, board?.roles?.join("|")]);
   const canJoinTarget = !currentPlayer && targetSeat?.type === "human" && !targetSeat.claimed && !joiningSeatId;
 
   const clearTimers = () => {
@@ -988,8 +1035,21 @@ function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayer
   useEffect(() => () => clearTimers(), []);
 
   useEffect(() => {
+    try {
+      setSeatMarks(JSON.parse(window.localStorage.getItem(seatMarkStorageKey(room.id)) || "{}"));
+    } catch {
+      setSeatMarks({});
+    }
+    setActiveMarkSeatId("");
+  }, [room.id]);
+
+  useEffect(() => {
     if (!targetSeat || targetSeat.claimed) setPickedSeatId("");
   }, [targetSeat?.id, targetSeat?.claimed]);
+
+  useEffect(() => {
+    if (!activeMarkSeat || (!activeMarkSeat.claimed && activeMarkSeat.type !== "ai")) setActiveMarkSeatId("");
+  }, [activeMarkSeat?.id, activeMarkSeat?.claimed, activeMarkSeat?.type]);
 
   const joinSeatWithMotion = (seat) => {
     if (currentPlayer || joiningSeatId || seat.type !== "human" || seat.claimed) return;
@@ -1004,6 +1064,28 @@ function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayer
       }
     }, 360);
     timersRef.current.push(timerId);
+  };
+
+  const updateSeatMark = (seatId, markId) => {
+    setSeatMarks((previous) => {
+      const next = { ...previous };
+      if (markId) next[seatId] = markId;
+      else delete next[seatId];
+      window.localStorage.setItem(seatMarkStorageKey(room.id), JSON.stringify(next));
+      return next;
+    });
+    setActiveMarkSeatId("");
+  };
+
+  const handleSeatClick = (seat, isAvailable) => {
+    if (isAvailable) {
+      joinSeatWithMotion(seat);
+      return;
+    }
+    if (!joiningSeatId && (seat.claimed || seat.type === "ai")) {
+      setPickedSeatId(seat.id);
+      setActiveMarkSeatId((current) => (current === seat.id ? "" : seat.id));
+    }
   };
 
   const statusTitle = currentPlayer ? "已入座" : joiningSeatId ? "正在入座" : "选择座位";
@@ -1039,24 +1121,29 @@ function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayer
           const isPicked = seat.id === pickedSeatId;
           const isCurrent = currentPlayer?.id === seat.id;
           const isJoining = seat.id === joiningSeatId;
+          const markId = seatMarks[seat.id] || "";
+          const markOption = markOptions.find((option) => option.id === markId);
+          const markTone = seatMarkTone(markId, markOptions);
+          const isMarkable = seat.claimed || seat.type === "ai";
           const className = [
             "simple-seat",
             seat.type,
             seat.claimed ? "claimed" : "open",
             isPicked ? "picked" : "",
             isCurrent ? "you" : "",
-            isJoining ? "joining" : ""
+            isJoining ? "joining" : "",
+            markId ? `marked mark-${markTone}` : ""
           ]
             .filter(Boolean)
             .join(" ");
 
           return (
             <button
-              aria-label={isAvailable ? `入座 ${seat.name}` : seat.name}
+              aria-label={isAvailable ? `入座 ${seat.name}` : isMarkable ? `标记 ${seat.name}` : seat.name}
               className={className}
-              disabled={!isAvailable}
+              disabled={Boolean(joiningSeatId) || (!isAvailable && !isMarkable)}
               key={seat.id}
-              onClick={() => joinSeatWithMotion(seat)}
+              onClick={() => handleSeatClick(seat, isAvailable)}
               onMouseEnter={() => isAvailable && setPickedSeatId(seat.id)}
               style={{ ...seatPositionStyle(index, room.seats.length), "--seat-delay": `${index * 28}ms` }}
               type="button"
@@ -1064,10 +1151,33 @@ function SimpleInteractiveTableStage({ room, currentPlayer, playerName, onPlayer
               <span className="simple-seat-avatar">{seat.type === "ai" ? <Bot size={22} /> : <UsersRound size={22} />}</span>
               <strong className="simple-seat-name">{isCurrent ? currentPlayer.name : seat.name}</strong>
               <small className="simple-seat-status">{seat.type === "ai" ? `${seat.style} AI` : seat.claimed || isCurrent ? "已入座" : "空座"}</small>
+              {markOption && <span className={`simple-seat-mark mark-${markTone}`}>{markOption.label}</span>}
             </button>
           );
         })}
       </div>
+
+      {activeMarkSeat && (
+        <div className="seat-mark-popover">
+          <div>
+            <p className="eyebrow">PRIVATE MARK</p>
+            <h3>{activeMarkSeat.name}</h3>
+            <span>只在你的浏览器里显示</span>
+          </div>
+          <div className="seat-mark-options">
+            {markOptions.map((option) => (
+              <button
+                className={`mark-option mark-${option.tone} ${seatMarks[activeMarkSeat.id] === option.id ? "active" : ""}`}
+                key={option.id || "clear"}
+                type="button"
+                onClick={() => updateSeatMark(activeMarkSeat.id, option.id)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {!currentPlayer && (
         <div className="simple-join-strip">
@@ -1139,6 +1249,11 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
   const [editingName, setEditingName] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [thinking, setThinking] = useState(false);
+  const recognitionRef = useRef(null);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState("点击麦克风开始说话");
+  const [voiceError, setVoiceError] = useState("");
   const game = useMemo(() => games.find((item) => item.id === room.gameId), [games, room.gameId]);
   const board = room.board || activeBoard(game, room.boardId, room.seats.length);
   const humans = room.seats.filter((seat) => seat.type === "human");
@@ -1156,6 +1271,80 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
     }
     if (!editingName) setRenameName(currentPlayer.name);
   }, [currentPlayer?.id, currentPlayer?.name, editingName]);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceSupported(false);
+      setVoiceStatus("当前浏览器不支持语音识别，可先用文字兜底");
+      return undefined;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "zh-CN";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setListening(true);
+      setVoiceError("");
+      setVoiceStatus("正在听你说话...");
+    };
+
+    recognition.onresult = (event) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const transcript = event.results[index][0]?.transcript || "";
+        if (event.results[index].isFinal) finalTranscript += transcript;
+        else interimTranscript += transcript;
+      }
+
+      if (finalTranscript.trim()) {
+        setText((previous) => {
+          const trimmed = previous.trim();
+          const spacer = trimmed ? " " : "";
+          return `${trimmed}${spacer}${finalTranscript.trim()}`;
+        });
+        setVoiceStatus("已识别，确认后发送");
+        return;
+      }
+
+      if (interimTranscript.trim()) setVoiceStatus(interimTranscript.trim());
+    };
+
+    recognition.onerror = (event) => {
+      const errorMap = {
+        "not-allowed": "麦克风权限被拒绝，请在浏览器里允许后重试",
+        "no-speech": "没有听清，可以再说一次",
+        "audio-capture": "没有检测到可用麦克风"
+      };
+      setVoiceError(errorMap[event.error] || "语音识别中断，可以再试一次");
+      setListening(false);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+      setVoiceStatus((previous) => (previous === "正在听你说话..." ? "没有听清，可以再试一次" : previous));
+    };
+
+    recognitionRef.current = recognition;
+    setVoiceSupported(true);
+
+    return () => {
+      recognition.onstart = null;
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      try {
+        recognition.stop();
+      } catch {
+        // Browser recognition may already be stopped.
+      }
+      recognitionRef.current = null;
+    };
+  }, []);
 
   async function updatePhase(phase) {
     if (!isHost) return;
@@ -1211,7 +1400,23 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
       body: { seatId: currentPlayer.id, text: text.trim(), playerToken, hostToken }
     });
     setText("");
+    setVoiceStatus("点击麦克风开始说话");
+    setVoiceError("");
     onRoomChange(data.room);
+  }
+
+  function toggleVoiceInput() {
+    if (!voiceSupported || !recognitionRef.current) return;
+    setVoiceError("");
+    if (listening) {
+      recognitionRef.current.stop();
+      return;
+    }
+    try {
+      recognitionRef.current.start();
+    } catch {
+      setVoiceError("语音识别正在重置，请稍后再试");
+    }
   }
 
   async function runAiTurn() {
@@ -1308,6 +1513,7 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
 
           <SimpleInteractiveTableStage
             room={room}
+            board={board}
             currentPlayer={currentPlayer}
             playerName={playerName}
             onPlayerNameChange={setPlayerName}
@@ -1318,13 +1524,26 @@ function Room({ room, games, personaModes, playerToken, hostToken, onPlayerToken
           {currentPlayer ? (
             <form className="composer" onSubmit={sendMessage}>
               <div className="composer-speaker">{currentPlayer.name}</div>
-              <textarea
-                rows="3"
-                value={text}
-                onChange={(event) => setText(event.target.value)}
-                placeholder="输入你这一轮想说的话"
-              />
-              <button type="submit">
+              <div className="composer-input">
+                <textarea
+                  rows="3"
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                  placeholder="点击麦克风说话，系统会转成这轮发言"
+                />
+                <span className={`voice-status ${listening ? "live" : ""} ${voiceError ? "error" : ""}`}>{voiceError || voiceStatus}</span>
+              </div>
+              <button
+                className={`voice-button ${listening ? "listening" : ""}`}
+                type="button"
+                onClick={toggleVoiceInput}
+                disabled={!voiceSupported}
+                title={voiceSupported ? "语音发言" : "当前浏览器不支持语音识别"}
+              >
+                {listening ? <MicOff size={18} /> : <Mic size={18} />}
+                {listening ? "停止" : "说话"}
+              </button>
+              <button className="send-button" type="submit">
                 <Send size={18} />
                 发送
               </button>
